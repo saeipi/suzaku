@@ -1,0 +1,19 @@
+syntax = "proto3";
+import  "pb_ws/ws.proto";
+option go_package = "./push;pb_push";
+package push;
+
+message PushMsgReq {
+  string operation_id = 1;
+  pb_ws.MsgData msg_data = 2;
+  string push_to_user_id = 3;
+}
+
+message PushMsgResp{
+  int32   result_code = 1;
+}
+
+service PushMsgService {
+  rpc PushMsg(PushMsgReq) returns(PushMsgResp);
+}
+

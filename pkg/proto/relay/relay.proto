@@ -1,0 +1,56 @@
+syntax = "proto3";
+import  "pb_ws/ws.proto";
+package pb_relay;
+option go_package = "./relay;pb_relay";
+
+
+message OnlinePushMsgReq {
+  string operation_id = 1;
+  pb_ws.MsgData msg_data = 2;
+  string push_to_user_id = 3;
+}
+
+message OnlinePushMsgResp{
+  repeated SingleMsgToUser resp = 1;
+}
+
+message SingleMsgToUser{
+  int64   result_code = 1;
+  string  recv_id = 2;
+  int32   recv_plat_form_id = 3;
+}
+
+message UsersOnlineStatusReq{
+  repeated string  user_id_list = 1;
+  string  operation_id = 2;
+  string op_user_id = 3;
+}
+
+message UsersOnlineStatusResp{
+  int32  err_code = 1;
+  string err_msg = 2;
+  repeated SuccessResult success_result = 3;
+  repeated FailedDetail failed_result = 4;
+}
+
+message FailedDetail{
+   string user_id = 1;
+   int32  err_code = 2;
+   string err_msg = 3;
+}
+
+message SuccessDetail{
+   int32 platform_id = 1;
+   int64 status = 2;
+}
+
+message SuccessResult{
+   string user_id = 1;
+   int64 status = 2;
+   repeated SuccessDetail detail_platform_status = 3;
+}
+
+service OnlineMessageRelayService {
+  rpc OnlinePushMsg(OnlinePushMsgReq) returns(OnlinePushMsgResp);
+  rpc GetUsersOnlineStatus(UsersOnlineStatusReq)returns(UsersOnlineStatusResp);
+}

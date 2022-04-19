@@ -1,0 +1,9 @@
+syntax ="proto3";
+package pb_com;
+option go_package = "suzaku/pkg/proto/pb_com;pb_com";
+
+// 共用代码
+message CommonResp {
+  int32 code = 1;
+  string msg = 2;
+}

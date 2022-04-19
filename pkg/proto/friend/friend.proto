@@ -1,0 +1,22 @@
+syntax ="proto3";
+import  "pb_com/common.proto";
+package pb_friend;
+option go_package = "./friend;pb_friend";
+
+//message CommonResp {
+//  int32 code = 1;
+//  string msg = 2;
+//}
+
+message AddFriendReq {
+  string user_id = 1; // 用户ID
+  string target_user_id = 2; // 添加好友用户ID
+}
+
+message AddFriendResp {
+  pb_com.CommonResp common = 1;
+}
+
+service Friend {
+  rpc AddFriend(AddFriendReq) returns(AddFriendResp);
+}

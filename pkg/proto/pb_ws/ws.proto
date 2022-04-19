@@ -1,0 +1,353 @@
+syntax ="proto3";
+package pb_ws;
+option go_package = "suzaku/pkg/proto/pb_ws;pb_ws";
+
+// base
+message GroupInfo{
+  string group_id = 1;
+  string group_name = 2;
+  string notification = 3;
+  string introduction = 4;
+  string face_url = 5;
+  string owner_user_id = 6;
+  uint32 create_time = 7;
+  uint32 member_count = 8;
+  string ex = 9;
+  int32 status = 10;
+  string creator_user_id = 11;
+  int32 group_type = 12;
+}
+
+message GroupMemberFullInfo {
+  string group_id = 1 ;
+  string user_id = 2 ;
+  int32 role_level = 3;
+  int64 join_time = 4;
+  string nickname = 5;
+  string face_url = 6;
+  int32 app_manger_level = 7;
+  int32 join_source = 8;
+  string operator_user_id = 9;
+  string ex = 10;
+}
+
+message PublicUserInfo{
+  string user_id = 1;
+  string nickname = 2;
+  string face_url = 3;
+  int32 gender = 4;
+}
+
+message UserInfo{
+  string user_id = 1;
+  string nickname = 2;
+  string face_url = 3;
+  int32 gender = 4;
+  string mobile = 5;
+  uint32 birth = 6;
+  string email = 7;
+  string ex = 8;
+  uint32 create_time = 9;
+  int32 app_manger_level = 10;
+}
+
+message FriendInfo{
+  string owner_user_id = 1;
+  string remark = 2;
+  uint32 create_time = 3;
+  UserInfo friend_user = 4;
+  int32 add_source = 5;
+  string operator_user_id = 6;
+  string ex = 7;
+}
+
+message BlackInfo{
+  string owner_user_id = 1;
+  uint32 create_time = 2;
+  PublicUserInfo black_user_info = 3;
+  int32 add_source = 4;
+  string operator_user_id = 5;
+  string ex = 6;
+}
+
+message GroupRequest{
+  PublicUserInfo user_info = 1;
+  GroupInfo group_info = 2;
+  int32 handle_result = 3;
+  string req_msg = 4;
+  string  handle_msg = 5;
+  uint32 req_time = 6;
+  string handle_user_id = 7;
+  uint32 handle_time = 8;
+  string ex = 9;
+}
+
+message FriendRequest{
+  string from_user_id = 1;
+  string from_nickname = 2;
+  string from_face_url = 3;
+  int32 from_gender = 4;
+  string to_user_id = 5;
+  string to_nickname = 6;
+  string to_face_url = 7;
+  int32 to_gender = 8;
+  int32 handle_result = 9;
+  string req_msg = 10;
+  uint32 create_time = 11;
+  string handle_user_id = 12;
+  string handle_msg = 13;
+  uint32 handle_time = 14;
+  string ex = 15;
+}
+// base end
+
+message PullMessageBySeqListResp {
+  int32 err_code = 1;
+  string err_msg = 2;
+  repeated MsgData list = 3;
+}
+message PullMessageBySeqListReq{
+  string user_id = 1;
+  string operation_id = 2;
+  repeated uint32 seq_list = 3;
+}
+message GetMaxAndMinSeqReq {
+}
+message GetMaxAndMinSeqResp {
+  uint32 max_seq = 1;
+  uint32 min_seq = 2;
+}
+
+message UserSendMsgResp {
+  string server_msg_id = 1;
+  string client_msg_id = 2;
+  int64  send_time = 3;
+
+}
+message MsgData {
+  string  send_id = 1;
+  string  recv_id = 2;
+  string group_id = 3;
+  string client_msg_id = 4;
+  string server_msg_id = 5;
+  int32 sender_platform_id = 6;
+  string  sender_nickname = 7;
+  string  sender_face_url = 8;
+  int32   session_type = 9;
+  int32 msg_from = 10;
+  int32 content_type = 11;
+  bytes content = 12;
+  uint32 seq = 14;
+  int64 send_time = 15;
+  int64 create_time = 16;
+  int32 status = 17;
+  map<string, bool> options = 18;
+  OfflinePushInfo offline_push_info = 19;
+}
+
+message OfflinePushInfo{
+  string title = 1;
+  string desc = 2;
+  string ex = 3;
+  string ios_push_sound = 4;
+  bool ios_badge_count = 5;
+}
+
+message TipsComm{
+  bytes detail = 1;
+  string default_tips = 2;
+  string json_detail = 3;
+}
+
+// group
+// OnGroupCreated()
+message GroupCreatedTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  repeated GroupMemberFullInfo member_list = 3;
+  int64 operation_time = 4;
+  GroupMemberFullInfo group_owner_user = 5;
+}
+
+// OnGroupInfoSet()
+message GroupInfoSetTips{
+  GroupMemberFullInfo op_user = 1; //who do this
+  int64 mute_time = 2;
+  GroupInfo group = 3;
+}
+
+// OnJoinGroupApplication()
+message JoinGroupApplicationTips{
+  GroupInfo group = 1;
+  PublicUserInfo applicant = 2;
+  string  req_msg = 3;
+}
+
+// OnQuitGroup()
+// Actively leave the group
+message MemberQuitTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo quit_user = 2;
+  int64 operation_time = 3;
+}
+
+// OnApplicationGroupAccepted()
+message GroupApplicationAcceptedTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  string  handle_msg = 4;
+}
+
+// OnApplicationGroupRejected()
+message GroupApplicationRejectedTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  string  handle_msg = 4;
+}
+
+// OnTransferGroupOwner()
+message GroupOwnerTransferredTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  GroupMemberFullInfo new_group_owner = 3;
+  int64 operation_time = 4;
+}
+
+
+// OnMemberKicked()
+message MemberKickedTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  repeated GroupMemberFullInfo kicked_user_list = 3;
+  int64 operation_time = 4;
+}
+
+// OnMemberInvited()
+message MemberInvitedTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo op_user = 2;
+  repeated GroupMemberFullInfo invited_user_list = 3;
+  int64 operation_time = 4;
+}
+
+// Actively join the group
+message MemberEnterTips{
+  GroupInfo group = 1;
+  GroupMemberFullInfo entrant_user = 2;
+  int64 operation_time = 3;
+}
+
+
+// friend
+//message FriendInfo{
+//  UserInfo OwnerUser = 1;
+//  string Remark = 2;
+//  uint64 CreateTime = 3;
+//  UserInfo FriendUser = 4;
+//}
+
+message FriendApplication{
+  int64 add_time = 1;
+  string add_source = 2;
+  string add_wording = 3;
+}
+
+message FromToUserID{
+  string from_user_id = 1;
+  string to_user_id = 2;
+}
+
+// FromUserID apply to add ToUserID
+message FriendApplicationTips{
+  FromToUserID from_to_user_id = 1;
+}
+
+// FromUserID accept or reject ToUserID
+message FriendApplicationApprovedTips{
+  FromToUserID from_to_user_id = 1;
+  string handle_msg = 2;
+}
+
+// FromUserID accept or reject ToUserID
+message FriendApplicationRejectedTips{
+  FromToUserID from_to_user_id = 1;
+  string handle_msg = 2;
+}
+
+// FromUserID  Added a friend ToUserID
+message FriendAddedTips{
+  FriendInfo friend = 1;
+  int64 operation_time = 2;
+  PublicUserInfo     op_user = 3;  //who do this
+
+}
+
+// FromUserID  deleted a friend ToUserID
+message FriendDeletedTips{
+  FromToUserID from_to_user_id = 1;
+}
+
+message BlackAddedTips{
+  FromToUserID from_to_user_id = 1;
+}
+
+message BlackDeletedTips{
+  FromToUserID from_to_user_id = 1;
+}
+
+message FriendInfoChangedTips{
+  FromToUserID from_to_user_id = 1;
+}
+
+//////////////////////user/////////////////////
+message UserInfoUpdatedTips{
+  string user_id = 1;
+}
+
+//////////////////////conversation/////////////////////
+message ConversationUpdateTips{
+  string user_id = 1;
+
+}
+
+// callback
+message CommonCallbackURLReq {
+  string call_back_command = 1 [json_name = "code"];
+  string open_im_server_id = 2;
+  string operation_id = 3;
+}
+
+message CommonCallbackURLResp {
+  string code = 1 [json_name = "code"];
+  string msg = 2  [json_name = "msg"];
+  string operation_id = 3 [json_name = "operationID"];
+}
+
+message CallbackBeforeSendMsgReq {
+  CommonCallbackURLReq common_req  = 1;
+
+}
+
+message CallbackBeforeSendMsgResp {
+  CommonCallbackURLResp common_resp  = 1;
+  string FromUserID = 2;
+}
+
+message CallbackAfterAddFriendReq {
+  CommonCallbackURLReq common_req  = 1;
+}
+
+message CallbackAfterAddFriendResp {
+  CommonCallbackURLResp common_resp  = 1;
+}
+
+// cms
+message RequestPagination {
+  int32 page_number = 1;
+  int32 show_number = 2;
+}
+
+message ResponsePagination {
+  int32 current_page = 5;
+  int32 show_number = 6;
+}

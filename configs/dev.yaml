@@ -1,0 +1,184 @@
+server_ip: 0.0.0.0
+
+tsl:
+  cert_file: configs/tls/ca.pem
+  key_file: configs/tls/ca.key
+
+alarm:
+  file: /var/log/suzaku/alarm
+  level: 6
+
+abnormal:
+  file: /var/log/suzaku/abnormal.log
+  level: 0
+
+etcd:
+  address: [ 127.0.0.1:2379 ]
+  schema: suzaku
+  read_timeout: 5000
+  write_timeout: 5000
+  dial_timeout: 5000
+
+rpc_port: #rpc服务端口 默认即可
+  user_port: [ 10100 ]
+  friend_port: [ 10200 ]
+  offline_message_port: [ 10300 ]
+  online_relay_port: [ 10400 ]
+  group_port: [ 10500 ]
+  auth_port: [ 10600 ]
+  push_port: [ 10700 ]
+  statistics_port: [ 10800 ]
+  message_cms_port: [ 10900 ]
+  admin_cms_port: [ 11000 ]
+  c2c:
+    callback_before_send_msg:
+      switch: false
+      timeout_strategy: 1
+    callback_after_send_msg:
+      switch: false
+  state:
+    state_change:
+      switch: false
+
+rpc_register_name: #rpc注册服务名，默认即可
+  user_name: User
+  friend_name: Friend
+  offline_message_name: OfflineMessage
+  push_name: Push
+  online_message_relay_name: OnlineMessageRelay
+  group_name: Group
+  auth_name: Auth
+  statistics_name: Statistics
+  message_cms_name: MessageCMS
+  admin_cms_name: AdminCMS
+
+mysql:
+  address: [ 127.0.0.1:3306 ]
+  username: root
+  password:
+  db: suzaku
+  max_open_conn: 20
+  max_idle_conn: 10
+  conn_lifetime: 120000
+  charset: utf8
+
+mongo:
+  address: [ 127.0.0.1:27017 ]
+  username: admin
+  password: abc
+  db: suzaku
+  direct: false
+  timeout: 5000
+  max_pool_size: 20
+  retain_chat_records: 3650
+
+redis:
+  address: [ 127.0.0.1:6379 ]
+  db: 0
+  password: ""
+  prefix: "suzaku"
+
+kafka:
+  ws2mschat:
+    addr: [ 127.0.0.1:9092 ]
+    topic: "ws2ms_chat"
+  ms2pschat:
+    addr: [ 127.0.0.1:9092 ]
+    topic: "ms2ps_chat"
+  consumer_group_id:
+    msgToMongo: mongo
+    msgToMySql: mysql
+    msgToPush: push
+
+mq:
+  host: 127.0.0.1
+  port: 5672
+  user: guest
+  password: guest
+
+jwt_auth:
+  auth_method: cookie
+  is_dev: true
+
+casbin:
+  model-path: configs/casbin/rbac_model.conf
+
+environment:
+  run_model: dev
+
+monlog:
+  batch_size: 100
+  commit_timeout: 1000
+  mongo:
+    address: [ 127.0.0.1:27017 ]
+    username: admin
+    password: 123456
+    db: suzaku
+    direct: false
+    timeout: 5000
+    max_pool_size: 20
+    retain_chat_records: 3650
+
+# endpoints 内部组件间访问的端点host名称，访问时，可以内部直接访问 host:port 来访问
+endpoints:
+  api: suzaku_api
+api:
+  port: [ 10000 ]
+
+websocket:
+  port: [ 17778 ] # ws服务端口，默认即可，要开放此端口或做nginx转发
+  write_wait: 10000
+  pong_wait: 60000
+  max_message_size: 4096
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+
+credential: #腾讯cos，发送图片、视频、文件时需要，请自行申请后替换，必须修改
+  tencent:
+    app_id: 1302656840
+    region: ap-chengdu
+    bucket: echat-1302656840
+    secret_id: AKIDGNYVChzIQinu7QEgtNp0hnNgqcV8vZTC
+    secret_key: kz15vW83qM6dBUWIq681eBZA0c0vlIbe
+  minio: #MinIO 发送图片、视频、文件时需要，请自行申请后替换，必须修改。 客户端初始化时相应改动
+    bucket: openim
+    location: us-east-1
+    endpoint: http://127.0.0.1:9000
+    secret_id: user12345
+    secret_key: key12345
+
+log:
+  storage_location: ../logs/
+  rotation_time: 24
+  rotation_count: 3 #日志数量
+  #日志级别 6表示全都打印，测试阶段建议设置为6
+  level: 4
+  es_address: [ 127.0.0.1:9201 ]
+  es_username: ""
+  es_password: ""
+  es_switch: false
+
+secret: saeipi
+
+callback:
+  # callback url 需要自行更换callback url
+  callback_url : "http://127.0.0.1:8080/callback"
+  # 开启关闭操作前后回调的配置
+  callback_before_send_single_msg:
+    enable: false # 回调是否启用
+    callback_time_out: 2 # 回调超时时间
+    callback_failed_continue: true # 回调超时是否继续执行代码
+  callback_after_send_single_msg:
+    enable: false
+    callback_time_out: 2
+  callbackBeforeSendGroupMsg:
+    enable: false
+    callback_time_out: 2
+    callback_failed_continue: true
+  callback_after_send_group_msg:
+    enable: false
+    callback_time_out: 2
+  callback_word_filter:
+    enable: false
+    callback_time_out: 2
+    callback_failed_continue: true

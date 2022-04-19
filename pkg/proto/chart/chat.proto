@@ -1,0 +1,59 @@
+syntax ="proto3";
+import  "pb_ws/ws.proto";
+import  "pb_com/common.proto";
+package pb_auth;
+option go_package = "./auth;pb_chat";
+
+//message ChatCommonResp {
+//  int32 code = 1;
+//  string msg = 2;
+//}
+
+message MsgDataToMQ{
+  string token =1;
+  string operation_id = 2;
+  pb_ws.MsgData msg_data = 3;
+}
+
+message MsgDataToDB {
+  pb_ws.MsgData msg_data = 1;
+  string operation_id = 2;
+}
+
+message PushMsgDataToMQ{
+  string operation_id = 1;
+  pb_ws.MsgData msg_data = 2;
+  string push_to_user_id = 3;
+}
+
+message GetMaxAndMinSeqReq {
+  string user_id = 1;
+  string operation_id = 2;
+}
+
+message GetMaxAndMinSeqResp {
+  int32 err_code = 1;
+  string err_msg = 2;
+  uint32 max_seq = 3;
+  uint32 min_seq = 4;
+}
+
+message SendMsgReq {
+  string token =1;
+  string operation_id = 2;
+  pb_ws.MsgData msg_data = 3;
+}
+
+message SendMsgResp {
+  int32 err_code = 1;
+  string err_msg = 2;
+  string server_msg_id = 3;
+  string client_msg_id = 4;
+  int64  send_time = 5;
+}
+
+service Chat {
+  rpc GetMaxAndMinSeq(GetMaxAndMinSeqReq) returns(GetMaxAndMinSeqResp);
+  rpc PullMessageBySeqList(pb_ws.PullMessageBySeqListReq) returns(pb_ws.PullMessageBySeqListResp);
+  rpc SendMsg(SendMsgReq) returns(SendMsgResp);
+}

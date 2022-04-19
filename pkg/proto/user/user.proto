@@ -1,0 +1,22 @@
+syntax ="proto3";
+import  "pb_com/common.proto";
+package pb_user;
+option go_package = "./user;pb_user";
+
+//message CommonResp {
+//  int32 code = 1;
+//  string msg = 2;
+//}
+
+message UserInfoReq {
+  string user_id = 1; // 用户ID
+}
+
+message UserInfoResp {
+  pb_com.CommonResp common = 1;
+  string user_id = 2; // 用户ID
+}
+
+service User {
+  rpc UserInfo(UserInfoReq) returns(UserInfoResp);
+}
