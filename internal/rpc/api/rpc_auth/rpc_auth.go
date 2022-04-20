@@ -13,18 +13,18 @@ import (
 	pb_com "suzaku/pkg/proto/pb_com"
 )
 
-type authRpc struct {
+type authRpcServer struct {
 	pb_auth.UnimplementedAuthServer
 	rpc_category.Rpc
 }
 
-func NewRpcAuthServer(port int) (r *authRpc) {
-	return &authRpc{
+func NewRpcAuthServer(port int) (r *authRpcServer) {
+	return &authRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.AuthName),
 	}
 }
 
-func (rpc *authRpc) Run() {
+func (rpc *authRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
@@ -33,7 +33,7 @@ func (rpc *authRpc) Run() {
 	rpc.Rpc.RunServer(server)
 }
 
-func (rpc *authRpc) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, err error) {
+func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, err error) {
 	var (
 		user   *mysql_model.User
 		common = &pb_com.CommonResp{}
@@ -57,7 +57,7 @@ func (rpc *authRpc) UserRegister(ctx context.Context, req *pb_auth.UserRegisterR
 	return
 }
 
-func (rpc *authRpc) UserToken(ctx context.Context, req *pb_auth.UserTokenReq) (resp *pb_auth.UserTokenResp, err error) {
+func (rpc *authRpcServer) UserToken(ctx context.Context, req *pb_auth.UserTokenReq) (resp *pb_auth.UserTokenResp, err error) {
 	var (
 		token  string
 		expire int64
