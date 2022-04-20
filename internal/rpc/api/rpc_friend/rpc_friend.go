@@ -9,18 +9,18 @@ import (
 	pb_com "suzaku/pkg/proto/pb_com"
 )
 
-type friendRpc struct {
+type friendRpcServer struct {
 	pb_friend.UnimplementedFriendServer
 	rpc_category.Rpc
 }
 
-func NewRpcFriendServer(port int) (r *friendRpc) {
-	return &friendRpc{
+func NewRpcFriendServer(port int) (r *friendRpcServer) {
+	return &friendRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.FriendName),
 	}
 }
 
-func (rpc *friendRpc) Run() {
+func (rpc *friendRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
@@ -29,7 +29,7 @@ func (rpc *friendRpc) Run() {
 	rpc.Rpc.RunServer(server)
 }
 
-func (rpc *friendRpc) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, err error) {
+func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, err error) {
 	var (
 		common = &pb_com.CommonResp{}
 	)
