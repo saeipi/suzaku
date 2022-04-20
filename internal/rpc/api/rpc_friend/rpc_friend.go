@@ -14,7 +14,7 @@ type friendRpcServer struct {
 	rpc_category.Rpc
 }
 
-func NewRpcFriendServer(port int) (r *friendRpcServer) {
+func NewFriendRpcServer(port int) (r *friendRpcServer) {
 	return &friendRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.FriendName),
 	}
