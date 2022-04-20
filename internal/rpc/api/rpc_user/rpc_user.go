@@ -14,7 +14,7 @@ type userRpcServer struct {
 	rpc_category.Rpc
 }
 
-func NewRpcUserServer(port int) *userRpcServer {
+func NewUserRpcServer(port int) *userRpcServer {
 	return &userRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.UserName),
 	}
