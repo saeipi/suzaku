@@ -57,27 +57,26 @@ func (rpc *chatRpc) encapsulateMsgData(msg *pb_ws.MsgData) {
 		fallthrough
 	case constant.Custom:
 		fallthrough
-	case constant.Quote:
+	case constant.Quote: // 引用
 		utils.SetSwitchFromOptions(msg.Options, constant.IsConversationUpdate, true)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsUnreadCount, true)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsSenderSync, true)
-	case constant.Revoke:
+	case constant.Revoke: // 撤销
 		utils.SetSwitchFromOptions(msg.Options, constant.IsUnreadCount, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsOfflinePush, false)
-	case constant.HasReadReceipt:
+	case constant.HasReadReceipt: // 已读回执
 		//log.Info("", "this is a test start", msg, msg.Options)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsConversationUpdate, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsUnreadCount, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsOfflinePush, false)
 		//log.Info("", "this is a test end", msg, msg.Options)
-	case constant.Typing:
+	case constant.Typing: // 打字
 		utils.SetSwitchFromOptions(msg.Options, constant.IsHistory, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsPersistent, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsSenderSync, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsConversationUpdate, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsUnreadCount, false)
 		utils.SetSwitchFromOptions(msg.Options, constant.IsOfflinePush, false)
-
 	}
 }
 
@@ -96,7 +95,7 @@ func (rpc *chatRpc) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (resp *pb
 		Token:       pb.Token,
 		OperationId: pb.OperationId,
 	}
-
+	// 是否是历史消息
 	isHistory = utils.GetSwitchFromOptions(pb.MsgData.Options, constant.IsHistory)
 
 	req = MsgCallBackReq{
