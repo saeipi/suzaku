@@ -107,7 +107,7 @@ func sendMessageToPush(message *pb_chat.MsgDataToMQ, pushToUserID string) {
 
 	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.PushName)
 	if clientConn == nil {
-		//TODO:错误
+		// 消息再次放入kafka消息队列
 		pid, offset, err = producer.SendMessage(&mqPushMsg)
 		if err != nil {
 			//TODO:错误
@@ -119,7 +119,7 @@ func sendMessageToPush(message *pb_chat.MsgDataToMQ, pushToUserID string) {
 	client = pb_push.NewPushMsgServiceClient(clientConn)
 	_, err = client.PushMsg(context.Background(), &rpcPushMsg)
 	if err != nil {
-		//TODO:错误
+		// 消息再次放入kafka消息队列
 		pid, offset, err = producer.SendMessage(&mqPushMsg)
 		if err != nil {
 			//TODO:错误

@@ -37,7 +37,7 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 			MsgData:      pushMsg.MsgData,
 			PushToUserId: pushMsg.PushToUserId,
 		}
-		// 在线推送
+		// 在线推送 -->internal/msg_gateway/rpc_server/rpc_server.go
 		msgClient = pb_relay.NewOnlineMessageRelayServiceClient(conn)
 		reply, err = msgClient.OnlinePushMsg(context.Background(), req)
 		if err != nil {
