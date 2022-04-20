@@ -9,18 +9,18 @@ import (
 	"suzaku/pkg/common/config"
 )
 
-type userRpc struct {
+type userRpcServer struct {
 	pb_user.UnimplementedUserServer
 	rpc_category.Rpc
 }
 
-func NewRpcUserServer(port int) *userRpc {
-	return &userRpc{
+func NewRpcUserServer(port int) *userRpcServer {
+	return &userRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.UserName),
 	}
 }
 
-func (rpc *userRpc) Run() {
+func (rpc *userRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
@@ -29,7 +29,7 @@ func (rpc *userRpc) Run() {
 	rpc.Rpc.RunServer(server)
 }
 
-func (rpc *userRpc) UserInfo(ctx context.Context, req *pb_user.UserInfoReq) (resp *pb_user.UserInfoResp, err error) {
+func (rpc *userRpcServer) UserInfo(ctx context.Context, req *pb_user.UserInfoReq) (resp *pb_user.UserInfoResp, err error) {
 	var (
 		common = &pb_com.CommonResp{}
 	)
