@@ -33,7 +33,7 @@ type MsgCallBackResp struct {
 	}
 }
 
-func (rpc *chatRpc) encapsulateMsgData(msg *pb_ws.MsgData) {
+func (rpc *chatRpcServer) encapsulateMsgData(msg *pb_ws.MsgData) {
 	msg.ServerMsgId = GetMsgID(msg.SendId)
 	msg.SendTime = utils.GetCurrentTimestampByMill()
 	switch msg.ContentType {
@@ -80,7 +80,7 @@ func (rpc *chatRpc) encapsulateMsgData(msg *pb_ws.MsgData) {
 	}
 }
 
-func (rpc *chatRpc) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (resp *pb_chat.SendMsgResp, err error) {
+func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (resp *pb_chat.SendMsgResp, err error) {
 	var (
 		msgToMQ   pb_chat.MsgDataToMQ
 		isHistory bool
@@ -196,7 +196,7 @@ func modifyMessageByUserMessageReceiveOpt(userID, sourceID string, sessionType i
 	return true
 }
 
-func (rpc *chatRpc) sendMsgToKafka(m *pb_chat.MsgDataToMQ, key string) (err error) {
+func (rpc *chatRpcServer) sendMsgToKafka(m *pb_chat.MsgDataToMQ, key string) (err error) {
 	var (
 		pid    int32
 		offset int64

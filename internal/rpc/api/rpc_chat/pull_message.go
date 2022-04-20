@@ -8,7 +8,7 @@ import (
 	"suzaku/pkg/proto/pb_ws"
 )
 
-func (rpc *chatRpc) GetMaxAndMinSeq(_ context.Context, req *pb_chat.GetMaxAndMinSeqReq) (resp *pb_chat.GetMaxAndMinSeqResp, err error) {
+func (rpc *chatRpcServer) GetMaxAndMinSeq(_ context.Context, req *pb_chat.GetMaxAndMinSeqReq) (resp *pb_chat.GetMaxAndMinSeqResp, err error) {
 	var (
 		maxSeq uint64
 		minSeq uint64
@@ -39,7 +39,7 @@ func (rpc *chatRpc) GetMaxAndMinSeq(_ context.Context, req *pb_chat.GetMaxAndMin
 	return
 }
 
-func (rpc *chatRpc) PullMessageBySeqList(_ context.Context, req *pb_ws.PullMessageBySeqListReq) (resp *pb_ws.PullMessageBySeqListResp, err error) {
+func (rpc *chatRpcServer) PullMessageBySeqList(_ context.Context, req *pb_ws.PullMessageBySeqListReq) (resp *pb_ws.PullMessageBySeqListResp, err error) {
 	var (
 		seqMsg []*pb_ws.MsgData
 	)
