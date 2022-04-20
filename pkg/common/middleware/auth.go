@@ -26,8 +26,8 @@ func JwtAuth() gin.HandlerFunc {
 			return
 		}
 		if config.Config.JwtAuth.IsDev {
-			ctx.Set(constant.KeyUserId, constant.KeyUserAdminUserId)
-			ctx.Set(constant.KeyUserPlatform, constant.KeyUserAdminPlatform)
+			ctx.Set(constant.KeyUserID, constant.KeyUserAdminUserId)
+			ctx.Set(constant.KeyUserPlatformID, constant.KeyUserAdminPlatform)
 			return
 		}
 		token, err = jwt_auth.ParseJwtFromCookie(ctx)
@@ -40,17 +40,17 @@ func JwtAuth() gin.HandlerFunc {
 		for key, value := range token.Claims.(jwt.MapClaims) {
 			claims[key] = value
 		}
-		if _, ok = claims[constant.KeyUserId]; ok == false || utils.ToString(claims[constant.KeyUserId]) == "" {
+		if _, ok = claims[constant.KeyUserID]; ok == false {
 			ctx.Abort()
 			http.Error(ctx, http.ErrorHttpUseridDoesNotExist, http.ErrorCodeHttpUseridDoesNotExist)
 			return
 		}
-		if _, ok = claims[constant.KeyUserPlatform]; ok == false || utils.TryToInt(claims[constant.KeyUserPlatform]) == 0 {
+		if _, ok = claims[constant.KeyUserPlatformID]; ok == false || utils.TryToInt(claims[constant.KeyUserPlatformID]) == 0 {
 			ctx.Abort()
 			http.Error(ctx, http.ErrorHttpUseridDoesNotExist, http.ErrorCodeHttpUseridDoesNotExist)
 			return
 		}
-		ctx.Set(constant.KeyUserId, claims[constant.KeyUserId])
-		ctx.Set(constant.KeyUserPlatform, claims[constant.KeyUserPlatform])
+		ctx.Set(constant.KeyUserID, claims[constant.KeyUserID])
+		ctx.Set(constant.KeyUserPlatformID, claims[constant.KeyUserPlatformID])
 	}
 }

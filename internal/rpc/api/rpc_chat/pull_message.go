@@ -44,7 +44,7 @@ func (rpc *chatRpcServer) PullMessageBySeqList(_ context.Context, req *pb_ws.Pul
 		seqMsg []*pb_ws.MsgData
 	)
 	resp = new(pb_ws.PullMessageBySeqListResp)
-	seqMsg, err = repository_mongo.ChatRepo.GetMsgBySeqListMongo2(req.UserId, req.SeqList, req.OperationId)
+	seqMsg, err = repository_mongo.MgChatRepo.GetMsgBySeqListMongo2(req.UserId, req.SeqList, req.OperationId)
 	if err != nil {
 		//TODO:error
 		resp.ErrCode = 201

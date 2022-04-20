@@ -17,7 +17,7 @@ import (
 /*
 在线字符或文本转二进制工具: https://tooltt.com/txt2bin/
 在线字符串转数组(Array):http://tools.bugscaner.com/text/string2array.html
- */
+*/
 
 func newUserSendMsg(token string, params *dto_api.SendMsgReq) *pb_chat.SendMsgReq {
 	pbData := pb_chat.SendMsgReq{
@@ -66,8 +66,8 @@ func SendMessage(c *gin.Context) {
 	client = pb_chat.NewChatClient(clientConn)
 
 	reply, err = client.SendMsg(context.Background(), sendMsg)
-	if reply !=nil && reply.Common != nil && reply.Common.Code > 0 {
-		http.Err(c, reply.Common.Msg, reply.Common.Code)
+	if reply != nil && reply.ErrCode > 0 {
+		http.Err(c, reply.ErrMsg, reply.ErrCode)
 		return
 	}
 
