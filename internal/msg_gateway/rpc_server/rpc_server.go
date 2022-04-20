@@ -47,6 +47,7 @@ func (rpc *RPCServer) OnlinePushMsg(ctx context.Context, req *pb_relay.OnlinePus
 		platformID int32
 		ok         bool
 	)
+	resp = &pb_relay.OnlinePushMsgResp{Resp: make([]*pb_relay.SingleMsgToUser, 0)}
 
 	msgBytes, err = proto.Marshal(req.MsgData)
 	if err != nil {
@@ -67,21 +68,22 @@ func (rpc *RPCServer) OnlinePushMsg(ctx context.Context, req *pb_relay.OnlinePus
 	}
 	msgBytes = replyBytes.Bytes()
 
-	resp = &pb_relay.OnlinePushMsgResp{Resp: make([]*pb_relay.SingleMsgToUser, 0)}
+	// TODO:发送给目标用户 此处在线用户默认发送成功,后期优化
 	ok = rpc.wsSvr.Send(req.PushToUserId, msgBytes)
 	if ok == false {
 		// 离线
 		sendResult = &pb_relay.SingleMsgToUser{
-			ResultCode:     constant.WSStatusOffline,
+			ResultCode:     -1,
 			RecvId:         req.PushToUserId,
 			RecvPlatFormId: platformID,
 		}
 		resp.Resp = append(resp.Resp, sendResult)
+		return
 	}
 
 	// 在线
 	sendResult = &pb_relay.SingleMsgToUser{
-		ResultCode:     constant.WSStatusOnline,
+		ResultCode:     0,
 		RecvId:         req.PushToUserId,
 		RecvPlatFormId: platformID,
 	}
@@ -103,12 +105,12 @@ func (rpc *RPCServer) GetUsersOnlineStatus(ctx context.Context, req *pb_relay.Us
 		if rpc.wsSvr.IsOnline(userID) == true {
 			ps = new(pb_relay.SuccessDetail)
 			ps.PlatformId = platformID
-			ps.Status = constant.WSStatusOnline
-			sr.Status = constant.WSStatusOnline
+			ps.Status = constant.OnlineStatus
+			sr.Status = constant.OnlineStatus
 			sr.DetailPlatformStatus = append(sr.DetailPlatformStatus, ps)
 		}
 
-		if sr.Status == constant.WSStatusOnline {
+		if sr.Status == constant.OnlineStatus {
 			resp.SuccessResult = append(resp.SuccessResult, sr)
 		}
 	}

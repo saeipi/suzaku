@@ -22,8 +22,9 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 		req           *pb_relay.OnlinePushMsgReq
 		reply         *pb_relay.OnlinePushMsgResp
 		result        *pb_relay.SingleMsgToUser
-		platformID    int32
-		err           error
+		// uidList []string
+		platformID int32
+		err        error
 	)
 	wsResult = make([]*pb_relay.SingleMsgToUser, 0)
 	isOfflinePush = utils.GetSwitchFromOptions(pushMsg.MsgData.Options, constant.IsOfflinePush)
@@ -36,6 +37,7 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 			MsgData:      pushMsg.MsgData,
 			PushToUserId: pushMsg.PushToUserId,
 		}
+		// 在线推送
 		msgClient = pb_relay.NewOnlineMessageRelayServiceClient(conn)
 		reply, err = msgClient.OnlinePushMsg(context.Background(), req)
 		if err != nil {
@@ -45,15 +47,18 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 			wsResult = append(wsResult, reply.Resp...)
 		}
 	}
+	sendCount++
 	if isOfflinePush && pushMsg.PushToUserId != pushMsg.MsgData.SendId {
 		for _, result = range wsResult {
 			if result.ResultCode == 0 {
 				continue
 			}
 			for _, platformID = range pushTerminal {
-				if result.RecvPlatFormId == platformID {
-					//TODO:
+				if result.RecvPlatFormId != platformID {
+					continue
 				}
+				// uidList = []string{result.RecvId}
+				// TODO:离线推送
 			}
 		}
 	}

@@ -1,23 +1,22 @@
 package constant
 
 const (
-	WSStatusOnline  = 1 // 在线
-	WSStatusOffline = 0 // 离线
+//WSStatusOnline  = 1 // 在线
+//WSStatusOffline = 0 // 离线
 )
 
 const (
-	WSProtocolPushMsg = 20001
+//WSProtocolPushMsg = 20001
 )
 
 const (
-	WSReqIdentifierGetNewestSeq     = 1001
-	WSReqIdentifierPullMsgBySeqList = 1002
-	WSReqIdentifierSendMsg          = 1003
-	//WSReqIdentifierPushMsg          = 2001
-	//WSReqIdentifierKickOnlineMsg    = 2002
-	//WSReqIdentifierDataError        = 3001
+//WSReqIdentifierGetNewestSeq     = 1001
+//WSReqIdentifierPullMsgBySeqList = 1002
+//WSReqIdentifierSendMsg          = 1003
+//WSReqIdentifierPushMsg          = 2001
+//WSReqIdentifierKickOnlineMsg    = 2002
+//WSReqIdentifierDataError        = 3001
 )
-
 
 const (
 
@@ -158,16 +157,16 @@ const (
 
 	//callbackCommand
 	CallbackBeforeSendSingleMsgCommand = "callbackBeforeSendSingleMsgCommand"
-	CallbackAfterSendSingleMsgCommand = "callbackAfterSendSingleMsgCommand"
-	CallbackBeforeSendGroupMsgCommand = "callbackBeforeSendGroupMsgCommand"
-	CallbackAfterSendGroupMsgCommand = "callbackAfterSendGroupMsgCommand"
-	CallbackWordFilterCommand = "callbackWordFilterCommand"
+	CallbackAfterSendSingleMsgCommand  = "callbackAfterSendSingleMsgCommand"
+	CallbackBeforeSendGroupMsgCommand  = "callbackBeforeSendGroupMsgCommand"
+	CallbackAfterSendGroupMsgCommand   = "callbackAfterSendGroupMsgCommand"
+	CallbackWordFilterCommand          = "callbackWordFilterCommand"
 	//callback actionCode
-	ActionAllow = 0
+	ActionAllow     = 0
 	ActionForbidden = 1
 	//callback callbackHandleCode
 	CallbackHandleSuccess = 0
-	CallbackHandleFailed = 1
+	CallbackHandleFailed  = 1
 )
 
 var ContentType2PushContent = map[int64]string{
@@ -222,4 +221,3 @@ func GroupIsBanPrivateChat(status int32) bool {
 }
 
 const BigVersion = "v3"
-

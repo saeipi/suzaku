@@ -41,12 +41,12 @@ message FailedDetail{
 
 message SuccessDetail{
    int32 platform_id = 1;
-   int64 status = 2;
+   string status = 2;
 }
 
 message SuccessResult{
    string user_id = 1;
-   int64 status = 2;
+   string status = 2;
    repeated SuccessDetail detail_platform_status = 3;
 }
 
