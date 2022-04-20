@@ -18,7 +18,7 @@ type authRpcServer struct {
 	rpc_category.Rpc
 }
 
-func NewRpcAuthServer(port int) (r *authRpcServer) {
+func NewAuthRpcServer(port int) (r *authRpcServer) {
 	return &authRpcServer{
 		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.AuthName),
 	}
