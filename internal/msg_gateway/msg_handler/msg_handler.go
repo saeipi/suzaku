@@ -49,7 +49,8 @@ func (h *MsgHandler) MessageCallback(msg *ws.Message) {
 	}
 	switch req.ReqIdentifier {
 	case constant.WSGetNewestSeq:
-		h.getNewestSeq(msg.Client, &req)
+		// TODO:暂时屏蔽
+		// h.getNewestSeq(msg.Client, &req)
 	case constant.WSSendMsg:
 		h.sendMsgReq(msg.Client, &req)
 	case constant.WSPullMsgBySeqList:
@@ -125,7 +126,11 @@ func (h *MsgHandler) sendMessage(client *ws.Client, data interface{}) {
 		//TODO :错误
 		return
 	}
-	client.Send(buffer.Bytes())
+	err = client.SendMessage(buffer.Bytes())
+	if err != nil {
+		//TODO :错误
+		return
+	}
 }
 
 func (h *MsgHandler) sendErrMsg(client *ws.Client, errCode int32, errMsg string, reqIdentifier int32, msgIncr string, operationID string) {

@@ -30,6 +30,12 @@ const (
 	WsMsgCodeClose = 10003
 )
 
+const (
+	WsSendMsgOffline = -2
+	WsSendMsgFailed  = -1
+	WsSendMsgSuccess = 0
+)
+
 var (
 	WsMsgBufNewline = []byte{'\n'}
 	WsMsgBufPing    = make([]byte, 0)

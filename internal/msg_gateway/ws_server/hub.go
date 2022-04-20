@@ -144,23 +144,28 @@ func (h *Hub) Send(userID string, message []byte) (ok bool) {
 	return
 }
 
-func (h *Hub) SendMessage(userID string, platformID int32, msg []byte) (ok bool) {
+func (h *Hub) SendMessage(userID string, platformID int32, message []byte) (resultCode int, err error) {
 	var (
 		platforms map[int32]*Client
 		client    *Client
+		ok        bool
 	)
 	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
+		resultCode = WsSendMsgOffline
 		h.rwLock.RUnlock()
 		return
 	}
-	if client, ok = platforms[platformID]; ok == false {
-		h.rwLock.RUnlock()
-		return
-	}
+	client, ok = platforms[platformID]
 	h.rwLock.RUnlock()
-	client.Send(msg)
-	ok = true
+	if ok == false {
+		resultCode = WsSendMsgOffline
+		return
+	}
+	err = client.SendMessage(message)
+	if err != nil {
+		resultCode = WsSendMsgFailed
+	}
 	return
 }
 

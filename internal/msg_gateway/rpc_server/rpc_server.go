@@ -17,13 +17,15 @@ import (
 type RPCServer struct {
 	pb_relay.UnimplementedOnlineMessageRelayServiceServer
 	rpc_category.Rpc
-	wsSvr *ws_server.WServer
+	wsSvr       *ws_server.WServer
+	platformIds []int32
 }
 
 func NewRPCServer(port int, wsSvr *ws_server.WServer) *RPCServer {
 	return &RPCServer{
-		Rpc:   rpc_category.NewRpcServer(port, config.Config.RPCRegisterName.OnlineMessageRelayName),
-		wsSvr: wsSvr,
+		Rpc:         rpc_category.NewRpcServer(port, config.Config.RPCRegisterName.OnlineMessageRelayName),
+		wsSvr:       wsSvr,
+		platformIds: getPlatformIds(),
 	}
 }
 
@@ -45,7 +47,7 @@ func (rpc *RPCServer) OnlinePushMsg(ctx context.Context, req *pb_relay.OnlinePus
 		encoder    *gob.Encoder
 		sendResult *pb_relay.SingleMsgToUser
 		platformID int32
-		ok         bool
+		resultCode int
 	)
 	resp = &pb_relay.OnlinePushMsgResp{Resp: make([]*pb_relay.SingleMsgToUser, 0)}
 
@@ -68,26 +70,17 @@ func (rpc *RPCServer) OnlinePushMsg(ctx context.Context, req *pb_relay.OnlinePus
 	}
 	msgBytes = replyBytes.Bytes()
 
-	// TODO:发送给目标用户 此处在线用户默认发送成功,后期优化
-	ok = rpc.wsSvr.Send(req.PushToUserId, msgBytes)
-	if ok == false {
-		// 离线
+	// TODO:发送给全平台目标用户
+	for _, platformID = range rpc.platformIds {
+		resultCode, _ = rpc.wsSvr.SendMessage(req.PushToUserId, platformID, msgBytes)
+		// 发送成功
 		sendResult = &pb_relay.SingleMsgToUser{
-			ResultCode:     -1,
+			ResultCode:     int64(resultCode), // 成功标识 0
 			RecvId:         req.PushToUserId,
 			RecvPlatFormId: platformID,
 		}
 		resp.Resp = append(resp.Resp, sendResult)
-		return
 	}
-
-	// 在线
-	sendResult = &pb_relay.SingleMsgToUser{
-		ResultCode:     0,
-		RecvId:         req.PushToUserId,
-		RecvPlatFormId: platformID,
-	}
-	resp.Resp = append(resp.Resp, sendResult)
 	return
 }
 
@@ -113,6 +106,17 @@ func (rpc *RPCServer) GetUsersOnlineStatus(ctx context.Context, req *pb_relay.Us
 		if sr.Status == constant.OnlineStatus {
 			resp.SuccessResult = append(resp.SuccessResult, sr)
 		}
+	}
+	return
+}
+
+func getPlatformIds() (ids []int32) {
+	var (
+		platformID int
+	)
+	ids = make([]int32, 0)
+	for platformID = 1; platformID <= constant.LinuxPlatformID; platformID++ {
+		ids = append(ids, int32(platformID))
 	}
 	return
 }

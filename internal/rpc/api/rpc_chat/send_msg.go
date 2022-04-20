@@ -113,14 +113,13 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		req.IsOnlineOnly = true
 	}
 	canSend, err = callbackWordFilter(pb)
+	if err != nil {
+		//return
+	}
 	// TODO: 调试强制发送
 	func() {
 		canSend = true
 	}()
-
-	if err != nil {
-		//return
-	}
 	if canSend == false {
 		return returnMsg(&replay, pb, 201, "callbackWordFilter result stop rpc and return", "", 0)
 	}
@@ -145,6 +144,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		}()
 		if isSend {
 			msgToMQ.MsgData = pb.MsgData
+			// 消息只要成功落入MQ中，就可以视为发送成功，消息发送的可靠性依赖于MQ集群。
 			err = rpc.sendMsgToKafka(&msgToMQ, msgToMQ.MsgData.RecvId)
 			if err != nil {
 				// TODO: kafka发送消息失败
@@ -152,6 +152,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 			}
 		}
 		if msgToMQ.MsgData.SendId != msgToMQ.MsgData.RecvId { //Filter messages sent to yourself
+			// 消息只要成功落入MQ中，就可以视为发送成功，消息发送的可靠性依赖于MQ集群。
 			err = rpc.sendMsgToKafka(&msgToMQ, msgToMQ.MsgData.SendId)
 			if err != nil {
 				// TODO: kafka发送消息失败
@@ -160,6 +161,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		}
 		// callback
 		if err = callbackAfterSendSingleMsg(pb); err != nil {
+			// TODO:错误
 		}
 		return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTime)
 	}

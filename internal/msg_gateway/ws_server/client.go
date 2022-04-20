@@ -124,12 +124,12 @@ func (c *Client) write() {
 				c.conn.WriteMessage(websocket.CloseMessage, WsMsgBufClose)
 				return
 			}
-			if err := c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
+			if err = c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
 				return
 			}
 		case <-pingTicker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(WsWriteWait))
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+			if err = c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
 		case <-c.close:
@@ -143,6 +143,20 @@ func (c *Client) Send(message []byte) {
 		return
 	}
 	c.send <- message
+}
+
+func (c *Client) SendMessage(message []byte) (err error) {
+	if c.closed {
+		return
+	}
+	if err = c.conn.SetWriteDeadline(time.Now().Add(WsWriteWait)); err != nil {
+		c.conn.WriteMessage(websocket.CloseMessage, WsMsgBufClose)
+		return
+	}
+	if err = c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
+		return
+	}
+	return
 }
 
 func (c *Client) Close() {

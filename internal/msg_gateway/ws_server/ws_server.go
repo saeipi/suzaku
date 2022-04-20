@@ -6,9 +6,9 @@ import (
 )
 
 type WServer struct {
-	address  string
-	hub      *Hub
-	engine   *gin.Engine
+	address string
+	hub     *Hub
+	engine  *gin.Engine
 }
 
 func NewWServer(port int, callback MsgCallback) *WServer {
@@ -16,9 +16,9 @@ func NewWServer(port int, callback MsgCallback) *WServer {
 		ws *WServer
 	)
 	ws = &WServer{
-		address:  ":" + strconv.Itoa(port),
-		hub:      NewHub(callback),
-		engine:   gin.Default(),
+		address: ":" + strconv.Itoa(port),
+		hub:     NewHub(callback),
+		engine:  gin.Default(),
 	}
 	ws.engine.GET("/", ws.hub.wsHandler)
 	return ws
@@ -33,10 +33,10 @@ func (ws *WServer) Send(userID string, msg []byte) (ok bool) {
 	return ws.hub.Send(userID, msg)
 }
 
-func (ws *WServer) IsOnline(userID string) (ok bool) {
-	return ws.hub.IsOnline(userID)
+func (ws *WServer) SendMessage(userID string, platformID int32, message []byte) (resultCode int, err error) {
+	return ws.hub.SendMessage(userID, platformID, message)
 }
 
-func (ws *WServer) SendMessage(userID string, platformID int32, msg []byte) (ok bool) {
-	return ws.hub.Send(userID, msg)
+func (ws *WServer) IsOnline(userID string) (ok bool) {
+	return ws.hub.IsOnline(userID)
 }
