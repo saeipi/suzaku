@@ -8,18 +8,18 @@ import (
 	pb_push "suzaku/pkg/proto/push"
 )
 
-type pushRpc struct {
+type pushRpcServer struct {
 	pb_push.UnimplementedPushMsgServiceServer
 	rpc_category.Rpc
 }
 
-func NewPushRpcServer(port int) *pushRpc {
-	return &pushRpc{
+func NewPushRpcServer(port int) *pushRpcServer {
+	return &pushRpcServer{
 		Rpc: rpc_category.NewRpcServer(port, config.Config.RPCRegisterName.PushName),
 	}
 }
 
-func (rpc *pushRpc) Run() {
+func (rpc *pushRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
@@ -28,7 +28,7 @@ func (rpc *pushRpc) Run() {
 	rpc.Rpc.RunServer(server)
 }
 
-func (rpc *pushRpc) PushMsg(_ context.Context, req *pb_push.PushMsgReq) (resp *pb_push.PushMsgResp, err error) {
+func (rpc *pushRpcServer) PushMsg(_ context.Context, req *pb_push.PushMsgReq) (resp *pb_push.PushMsgResp, err error) {
 	MsgToUser(req)
 	resp = &pb_push.PushMsgResp{}
 	return
