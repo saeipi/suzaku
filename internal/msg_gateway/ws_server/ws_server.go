@@ -2,7 +2,6 @@ package ws_server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"strconv"
 )
 
@@ -10,7 +9,6 @@ type WServer struct {
 	address  string
 	hub      *Hub
 	engine   *gin.Engine
-	validate *validator.Validate
 }
 
 func NewWServer(port int, callback MsgCallback) *WServer {
@@ -21,7 +19,6 @@ func NewWServer(port int, callback MsgCallback) *WServer {
 		address:  ":" + strconv.Itoa(port),
 		hub:      NewHub(callback),
 		engine:   gin.Default(),
-		validate: validator.New(),
 	}
 	ws.engine.GET("/", ws.hub.wsHandler)
 	return ws
