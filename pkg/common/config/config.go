@@ -98,15 +98,16 @@ type RPCRegisterName struct {
 	MessageCmsName         string `yaml:"message_cms_name"`
 	AdminCmsName           string `yaml:"admin_cms_name"`
 }
+
 type Mysql struct {
-	Address      []string    `yaml:"address"`
-	Username     string      `yaml:"username"`
-	Password     interface{} `yaml:"password"`
-	Db           string      `yaml:"db"`
-	MaxOpenConn  int         `yaml:"max_open_conn"`
-	MaxIdleConn  int         `yaml:"max_idle_conn"`
-	ConnLifetime int         `yaml:"conn_lifetime"`
-	Charset      string      `yaml:"charset"`
+	Address      []string `yaml:"address"`
+	Username     string   `yaml:"username"`
+	Password     string   `yaml:"password"`
+	Db           string   `yaml:"db"`
+	MaxOpenConn  int      `yaml:"max_open_conn"`
+	MaxIdleConn  int      `yaml:"max_idle_conn"`
+	ConnLifetime int      `yaml:"conn_lifetime"`
+	Charset      string   `yaml:"charset"`
 }
 type Mongo struct {
 	Address           []string `yaml:"address"`
