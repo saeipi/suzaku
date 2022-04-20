@@ -14,7 +14,7 @@ type chatRpcServer struct {
 	producer *kafka.Producer
 }
 
-func NewRpcChatServer(port int) *chatRpcServer {
+func NewChatRpcServer(port int) *chatRpcServer {
 	var (
 		rpc *chatRpcServer
 	)
