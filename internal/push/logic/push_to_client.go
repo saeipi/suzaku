@@ -58,7 +58,7 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 					continue
 				}
 				// uidList = []string{result.RecvId}
-				// TODO:离线推送
+				// TODO:Android/IOS离线推送
 			}
 		}
 	}

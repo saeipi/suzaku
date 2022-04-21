@@ -152,7 +152,7 @@ log:
   rotation_time: 24
   rotation_count: 3 #日志数量
   #日志级别 6表示全都打印，测试阶段建议设置为6
-  level: 4
+  level: 6
   es_address: [ 127.0.0.1:9201 ]
   es_username: ""
   es_password: ""
