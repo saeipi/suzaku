@@ -1,10 +1,15 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
+	"suzaku/pkg/constant"
+	"time"
+	"math/rand"
 )
 /*
 func GetRootPath() string {
@@ -108,4 +113,14 @@ func WriteFile(contents string, filePath string) (err error) {
 	defer f.Close()
 	f.WriteString(contents)
 	return
+}
+
+func GetNewFileNameAndContentType(fileName string, fileType int) (string, string) {
+	suffix := path.Ext(fileName)
+	newName := fmt.Sprintf("%d-%d%s", time.Now().UnixNano(), rand.Int(), fileName)
+	contentType := ""
+	if fileType == constant.ImageType {
+		contentType = "image/" + suffix[1:]
+	}
+	return newName, contentType
 }

@@ -167,6 +167,11 @@ const (
 	//callback callbackHandleCode
 	CallbackHandleSuccess = 0
 	CallbackHandleFailed  = 1
+
+	// minioUpload
+	OtherType = 1
+	VideoType = 2
+	ImageType = 3
 )
 
 var ContentType2PushContent = map[int64]string{

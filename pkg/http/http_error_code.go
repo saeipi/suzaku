@@ -12,3 +12,7 @@ const (
 	ErrorCodeHttpGetUserFailed        = 10009 // 获取用户信息失败
 	ErrorCodeHttpAddFriendFailed      = 10010 // 添加好友失败
 )
+
+const (
+	ErrorCodeHttp400 = 400
+)

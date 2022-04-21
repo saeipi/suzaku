@@ -189,7 +189,7 @@ type Minio struct {
 	Bucket    string `yaml:"bucket"`
 	Location  string `yaml:"location"`
 	Endpoint  string `yaml:"endpoint"`
-	SecretID  string `yaml:"secret_id"`
+	AccessKey string `yaml:"access_key"`
 	SecretKey string `yaml:"secret_key"`
 }
 type Credential struct {

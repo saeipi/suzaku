@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func Success(ctx *gin.Context, data interface{}) {
-	if data == nil {
+func Success(ctx *gin.Context, data ...interface{}) {
+	if len(data) == 0 {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  "success",
@@ -16,7 +16,7 @@ func Success(ctx *gin.Context, data interface{}) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "success",
-		"data": data,
+		"data": data[0],
 	})
 }
 

@@ -18,4 +18,5 @@ func registerPrivateRouter(group *gin.RouterGroup) {
 	user(group)
 	friend(group)
 	chat(group)
+	minio(group)
 }
