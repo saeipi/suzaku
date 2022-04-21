@@ -25,16 +25,24 @@ func NewLogger(moduleName string, file string) {
 }
 
 func loggerInit(moduleName string, file string) *Logger {
+	var (
+		src    *os.File
+		writer *bufio.Writer
+		hook   logrus.Hook
+		err    error
+	)
 	var logger = logrus.New()
+	// All logs will be printed
 	logger.SetLevel(logrus.Level(config.Config.Log.Level))
-	src, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	// Close std console output
+	src, err = os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err.Error())
 	}
-	writer := bufio.NewWriter(src)
+	writer = bufio.NewWriter(src)
 	logger.SetOutput(writer)
-	//logger.SetOutput(os.Stdout)
-	//Log Console Print Style Setting
+	// logger.SetOutput(os.Stdout)
+	// Log Console Print Style Setting
 	logger.SetFormatter(&nested.Formatter{
 		TimestampFormat: "2006-01-02 15:04:05.000",
 		HideKeys:        false,
@@ -44,19 +52,23 @@ func loggerInit(moduleName string, file string) *Logger {
 	logger.AddHook(newFileHook())
 
 	//Send logs to elasticsearch hook
-	if config.Config.Log.EsSwitch {
+	if config.Config.Log.EsSwitch == true {
 		logger.AddHook(newEsHook(moduleName))
 	}
 	//Log file segmentation hook
-	hook := NewLfsHook(time.Duration(config.Config.Log.RotationTime)*time.Hour, uint(config.Config.Log.RotationCount), moduleName)
+	hook = NewLfsHook(time.Duration(config.Config.Log.RotationTime)*time.Hour, uint(config.Config.Log.RotationCount), moduleName)
 	logger.AddHook(hook)
 	return &Logger{
 		logger,
 		os.Getpid(),
 	}
 }
+
 func NewLfsHook(rotationTime time.Duration, maxRemainNum uint, moduleName string) logrus.Hook {
-	lfsHook := lfshook.NewHook(lfshook.WriterMap{
+	var (
+		lfsHook logrus.Hook
+	)
+	lfsHook = lfshook.NewHook(lfshook.WriterMap{
 		logrus.DebugLevel: initRotateLogs(rotationTime, maxRemainNum, "all", moduleName),
 		logrus.InfoLevel:  initRotateLogs(rotationTime, maxRemainNum, "all", moduleName),
 		logrus.WarnLevel:  initRotateLogs(rotationTime, maxRemainNum, "all", moduleName),
@@ -68,20 +80,24 @@ func NewLfsHook(rotationTime time.Duration, maxRemainNum uint, moduleName string
 	})
 	return lfsHook
 }
-func initRotateLogs(rotationTime time.Duration, maxRemainNum uint, level string, moduleName string) *rotatelogs.RotateLogs {
+
+func initRotateLogs(rotationTime time.Duration, maxRemainNum uint, level string, moduleName string) (writer *rotatelogs.RotateLogs) {
+	var (
+		err error
+	)
 	if moduleName != "" {
 		moduleName = moduleName + "."
 	}
-	writer, err := rotatelogs.New(
+	writer, err = rotatelogs.New(
 		config.Config.Log.StorageLocation+moduleName+level+"."+"%Y-%m-%d",
 		rotatelogs.WithRotationTime(rotationTime),
 		rotatelogs.WithRotationCount(maxRemainNum),
 	)
 	if err != nil {
 		panic(err.Error())
-	} else {
-		return writer
+		return
 	}
+	return
 }
 
 func Info(OperationID string, args ...interface{}) {
@@ -167,24 +183,28 @@ func argsHandle(OperationID string, fields logrus.Fields, args []interface{}) {
 	fields["OperationID"] = OperationID
 	fields["PID"] = logger.Pid
 }
+
 func NewInfo(OperationID string, args ...interface{}) {
 	logger.WithFields(logrus.Fields{
 		"OperationID": OperationID,
 		"PID":         logger.Pid,
 	}).Infoln(args)
 }
+
 func NewError(OperationID string, args ...interface{}) {
 	logger.WithFields(logrus.Fields{
 		"OperationID": OperationID,
 		"PID":         logger.Pid,
 	}).Errorln(args)
 }
+
 func NewDebug(OperationID string, args ...interface{}) {
 	logger.WithFields(logrus.Fields{
 		"OperationID": OperationID,
 		"PID":         logger.Pid,
 	}).Debugln(args)
 }
+
 func NewWarn(OperationID string, args ...interface{}) {
 	logger.WithFields(logrus.Fields{
 		"OperationID": OperationID,

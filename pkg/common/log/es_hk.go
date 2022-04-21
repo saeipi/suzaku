@@ -12,13 +12,13 @@ import (
 	"time"
 )
 
-//esHook CUSTOMIZED ES hook
+// esHook CUSTOMIZED ES hook
 type esHook struct {
 	moduleName string
 	client     *elasticV7.Client
 }
 
-//newEsHook Initialization
+// newEsHook Initialization
 func newEsHook(moduleName string) *esHook {
 	//https://github.com/sohlich/elogrus
 	//client, err := elastic.NewClient(elastic.SetURL("http://localhost:9200"))
@@ -29,7 +29,11 @@ func newEsHook(moduleName string) *esHook {
 	//if err != nil {
 	//	log.Panic(err)
 	//}
-	es, err := elasticV7.NewClient(
+	var (
+		es  *elasticV7.Client
+		err error
+	)
+	es, err = elasticV7.NewClient(
 		elasticV7.SetURL(config.Config.Log.EsAddress...),
 		elasticV7.SetBasicAuth(config.Config.Log.EsUsername, config.Config.Log.EsPassword),
 		elasticV7.SetSniff(false),
@@ -55,7 +59,7 @@ func newEsHook(moduleName string) *esHook {
 	return &esHook{client: es, moduleName: moduleName}
 }
 
-//Fire log hook interface
+// Fire log hook interface
 func (hook *esHook) Fire(entry *logrus.Entry) error {
 	doc := newEsLog(entry)
 	go hook.sendEs(doc)
@@ -66,20 +70,24 @@ func (hook *esHook) Levels() []logrus.Level {
 	return logrus.AllLevels
 }
 
-//sendEs
+// sendEs
 func (hook *esHook) sendEs(doc appLogDocModel) {
+	var (
+		err error
+		r   interface{}
+	)
 	defer func() {
-		if r := recover(); r != nil {
+		if r = recover(); r != nil {
 			fmt.Println("send entry to es failed: ", r)
 		}
 	}()
-	_, err := hook.client.Index().Index(hook.moduleName).Type(doc.indexName()).BodyJson(doc).Do(context.Background())
+	_, err = hook.client.Index().Index(hook.moduleName).Type(doc.indexName()).BodyJson(doc).Do(context.Background())
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-//appLogDocModel es model
+// appLogDocModel es model
 type appLogDocModel map[string]interface{}
 
 func newEsLog(e *logrus.Entry) appLogDocModel {
