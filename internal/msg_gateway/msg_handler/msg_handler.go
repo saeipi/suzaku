@@ -126,11 +126,7 @@ func (h *MsgHandler) sendMessage(client *ws.Client, data interface{}) {
 		//TODO :错误
 		return
 	}
-	err = client.SendMessage(buffer.Bytes())
-	if err != nil {
-		//TODO :错误
-		return
-	}
+	client.Send(buffer.Bytes())
 }
 
 func (h *MsgHandler) sendErrMsg(client *ws.Client, errCode int32, errMsg string, reqIdentifier int32, msgIncr string, operationID string) {

@@ -45,11 +45,10 @@ func (c *Client) closeConn() {
 		return
 	}
 	c.closed = true
-	c.Unlock()
-
 	c.conn.Close()
 	close(c.send)
 	close(c.close)
+	c.Unlock()
 
 	c.hub.unregister <- c
 }
@@ -140,6 +139,8 @@ func (c *Client) write() {
 }
 
 func (c *Client) Send(message []byte) {
+	c.Lock()
+	defer c.Unlock()
 	if c.closed {
 		return
 	}
@@ -161,6 +162,7 @@ func (c *Client) SendMessage(message []byte) (err error) {
 	return
 }
 */
+
 func (c *Client) Close() {
 	if c.closed {
 		return

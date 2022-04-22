@@ -84,11 +84,10 @@ func (c *Client) closeConn() {
 		return
 	}
 	c.closed = true
-	c.Unlock()
-
 	c.conn.Close()
 	close(c.send)
 	close(c.close)
+	c.Unlock()
 }
 
 func (c *Client) read() {
@@ -162,7 +161,6 @@ func (c *Client) messageHandler(message []byte) {
 		buffer  *bytes.Buffer
 		decoder *gob.Decoder
 		req     protocol.MessageReq
-		body    pb_ws.MsgData
 		err     error
 	)
 
@@ -177,12 +175,8 @@ func (c *Client) messageHandler(message []byte) {
 	if req.ReqIdentifier == 0 {
 		return
 	}
-	if req.Data != nil {
-		err = proto.Unmarshal(req.Data, &body)
-		if err != nil {
-			fmt.Println("解析消息本体错误")
-			return
-		}
+	if req.Data == nil {
+		return
 	}
 	fmt.Println("收到消息:", c.userID, req.ReqIdentifier, req.OperationID, req.SendID, req.Token)
 	c.SendUser(req.SendID)
@@ -252,27 +246,17 @@ func (c *Client) toByte(data interface{}) (buf []byte) {
 }
 
 func (c *Client) Send(message []byte) {
+	c.Lock()
+	defer c.Unlock()
 	if c.closed {
 		return
 	}
 	c.send <- message
 }
 
-func (c *Client) SendMessage(message []byte) (err error) {
-	if c.closed {
-		return
-	}
-	if err = c.conn.SetWriteDeadline(time.Now().Add(ws_server.WsWriteWait)); err != nil {
-		c.conn.WriteMessage(websocket.CloseMessage, ws_server.WsMsgBufClose)
-		return
-	}
-	if err = c.conn.WriteMessage(websocket.BinaryMessage, message); err != nil {
-		return
-	}
-	return
-}
-
 func (c *Client) Close() {
+	c.Lock()
+	defer c.Unlock()
 	if c.closed {
 		return
 	}
