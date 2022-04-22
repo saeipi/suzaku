@@ -28,10 +28,15 @@ func (m *Manager) Run() {
 	}
 }
 
-func (m *Manager) Unregister(client *Client) {
+func (m *Manager) unregisterClient(client *Client) {
 	m.rwLock.Lock()
 	defer m.rwLock.Unlock()
-	m.batchCreate(5000)
+	var (
+		ok bool
+	)
+	if _, ok = m.clients[client.userID]; ok {
+		delete(m.clients, client.userID)
+	}
 }
 
 func (m *Manager) listener() {
@@ -42,9 +47,9 @@ func (m *Manager) listener() {
 	for {
 		select {
 		case client = <-m.unregister:
-			m.Unregister(client)
+			m.unregisterClient(client)
 		case <-ticker.C:
-			m.batchCreate(1000)
+			m.batchCreate(2000)
 		}
 	}
 }
