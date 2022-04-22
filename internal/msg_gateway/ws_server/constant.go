@@ -12,9 +12,9 @@ const (
 	// Send pings to peer with this period. Must be less than pongWait.
 	WsPingPeriod = (WsPongWait * 9) / 10
 	// Maximum message size allowed from peer.
-	WsMaxMessageSize        = 512
-	WsReadBufferSize        = 1024
-	WsWriteBufferSize       = 1024
+	WsMaxMessageSize        = 4096
+	WsReadBufferSize        = 4096
+	WsWriteBufferSize       = 4096
 	WsHeaderLength          = 4
 	WsChanClientSendMessage = 100
 	WsChanServerReadMessage = 1000

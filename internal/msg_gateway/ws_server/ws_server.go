@@ -2,7 +2,6 @@ package ws_server
 
 import (
 	"suzaku/internal/server/gin_server"
-	"suzaku/pkg/common/middleware"
 )
 
 type WServer struct {
@@ -20,8 +19,8 @@ func NewWServer(port int, callback MsgCallback) *WServer {
 		hub:  NewHub(callback),
 		gin:  gin_server.NewGinServer(),
 	}
-	// 授权验证
-	ws.gin.Engine.Use(middleware.JwtAuth())
+	// TODO:授权验证
+	// ws.gin.Engine.Use(middleware.JwtAuth())
 	ws.gin.Engine.GET("/", ws.hub.wsHandler)
 	return ws
 }
@@ -31,7 +30,7 @@ func (ws *WServer) Run() {
 	ws.gin.Run(ws.port)
 }
 
-func (ws *WServer) Send(userID string, msg []byte) (ok bool) {
+func (ws *WServer) Send(userID string, msg []byte) (resultCode int) {
 	return ws.hub.Send(userID, msg)
 }
 

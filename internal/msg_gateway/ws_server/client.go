@@ -60,12 +60,12 @@ func (c *Client) read() {
 	}()
 
 	var (
-		msgType   int
-		bufMsg    []byte
-		bufHeader []byte
-		msgCode   int
-		message   *Message
-		err       error
+		msgType int
+		bufMsg  []byte
+		//bufHeader []byte
+		//msgCode   int
+		message *Message
+		err     error
 	)
 
 	c.conn.SetReadLimit(WsMaxMessageSize)
@@ -86,12 +86,13 @@ func (c *Client) read() {
 		if len(bufMsg) == 0 {
 			continue
 		}
-		bufHeader = bufMsg[0:WsHeaderLength]
-		msgCode = bytes2Int(bufHeader)
-		if msgCode == WsMsgCodePing {
-			c.Send(WsMsgBufPong)
-			continue
-		}
+		/*
+			bufHeader = bufMsg[0:WsHeaderLength]
+			msgCode = bytes2Int(bufHeader)
+			if msgCode == WsMsgCodePing {
+				c.Send(WsMsgBufPong)
+				continue
+			}*/
 		message = &Message{
 			Client: c,
 			Body:   bufMsg,
@@ -145,6 +146,7 @@ func (c *Client) Send(message []byte) {
 	c.send <- message
 }
 
+/*
 func (c *Client) SendMessage(message []byte) (err error) {
 	if c.closed {
 		return
@@ -158,7 +160,7 @@ func (c *Client) SendMessage(message []byte) (err error) {
 	}
 	return
 }
-
+*/
 func (c *Client) Close() {
 	if c.closed {
 		return

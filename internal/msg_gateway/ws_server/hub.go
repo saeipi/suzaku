@@ -3,6 +3,7 @@ package ws_server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -125,21 +126,26 @@ func (h *Hub) IsOnline(userID string) (ok bool) {
 	return
 }
 
-func (h *Hub) Send(userID string, message []byte) (ok bool) {
+func (h *Hub) Send(userID string, message []byte) (resultCode int) {
 	var (
 		platforms map[int32]*Client
 		client    *Client
+		ok        bool
 	)
 	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
+		resultCode = WsSendMsgOffline
 		h.rwLock.RUnlock()
 		return
 	}
 	h.rwLock.RUnlock()
+	if len(platforms) == 0 {
+		resultCode = WsSendMsgOffline
+		return
+	}
 	for _, client = range platforms {
 		client.Send(message)
 	}
-	ok = true
 	return
 }
 
@@ -161,10 +167,8 @@ func (h *Hub) SendMessage(userID string, platformID int32, message []byte) (resu
 		resultCode = WsSendMsgOffline
 		return
 	}
-	err = client.SendMessage(message)
-	if err != nil {
-		resultCode = WsSendMsgFailed
-	}
+	client.Send(message)
+	resultCode = WsSendMsgFailed
 	return
 }
 
@@ -172,9 +176,15 @@ func (h *Hub) messageHandler(msg *Message) {
 	h.callback(msg)
 }
 
+type ClientInfo struct {
+	UserID     string `form:"user_id" uri:"user_id" binding:"required"`
+	PlatformID string `form:"platform_id" uri:"platform_id" binding:"required"`
+}
+
 // serveWs handles websocket requests from the peer.
 func (h *Hub) wsHandler(c *gin.Context) {
 	var (
+		info       ClientInfo
 		uidVal     interface{}
 		pidVal     interface{}
 		exists     bool
@@ -186,23 +196,33 @@ func (h *Hub) wsHandler(c *gin.Context) {
 		nowTs      int64
 		err        error
 	)
-
-	if h.onlineConnections >= WsMaxConnections {
-		httpErr(c, ErrorWsExceedMaxConnections, ErrorCodeWsExceedMaxConnections)
-		return
+	if true {
+		// TODO: 调试 RequestURI/?platform_id=1&user_id=123
+		if err := c.ShouldBindQuery(&info); err != nil {
+			httpErr(c, ErrorHttpUserIDDoesNotExist, ErrorCodeHttpUserIDDoesNotExist)
+			return
+		}
+		userID = info.UserID
+		pid, _ := strconv.Atoi(info.PlatformID)
+		platformID = int32(pid)
+	} else {
+		if h.onlineConnections >= WsMaxConnections {
+			httpErr(c, ErrorWsExceedMaxConnections, ErrorCodeWsExceedMaxConnections)
+			return
+		}
+		uidVal, exists = c.Get(WsKeyUserID)
+		if exists == false {
+			httpErr(c, ErrorHttpUserIDDoesNotExist, ErrorCodeHttpUserIDDoesNotExist)
+			return
+		}
+		pidVal, exists = c.Get(WsKeyPlatformID)
+		if exists == false {
+			httpErr(c, ErrorHttpPlatformIDDoesNotExist, ErrorCodeHttpPlatformIDDoesNotExist)
+			return
+		}
+		userID = uidVal.(string)
+		platformID = int32(pidVal.(float64))
 	}
-	uidVal, exists = c.Get(WsKeyUserID)
-	if exists == false {
-		httpErr(c, ErrorHttpUserIDDoesNotExist, ErrorCodeHttpUserIDDoesNotExist)
-		return
-	}
-	pidVal, exists = c.Get(WsKeyPlatformID)
-	if exists == false {
-		httpErr(c, ErrorHttpPlatformIDDoesNotExist, ErrorCodeHttpPlatformIDDoesNotExist)
-		return
-	}
-	userID = uidVal.(string)
-	platformID = int32(pidVal.(float64))
 
 	nowTs = time.Now().UnixNano() / 1e6
 	lastTs, _ = h.access[userID]
