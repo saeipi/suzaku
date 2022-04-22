@@ -185,20 +185,24 @@ func (h *MsgHandler) sendMsgReq(client *ws.Client, req *protocol.MessageReq) {
 }
 
 func (h *MsgHandler) sendMsgResp(client *ws.Client, req *protocol.MessageReq, reply *pb_chat.SendMsgResp) {
-	var mReplyData pb_ws.UserSendMsgResp
-	mReplyData.ClientMsgId = reply.GetClientMsgId()
-	mReplyData.ServerMsgId = reply.GetServerMsgId()
-	mReplyData.SendTime = reply.GetSendTime()
-	b, _ := proto.Marshal(&mReplyData)
-	mReply := protocol.MessageResp{
+	var (
+		replyData pb_ws.UserSendMsgResp
+		buf       []byte
+		resp      protocol.MessageResp
+	)
+	replyData.ClientMsgId = reply.GetClientMsgId()
+	replyData.ServerMsgId = reply.GetServerMsgId()
+	replyData.SendTime = reply.GetSendTime()
+	buf, _ = proto.Marshal(&replyData)
+	resp = protocol.MessageResp{
 		ReqIdentifier: req.ReqIdentifier,
 		MsgIncr:       req.MsgIncr,
 		ErrCode:       reply.GetErrCode(),
 		ErrMsg:        reply.GetErrMsg(),
 		OperationID:   req.OperationID,
-		Data:          b,
+		Data:          buf,
 	}
-	h.sendMessage(client, mReply)
+	h.sendMessage(client, resp)
 }
 
 func (h *MsgHandler) argsValidate(m *protocol.MessageReq, r int32) (isPass bool, errCode int32, errMsg string, returnData interface{}) {

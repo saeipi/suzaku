@@ -13,6 +13,25 @@ var (
 // chan 套娃 不确定谁会收到
 
 func main() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("recover 捕获到了异常", err)
+		}
+	}()
+	ch1 := make(chan bool, 10)
+	ch2 := make(chan bool, 10)
+	ch1 <- true
+	ch1 <- false
+	ch2 <- true
+	ch2 <- false
+	fmt.Println(<-ch1)
+	close(ch1)
+	fmt.Println(<-ch1)
+	close(ch2)
+	ch2 <- true
+
+	return
+
 	var signalChan = make(chan bool)
 	wg.Add(1)
 	go worker(signalChan)

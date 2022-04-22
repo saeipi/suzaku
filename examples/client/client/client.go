@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -84,10 +85,11 @@ func (c *Client) closeConn() {
 		return
 	}
 	c.closed = true
-	c.conn.Close()
 	close(c.send)
 	close(c.close)
 	c.Unlock()
+
+	c.conn.Close()
 }
 
 func (c *Client) read() {
@@ -161,6 +163,7 @@ func (c *Client) messageHandler(message []byte) {
 		buffer  *bytes.Buffer
 		decoder *gob.Decoder
 		req     protocol.MessageReq
+		msgData pb_ws.MsgData
 		err     error
 	)
 
@@ -177,6 +180,17 @@ func (c *Client) messageHandler(message []byte) {
 	}
 	if req.Data == nil {
 		return
+	}
+	msgData = pb_ws.MsgData{}
+	err = proto.Unmarshal(req.Data, &msgData)
+	if err != nil {
+		return
+	}
+	if msgData.MsgFrom == 0 {
+		return
+	}
+	if msgData.MsgFrom%2 == 0 {
+		time.Sleep(time.Second * 2)
 	}
 	fmt.Println("收到消息:", c.userID, req.ReqIdentifier, req.OperationID, req.SendID, req.Token)
 	c.SendUser(req.SendID)
@@ -206,7 +220,7 @@ func (c *Client) SendUser(recvId string) (err error) {
 		SenderNickname:   c.nickname,
 		SenderFaceUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
 		SessionType:      1, // 单聊为1，群聊为2
-		MsgFrom:          1,
+		MsgFrom:          int32(rand.Uint64()) + 1,
 		ContentType:      101,                  // 消息类型，101表示文本，102表示图片
 		Content:          c.toByte(contentMap), // 内部是json 对象
 		Seq:              1,
@@ -226,7 +240,6 @@ func (c *Client) SendUser(recvId string) (err error) {
 		Data:          bodyBytes,
 	}
 	reqBytes = c.toByte(req)
-	time.Sleep(time.Second * 2)
 	c.Send(reqBytes)
 	return
 }

@@ -10,7 +10,6 @@ import (
 
 type Hub struct {
 	sync.Mutex
-	rwLock   sync.RWMutex
 	upgrader websocket.Upgrader
 	// Register requests from the clients.
 	register chan *Client
@@ -54,6 +53,7 @@ func (h *Hub) registerClient(client *Client) {
 		platforms = make(map[int32]*Client)
 		h.clients[client.userID] = platforms
 	}
+
 	cl, ok = platforms[client.platformID]
 	if ok == false {
 		platforms[client.platformID] = client
@@ -117,8 +117,8 @@ func (h *Hub) IsOnline(userID string) (ok bool) {
 	var (
 		platforms map[int32]*Client
 	)
-	h.rwLock.RLock()
-	defer h.rwLock.RUnlock()
+	h.Lock()
+	defer h.Unlock()
 	if platforms, ok = h.clients[userID]; ok == false {
 		return
 	}
@@ -134,13 +134,13 @@ func (h *Hub) Send(userID string, message []byte) (resultCode int) {
 		client    *Client
 		ok        bool
 	)
-	h.rwLock.RLock()
+	h.Lock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		h.rwLock.RUnlock()
+		h.Unlock()
 		resultCode = WsSendMsgOffline
 		return
 	}
-	h.rwLock.RUnlock()
+	h.Unlock()
 	if len(platforms) == 0 {
 		resultCode = WsSendMsgOffline
 		return
@@ -157,14 +157,14 @@ func (h *Hub) SendMessage(userID string, platformID int32, message []byte) (resu
 		client    *Client
 		ok        bool
 	)
-	h.rwLock.RLock()
+	h.Lock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		h.rwLock.RUnlock()
+		h.Unlock()
 		resultCode = WsSendMsgOffline
 		return
 	}
 	client, ok = platforms[platformID]
-	h.rwLock.RUnlock()
+	h.Unlock()
 	if ok == false {
 		resultCode = WsSendMsgOffline
 		return

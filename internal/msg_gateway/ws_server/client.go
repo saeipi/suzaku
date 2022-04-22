@@ -45,11 +45,11 @@ func (c *Client) closeConn() {
 		return
 	}
 	c.closed = true
-	c.conn.Close()
 	close(c.send)
 	close(c.close)
 	c.Unlock()
 
+	c.conn.Close()
 	c.hub.unregister <- c
 }
 
@@ -117,7 +117,7 @@ func (c *Client) write() {
 		select {
 		case message, ok = <-c.send:
 			if ok == false {
-				// chan 关闭
+				// chan 已关闭
 				return
 			}
 			if err = c.conn.SetWriteDeadline(time.Now().Add(WsWriteWait)); err != nil {
@@ -141,7 +141,7 @@ func (c *Client) write() {
 func (c *Client) Send(message []byte) {
 	c.Lock()
 	defer c.Unlock()
-	if c.closed {
+	if c.closed == true {
 		return
 	}
 	c.send <- message
@@ -164,7 +164,9 @@ func (c *Client) SendMessage(message []byte) (err error) {
 */
 
 func (c *Client) Close() {
-	if c.closed {
+	c.Lock()
+	defer c.Unlock()
+	if c.closed == true {
 		return
 	}
 	c.close <- WsMsgBufClose
