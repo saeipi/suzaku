@@ -20,6 +20,7 @@ func init() {
 }
 
 func (r *chatRepository) SaveChatLog(log *entity_mysql.ChatLog) (err error) {
+	return
 	var (
 		db *gorm.DB
 	)

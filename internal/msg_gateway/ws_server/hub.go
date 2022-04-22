@@ -55,21 +55,23 @@ func (h *Hub) registerClient(client *Client) {
 		h.clients[client.userID] = platforms
 	}
 	cl, ok = platforms[client.platformID]
-	if ok == true {
-		if client.onlineAt > cl.onlineAt {
-			platforms[client.platformID] = client
-			h.Unlock()
-			h.close(cl)
-		} else {
-			h.Unlock()
-			h.close(client)
-		}
+	if ok == false {
+		platforms[client.platformID] = client
+		//atomic.AddInt64(&h.onlineConnections, 1)
+		h.onlineConnections += 1
+		h.Unlock()
 		return
 	}
-	platforms[client.platformID] = client
-	//atomic.AddInt64(&h.onlineConnections, 1)
-	h.onlineConnections += 1
+
+	if client.onlineAt > cl.onlineAt {
+		platforms[client.platformID] = client
+		h.Unlock()
+		h.close(cl)
+		return
+	}
+
 	h.Unlock()
+	h.close(client)
 }
 
 func (h *Hub) close(client *Client) {
@@ -134,8 +136,8 @@ func (h *Hub) Send(userID string, message []byte) (resultCode int) {
 	)
 	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		resultCode = WsSendMsgOffline
 		h.rwLock.RUnlock()
+		resultCode = WsSendMsgOffline
 		return
 	}
 	h.rwLock.RUnlock()
@@ -157,8 +159,8 @@ func (h *Hub) SendMessage(userID string, platformID int32, message []byte) (resu
 	)
 	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		resultCode = WsSendMsgOffline
 		h.rwLock.RUnlock()
+		resultCode = WsSendMsgOffline
 		return
 	}
 	client, ok = platforms[platformID]
