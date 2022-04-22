@@ -7,6 +7,7 @@ import (
 	"suzaku/internal/dto/dto_api"
 	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
+	"suzaku/pkg/constant"
 	"suzaku/pkg/http"
 	pb_auth "suzaku/pkg/proto/auth"
 	"suzaku/pkg/utils"
@@ -50,10 +51,10 @@ func UserRegister(c *gin.Context) {
 		return
 	}
 	resp = &dto_api.UserRegisterResp{
-		Platform: reply.Platform,
-		UserId:   reply.UserId,
-		Token:    replyToken.Token,
-		Expire:   replyToken.Expire,
+		PlatformId: reply.PlatformId,
+		UserId:     reply.UserId,
+		Token:      constant.HttpKeyJwt + replyToken.Token,
+		Expire:     replyToken.Expire,
 	}
 	http.Success(c, resp)
 }

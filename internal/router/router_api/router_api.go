@@ -1,6 +1,9 @@
 package router_api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"suzaku/pkg/common/middleware"
+)
 
 func RegisterRouter(engine *gin.Engine) {
 	publicGroup := engine.Group("open")
@@ -15,6 +18,8 @@ func registerPublicRoutes(group *gin.RouterGroup) {
 }
 
 func registerPrivateRouter(group *gin.RouterGroup) {
+	// 授权验证
+	group.Use(middleware.JwtAuth())
 	user(group)
 	friend(group)
 	chat(group)

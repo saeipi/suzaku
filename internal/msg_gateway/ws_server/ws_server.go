@@ -1,14 +1,14 @@
 package ws_server
 
 import (
-	"github.com/gin-gonic/gin"
-	"strconv"
+	"suzaku/internal/server/gin_server"
+	"suzaku/pkg/common/middleware"
 )
 
 type WServer struct {
-	address string
-	hub     *Hub
-	engine  *gin.Engine
+	port int
+	hub  *Hub
+	gin  *gin_server.GinServer
 }
 
 func NewWServer(port int, callback MsgCallback) *WServer {
@@ -16,17 +16,19 @@ func NewWServer(port int, callback MsgCallback) *WServer {
 		ws *WServer
 	)
 	ws = &WServer{
-		address: ":" + strconv.Itoa(port),
-		hub:     NewHub(callback),
-		engine:  gin.Default(),
+		port: port,
+		hub:  NewHub(callback),
+		gin:  gin_server.NewGinServer(),
 	}
-	ws.engine.GET("/", ws.hub.wsHandler)
+	// 授权验证
+	ws.gin.Engine.Use(middleware.JwtAuth())
+	ws.gin.Engine.GET("/", ws.hub.wsHandler)
 	return ws
 }
 
 func (ws *WServer) Run() {
 	ws.hub.Run()
-	ws.engine.Run(ws.address)
+	ws.gin.Run(ws.port)
 }
 
 func (ws *WServer) Send(userID string, msg []byte) (ok bool) {

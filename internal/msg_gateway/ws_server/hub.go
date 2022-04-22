@@ -3,7 +3,6 @@ package ws_server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -176,9 +175,10 @@ func (h *Hub) messageHandler(msg *Message) {
 // serveWs handles websocket requests from the peer.
 func (h *Hub) wsHandler(c *gin.Context) {
 	var (
+		uidVal     interface{}
+		pidVal     interface{}
+		exists     bool
 		userID     string
-		platform   string
-		val        int64
 		platformID int32
 		conn       *websocket.Conn
 		client     *Client
@@ -191,22 +191,18 @@ func (h *Hub) wsHandler(c *gin.Context) {
 		httpErr(c, ErrorWsExceedMaxConnections, ErrorCodeWsExceedMaxConnections)
 		return
 	}
-	userID = c.GetHeader(WsKeyUserID)
-	if userID == "" {
+	uidVal, exists = c.Get(WsKeyUserID)
+	if exists == false {
 		httpErr(c, ErrorHttpUserIDDoesNotExist, ErrorCodeHttpUserIDDoesNotExist)
 		return
 	}
-	platform = c.GetHeader(WsKeyPlatformID)
-	if platform == "" {
+	pidVal, exists = c.Get(WsKeyPlatformID)
+	if exists == false {
 		httpErr(c, ErrorHttpPlatformIDDoesNotExist, ErrorCodeHttpPlatformIDDoesNotExist)
 		return
 	}
-	val, err = strconv.ParseInt(platform, 10, 32)
-	if err != nil {
-		httpError(c, err, ErrorCodeHttpPlatformIDDoesNotExist)
-		return
-	}
-	platformID = int32(val)
+	userID = uidVal.(string)
+	platformID = int32(pidVal.(float64))
 
 	nowTs = time.Now().UnixNano() / 1e6
 	lastTs, _ = h.access[userID]

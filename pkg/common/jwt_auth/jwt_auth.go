@@ -29,7 +29,7 @@ func CreateJwtToken(userId string, platform int32) (tokenString string, expireIn
 	claims["exp"] = time.Now().Add(time.Duration(expireIn) * time.Second).Unix()
 	claims["orig_iat"] = time.Now().Unix()
 	claims["user_id"] = userId
-	claims["platform"] = platform
+	claims["platform_id"] = platform
 	tokenString, err = token.SignedString([]byte(JwtTokenKey))
 	if err != nil {
 		expireIn = -1
@@ -52,7 +52,7 @@ func CreateJwtRefreshToken(userId string, platform int32) (tokenString string, e
 	claims["exp"] = time.Now().Add(time.Duration(expireIn) * time.Second).Unix()
 	claims["orig_iat"] = time.Now().Unix()
 	claims["user_id"] = userId
-	claims["platform"] = platform
+	claims["platform_id"] = platform
 	tokenString, err = token.SignedString([]byte(JwtRefreshTokenKey))
 	if err != nil {
 		expireIn = -1

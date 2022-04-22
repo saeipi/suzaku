@@ -10,19 +10,19 @@ option go_package = "./auth;pb_auth";
 
 message UserRegisterReq {
   string secret = 1; // 秘钥
-  int32 platform = 2; // 平台
+  int32 platform_id = 2; // 平台
   string mobile = 3; // 手机号
 }
 
 message UserRegisterResp {
   pb_com.CommonResp common = 1;
-  int32  platform = 2; // 平台
+  int32  platform_id = 2; // 平台
   int64  id = 3; // 主键ID
   string user_id = 4; // 用户ID
 }
 
 message UserTokenReq {
-  int32  platform = 1; // 平台
+  int32  platform_id = 1; // 平台
   int64  id = 2; // 主键ID
   string user_id = 3; // 用户ID
 }
