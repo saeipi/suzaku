@@ -170,6 +170,10 @@ func (h *MsgHandler) sendMsgReq(client *ws.Client, req *protocol.MessageReq) {
 		clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
 		chatClient = pb_chat.NewChatClient(clientConn)
 		reply, err = chatClient.SendMsg(context.Background(), &reqReq)
+		if reply == nil {
+			//TODO: error
+			return
+		}
 		if err != nil {
 			reply.ErrCode = 200
 			reply.ErrMsg = err.Error()

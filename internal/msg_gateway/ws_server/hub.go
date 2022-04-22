@@ -1,6 +1,7 @@
 package ws_server
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"strconv"
@@ -9,7 +10,7 @@ import (
 )
 
 type Hub struct {
-	sync.Mutex
+	rwLock   sync.RWMutex
 	upgrader websocket.Upgrader
 	// Register requests from the clients.
 	register chan *Client
@@ -43,12 +44,13 @@ func NewHub(callback MsgCallback) *Hub {
 }
 
 func (h *Hub) registerClient(client *Client) {
+	fmt.Println("新的连接:", client.userID, "当前连接数:", h.onlineConnections)
 	var (
 		ok        bool
 		cl        *Client
 		platforms map[int32]*Client
 	)
-	h.Lock()
+	h.rwLock.Lock()
 	if platforms, ok = h.clients[client.userID]; ok == false {
 		platforms = make(map[int32]*Client)
 		h.clients[client.userID] = platforms
@@ -59,18 +61,18 @@ func (h *Hub) registerClient(client *Client) {
 		platforms[client.platformID] = client
 		//atomic.AddInt64(&h.onlineConnections, 1)
 		h.onlineConnections += 1
-		h.Unlock()
+		h.rwLock.Unlock()
 		return
 	}
 
 	if client.onlineAt > cl.onlineAt {
 		platforms[client.platformID] = client
-		h.Unlock()
+		h.rwLock.Unlock()
 		h.close(cl)
 		return
 	}
 
-	h.Unlock()
+	h.rwLock.Unlock()
 	h.close(client)
 }
 
@@ -81,33 +83,39 @@ func (h *Hub) close(client *Client) {
 }
 
 func (h *Hub) unregisterClient(client *Client) {
+	fmt.Println("断开连接:", client.userID, "当前连接数:", h.onlineConnections)
 	var (
 		ok        bool
 		platforms map[int32]*Client
 		cl        *Client
 	)
-	h.Lock()
-	defer h.Unlock()
+	h.rwLock.Lock()
+	defer h.rwLock.Unlock()
 	if platforms, ok = h.clients[client.userID]; ok == false {
 		return
 	}
 	if cl, ok = platforms[client.platformID]; ok == true {
 		if cl == client {
+			h.onlineConnections -= 1
 			delete(platforms, client.platformID)
 		}
 	}
 }
 
 func (h *Hub) Run() {
+	var (
+		client *Client
+		msg    *Message
+	)
 	go func() {
 		for {
 			select {
-			case client := <-h.register:
+			case client = <-h.register:
 				h.registerClient(client)
-			case client := <-h.unregister:
+			case client = <-h.unregister:
 				h.unregisterClient(client)
-			case read := <-h.read:
-				h.messageHandler(read)
+			case msg = <-h.read:
+				h.messageHandler(msg)
 			}
 		}
 	}()
@@ -117,8 +125,8 @@ func (h *Hub) IsOnline(userID string) (ok bool) {
 	var (
 		platforms map[int32]*Client
 	)
-	h.Lock()
-	defer h.Unlock()
+	h.rwLock.RLock()
+	defer h.rwLock.RUnlock()
 	if platforms, ok = h.clients[userID]; ok == false {
 		return
 	}
@@ -134,13 +142,13 @@ func (h *Hub) Send(userID string, message []byte) (resultCode int) {
 		client    *Client
 		ok        bool
 	)
-	h.Lock()
+	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		h.Unlock()
+		h.rwLock.RUnlock()
 		resultCode = WsSendMsgOffline
 		return
 	}
-	h.Unlock()
+	h.rwLock.RUnlock()
 	if len(platforms) == 0 {
 		resultCode = WsSendMsgOffline
 		return
@@ -157,14 +165,14 @@ func (h *Hub) SendMessage(userID string, platformID int32, message []byte) (resu
 		client    *Client
 		ok        bool
 	)
-	h.Lock()
+	h.rwLock.RLock()
 	if platforms, ok = h.clients[userID]; ok == false {
-		h.Unlock()
+		h.rwLock.RUnlock()
 		resultCode = WsSendMsgOffline
 		return
 	}
 	client, ok = platforms[platformID]
-	h.Unlock()
+	h.rwLock.RUnlock()
 	if ok == false {
 		resultCode = WsSendMsgOffline
 		return
@@ -227,8 +235,10 @@ func (h *Hub) wsHandler(c *gin.Context) {
 	}
 
 	nowTs = time.Now().UnixNano() / 1e6
+	h.rwLock.Lock()
 	lastTs, _ = h.access[userID]
 	h.access[userID] = nowTs
+	h.rwLock.Unlock()
 	if nowTs-lastTs < WsMinimumTimeInterval {
 		httpErr(c, ErrorCodeRequestTooMundane, ErrorCodeHttpRequestTooMundane)
 		return

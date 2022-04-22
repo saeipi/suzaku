@@ -9,7 +9,8 @@ import (
 
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
-	hub *Hub
+	rwLock sync.RWMutex
+	hub    *Hub
 	// The websocket connection.
 	conn *websocket.Conn
 	// 用户ID
@@ -23,7 +24,6 @@ type Client struct {
 	// 关闭通知
 	close  chan []byte
 	closed bool
-	sync.Mutex
 }
 
 func newClient(hub *Hub, conn *websocket.Conn, userID string, platformID int32) *Client {
@@ -39,15 +39,15 @@ func newClient(hub *Hub, conn *websocket.Conn, userID string, platformID int32) 
 }
 
 func (c *Client) closeConn() {
-	c.Lock()
-	if c.closed {
-		c.Unlock()
+	c.rwLock.Lock()
+	if c.closed == true {
+		c.rwLock.Unlock()
 		return
 	}
 	c.closed = true
 	close(c.send)
 	close(c.close)
-	c.Unlock()
+	c.rwLock.Unlock()
 
 	c.conn.Close()
 	c.hub.unregister <- c
@@ -139,8 +139,8 @@ func (c *Client) write() {
 }
 
 func (c *Client) Send(message []byte) {
-	c.Lock()
-	defer c.Unlock()
+	c.rwLock.RLock()
+	defer c.rwLock.RUnlock()
 	if c.closed == true {
 		return
 	}
@@ -164,8 +164,8 @@ func (c *Client) SendMessage(message []byte) (err error) {
 */
 
 func (c *Client) Close() {
-	c.Lock()
-	defer c.Unlock()
+	c.rwLock.RLock()
+	defer c.rwLock.RUnlock()
 	if c.closed == true {
 		return
 	}

@@ -21,7 +21,9 @@ import (
 )
 
 type Client struct {
-	conn *websocket.Conn
+	rwLock sync.RWMutex
+	mgr    *Manager
+	conn   *websocket.Conn
 	// 用户ID
 	userID string
 	// 平台ID
@@ -34,10 +36,11 @@ type Client struct {
 	close    chan []byte
 	closed   bool
 	nickname string
-	sync.Mutex
+	curCount int
+	endCount int
 }
 
-func NewClient(userID string) (client *Client) {
+func NewClient(userID string, mgr *Manager) (client *Client) {
 	var (
 		u    url.URL
 		q    url.Values
@@ -55,6 +58,7 @@ func NewClient(userID string) (client *Client) {
 	u.RawQuery = q.Encode()
 
 	client = &Client{
+		mgr:        mgr,
 		conn:       nil,
 		userID:     userID,
 		platformID: 1,
@@ -62,7 +66,11 @@ func NewClient(userID string) (client *Client) {
 		send:       make(chan []byte, 100),
 		close:      make(chan []byte),
 		closed:     false,
+		nickname:   userID,
+		curCount:   0,
+		endCount:   10, //rand.Intn(100-10) + 10
 	}
+
 	conn, resp, err = websocket.DefaultDialer.Dial(u.String(), nil)
 	if resp != nil {
 		defer resp.Body.Close()
@@ -79,17 +87,18 @@ func NewClient(userID string) (client *Client) {
 }
 
 func (c *Client) closeConn() {
-	c.Lock()
+	c.rwLock.Lock()
 	if c.closed {
-		c.Unlock()
+		c.rwLock.Unlock()
 		return
 	}
 	c.closed = true
 	close(c.send)
 	close(c.close)
-	c.Unlock()
+	c.rwLock.Unlock()
 
 	c.conn.Close()
+	c.mgr.unregister <- c
 }
 
 func (c *Client) read() {
@@ -159,6 +168,11 @@ func (c *Client) write() {
 }
 
 func (c *Client) messageHandler(message []byte) {
+	if c.curCount > c.endCount {
+		c.Close()
+		return
+	}
+	c.curCount++
 	var (
 		buffer  *bytes.Buffer
 		decoder *gob.Decoder
@@ -190,7 +204,7 @@ func (c *Client) messageHandler(message []byte) {
 		return
 	}
 	if msgData.MsgFrom%2 == 0 {
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 1)
 	}
 	fmt.Println("收到消息:", c.userID, req.ReqIdentifier, req.OperationID, req.SendID, req.Token)
 	c.SendUser(req.SendID)
@@ -259,8 +273,8 @@ func (c *Client) toByte(data interface{}) (buf []byte) {
 }
 
 func (c *Client) Send(message []byte) {
-	c.Lock()
-	defer c.Unlock()
+	c.rwLock.RLock()
+	defer c.rwLock.RUnlock()
 	if c.closed {
 		return
 	}
@@ -268,8 +282,8 @@ func (c *Client) Send(message []byte) {
 }
 
 func (c *Client) Close() {
-	c.Lock()
-	defer c.Unlock()
+	c.rwLock.RLock()
+	defer c.rwLock.RUnlock()
 	if c.closed {
 		return
 	}
