@@ -1,21 +1,18 @@
 package client
 
 import (
-	"bytes"
-	"encoding/gob"
 	"fmt"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
-	"io/ioutil"
 	"log"
 	"math/rand"
-	"net/http"
 	"net/url"
 	"strconv"
 	"suzaku/internal/msg_gateway/protocol"
 	"suzaku/internal/msg_gateway/ws_server"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/proto/pb_ws"
+	"suzaku/pkg/utils"
 	"sync"
 	"time"
 )
@@ -46,12 +43,13 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		q    url.Values
 		ts   int64
 		conn *websocket.Conn
-		resp *http.Response
-		buf  []byte
-		err  error
+		// resp *http.Response
+		// buf []byte
+		err error
 	)
 	ts = time.Now().Unix()
-	u = url.URL{Scheme: "ws", Host: "localhost:17778", Path: "/"}
+	// localhost:17778
+	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
 	q = u.Query()
 	q.Set("user_id", userID)
 	q.Set("platform_id", "1")
@@ -68,16 +66,12 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		closed:     false,
 		nickname:   userID,
 		curCount:   0,
-		endCount:   10, //rand.Intn(100-10) + 10
+		endCount:   10000, // rand.Intn(100-10) + 10
 	}
 
-	conn, resp, err = websocket.DefaultDialer.Dial(u.String(), nil)
-	if resp != nil {
-		defer resp.Body.Close()
-		buf, err = ioutil.ReadAll(resp.Body)
-		fmt.Println(string(buf))
-	}
+	conn, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
+		fmt.Println("创建连接失败")
 		return
 	}
 	client.conn = conn
@@ -87,6 +81,7 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 }
 
 func (c *Client) closeConn() {
+	fmt.Println("客户端断开连接")
 	c.rwLock.Lock()
 	if c.closed {
 		c.rwLock.Unlock()
@@ -174,17 +169,13 @@ func (c *Client) messageHandler(message []byte) {
 	}
 	c.curCount++
 	var (
-		buffer  *bytes.Buffer
-		decoder *gob.Decoder
 		req     protocol.MessageReq
 		msgData pb_ws.MsgData
 		err     error
 	)
 
 	req = protocol.MessageReq{}
-	buffer = bytes.NewBuffer(message)
-	decoder = gob.NewDecoder(buffer)
-	err = decoder.Decode(&req)
+	err = utils.BufferDecode(message, &req)
 	if err != nil {
 		fmt.Println("解析消息错误")
 		return
@@ -219,6 +210,12 @@ func (c *Client) SendUser(recvId string) (err error) {
 		reqBytes   []byte
 		msgData    pb_ws.MsgData
 	)
+	if c.conn == nil {
+		return
+	}
+	if c.closed == true {
+		return
+	}
 
 	ts = time.Now().Unix()
 	contentMap = map[string]interface{}{}
@@ -235,8 +232,8 @@ func (c *Client) SendUser(recvId string) (err error) {
 		SenderFaceUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
 		SessionType:      1, // 单聊为1，群聊为2
 		MsgFrom:          int32(rand.Uint64()) + 1,
-		ContentType:      101,                  // 消息类型，101表示文本，102表示图片
-		Content:          c.toByte(contentMap), // 内部是json 对象
+		ContentType:      101, // 消息类型，101表示文本，102表示图片
+		Content:          nil, // 内部是json 对象
 		Seq:              1,
 		SendTime:         ts,
 		CreateTime:       ts,
@@ -244,7 +241,12 @@ func (c *Client) SendUser(recvId string) (err error) {
 		Options:          nil,
 		OfflinePushInfo:  nil, // |否| 离线推送的具体内容，如果不填写，使用服务器默认推送标题
 	}
-	bodyBytes, _ = proto.Marshal(&msgData)
+	msgData.Content, _ = utils.ObjEncode(contentMap)
+
+	bodyBytes, err = proto.Marshal(&msgData)
+	if err != nil {
+		return
+	}
 	req = protocol.MessageReq{
 		ReqIdentifier: constant.WSSendMsg,
 		Token:         strconv.Itoa(int(ts)) + ":" + c.userID,
@@ -253,23 +255,12 @@ func (c *Client) SendUser(recvId string) (err error) {
 		MsgIncr:       strconv.Itoa(int(ts)) + ":" + c.userID,
 		Data:          bodyBytes,
 	}
-	reqBytes = c.toByte(req)
-	c.Send(reqBytes)
-	return
-}
-
-func (c *Client) toByte(data interface{}) (buf []byte) {
-	var (
-		dataBytes bytes.Buffer
-		encoder   *gob.Encoder
-		err       error
-	)
-	encoder = gob.NewEncoder(&dataBytes)
-	err = encoder.Encode(data)
+	reqBytes, err = utils.ObjEncode(req)
 	if err != nil {
 		return
 	}
-	return dataBytes.Bytes()
+	c.Send(reqBytes)
+	return
 }
 
 func (c *Client) Send(message []byte) {

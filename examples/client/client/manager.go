@@ -74,8 +74,10 @@ func (m *Manager) newConnection(uid1 string, uid2 string) {
 	client2 = NewClient(uid2, m)
 
 	m.rwLock.Lock()
-	m.clients[uid1] = client1
-	m.clients[uid2] = client2
+	if client1.conn != nil && client2.conn != nil {
+		m.clients[uid1] = client1
+		m.clients[uid2] = client2
+	}
 	m.rwLock.Unlock()
 
 	client1.SendUser(uid2)
