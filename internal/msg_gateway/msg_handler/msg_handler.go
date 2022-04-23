@@ -1,9 +1,7 @@
 package msg_handler
 
 import (
-	"bytes"
 	"context"
-	"encoding/gob"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/grpc"
@@ -14,6 +12,7 @@ import (
 	"suzaku/pkg/constant"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
+	"suzaku/pkg/utils"
 )
 
 type MsgHandler struct {
@@ -27,15 +26,11 @@ func NewMsgHandler() *MsgHandler {
 
 func (h *MsgHandler) MessageCallback(msg *ws.Message) {
 	var (
-		buffer  *bytes.Buffer
-		decoder *gob.Decoder
-		req     protocol.MessageReq
-		err     error
+		req protocol.MessageReq
+		err error
 	)
 	req = protocol.MessageReq{}
-	buffer = bytes.NewBuffer(msg.Body)
-	decoder = gob.NewDecoder(buffer)
-	err = decoder.Decode(&req)
+	err = utils.BufferDecode(msg.Body, &req)
 	if err != nil {
 		// TODO :错误信息
 		h.sendErrMsg(msg.Client, 200, err.Error(), 3001, "", "")
@@ -116,17 +111,15 @@ func (h *MsgHandler) getSeqResp(client *ws.Client, req *protocol.MessageReq, pb 
 
 func (h *MsgHandler) sendMessage(client *ws.Client, data interface{}) {
 	var (
-		buffer bytes.Buffer
-		encode *gob.Encoder
-		err    error
+		buf []byte
+		err error
 	)
-	encode = gob.NewEncoder(&buffer)
-	err = encode.Encode(data)
+	buf, err = utils.ObjEncode(data)
 	if err != nil {
 		//TODO :错误
 		return
 	}
-	client.Send(buffer.Bytes())
+	client.Send(buf)
 }
 
 func (h *MsgHandler) sendErrMsg(client *ws.Client, errCode int32, errMsg string, reqIdentifier int32, msgIncr string, operationID string) {
@@ -193,11 +186,16 @@ func (h *MsgHandler) sendMsgResp(client *ws.Client, req *protocol.MessageReq, re
 		replyData pb_ws.UserSendMsgResp
 		buf       []byte
 		resp      protocol.MessageResp
+		err       error
 	)
 	replyData.ClientMsgId = reply.GetClientMsgId()
 	replyData.ServerMsgId = reply.GetServerMsgId()
 	replyData.SendTime = reply.GetSendTime()
-	buf, _ = proto.Marshal(&replyData)
+	buf, err = proto.Marshal(&replyData)
+	if err != nil {
+		//TODO: error
+		return
+	}
 	resp = protocol.MessageResp{
 		ReqIdentifier: req.ReqIdentifier,
 		MsgIncr:       req.MsgIncr,
@@ -233,7 +231,6 @@ func (h *MsgHandler) argsValidate(m *protocol.MessageReq, r int32) (isPass bool,
 			return false, 204, err.Error(), nil
 		}
 		return true, 0, "", data
-
 	default:
 	}
 	return false, 204, "args err", nil

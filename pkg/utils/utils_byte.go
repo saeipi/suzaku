@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/gob"
 	"unsafe"
 )
 
@@ -28,4 +29,29 @@ func Str2Bytes(s string) []byte {
 
 func Bytes2Str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+func BufferDecode(buf []byte, obj interface{}) (err error) {
+	var (
+		buffer  *bytes.Buffer
+		decoder *gob.Decoder
+	)
+	buffer = bytes.NewBuffer(buf)
+	decoder = gob.NewDecoder(buffer)
+	err = decoder.Decode(obj)
+	return
+}
+
+func ObjEncode(obj interface{}) (buf []byte, err error) {
+	var (
+		buffer  bytes.Buffer
+		encoder *gob.Encoder
+	)
+	encoder = gob.NewEncoder(&buffer)
+	err = encoder.Encode(obj)
+	if err != nil {
+		return
+	}
+	buf = buffer.Bytes()
+	return
 }
