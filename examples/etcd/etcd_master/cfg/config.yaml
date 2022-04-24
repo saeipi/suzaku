@@ -1,0 +1,19 @@
+server:
+  port: 8988
+  host: 0.0.0.0
+  is_ssl: false
+  cert_file: conf/ssl/ca.pem
+  key_file: conf/ssl/ca.key
+etcd:
+  read_timeout: 5000
+  write_timeout: 5000
+  endpoints:
+    - '127.0.0.1:2379'
+  dial_timeout: 5000
+mongodb:
+  host: 127.0.0.1
+  port: 27017
+  db: oa
+  username: admin
+  password: '123456'
+  timeout: 5000
