@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
+	"google.golang.org/grpc/credentials/insecure"
+
 	//"google.golang.org/genproto/googleapis/ads/googleads/v1/services"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
@@ -30,8 +32,15 @@ var (
 )
 
 func NewResolver(schema, etcdAddr, serviceName string) (*Resolver, error) {
-	etcdCli, err := clientv3.New(clientv3.Config{
-		Endpoints: strings.Split(etcdAddr, ","),
+	var (
+		etcdCli *clientv3.Client
+		opts    []grpc.DialOption
+		conn    *grpc.ClientConn
+		err     error
+	)
+	etcdCli, err = clientv3.New(clientv3.Config{
+		Endpoints:   strings.Split(etcdAddr, ","),
+		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
 		return nil, err
@@ -44,11 +53,11 @@ func NewResolver(schema, etcdAddr, serviceName string) (*Resolver, error) {
 	r.etcdAddr = etcdAddr
 	resolver.Register(&r)
 
-	conn, err := grpc.Dial(
+	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts = append(opts, grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
+	conn, err = grpc.Dial(
 		GetPrefix(schema, serviceName),
-		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)),
-		grpc.WithInsecure(),
-		grpc.WithTimeout(time.Duration(5)*time.Second),
+		opts...,
 	)
 	if err == nil {
 		r.grpcClientConn = conn
@@ -62,7 +71,7 @@ func (r1 *Resolver) ResolveNow(rn resolver.ResolveNowOptions) {
 func (r1 *Resolver) Close() {
 }
 
-func GetConn(schema, etcdaddr, serviceName string) *grpc.ClientConn {
+func GetConn(schema, etcdAddr, serviceName string) *grpc.ClientConn {
 	var (
 		r   *Resolver
 		ok  bool
@@ -75,14 +84,15 @@ func GetConn(schema, etcdaddr, serviceName string) *grpc.ClientConn {
 		return r.grpcClientConn
 	}
 
+	//TODO:此处代码重复
 	rwNameResolverMutex.Lock()
 	r, ok = nameResolver[schema+serviceName]
 	if ok {
 		rwNameResolverMutex.Unlock()
 		return r.grpcClientConn
 	}
-
-	r, err = NewResolver(schema, etcdaddr, serviceName)
+	//TODO:此处不用加锁
+	r, err = NewResolver(schema, etcdAddr, serviceName)
 	if err != nil {
 		rwNameResolverMutex.Unlock()
 		return nil
@@ -194,14 +204,16 @@ func GetConn4Unique(schema, etcdAddr, serviceName string) (allConn []*grpc.Clien
 		clientConn *grpc.ClientConn
 		err        error
 	)
-	etcdClient, err = clientv3.New(clientv3.Config{Endpoints: strings.Split(etcdAddr, ",")})
+	etcdClient, err = clientv3.New(clientv3.Config{
+		Endpoints:   strings.Split(etcdAddr, ","),
+		DialTimeout: 5 * time.Second})
 	if err != nil {
 		//TODO: error
 		return
 	}
 
 	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
-	//     "%s:///%s"
+	// "%s:///%s"
 	prefix = GetPrefix4Unique(schema, serviceName)
 
 	resp, err = etcdClient.Get(ctx, prefix, clientv3.WithPrefix())

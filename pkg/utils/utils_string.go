@@ -161,3 +161,15 @@ func GetConversationIDBySessionType(sourceID string, sessionType int) string {
 	}
 	return ""
 }
+
+func GetServiceName(key string) (name string) {
+	var (
+		index int
+		str   string
+	)
+	index = strings.LastIndex(key, "///")
+	str = key[index+len("///"):]
+	index = strings.Index(str, "/")
+	name = str[:index]
+	return
+}
