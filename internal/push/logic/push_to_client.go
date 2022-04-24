@@ -31,6 +31,10 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 	grpcCons = getcdv3.GetConn4Unique(config.Config.Etcd.Schema,
 		strings.Join(config.Config.Etcd.Address, ","),
 		config.Config.RPCRegisterName.OnlineMessageRelayName)
+	if len(grpcCons) == 0 {
+		//TODO:error
+		return
+	}
 	for _, conn = range grpcCons {
 		req = &pb_relay.OnlinePushMsgReq{
 			OperationId:  pushMsg.OperationId,

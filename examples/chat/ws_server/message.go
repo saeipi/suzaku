@@ -14,4 +14,3 @@ type Call struct {
 	Holder   string
 	CallFunc func(msg *Message) (err error)
 }
-

@@ -37,7 +37,7 @@ func RegisterEtcd4Unique(schema, etcdAddr, myHost string, myPort int, serviceNam
 
 //etcdAddr separated by commas
 func RegisterEtcd(schema, etcdAddr, myHost string, myPort int, serviceName string, ttl int) error {
- 	cli, err := clientv3.New(clientv3.Config{
+	cli, err := clientv3.New(clientv3.Config{
 		Endpoints: strings.Split(etcdAddr, ","), DialTimeout: 5 * time.Second})
 
 	//log.Info("", "RegisterEtcd, ", schema, etcdAddr, myHost, myPort, serviceName, ttl)

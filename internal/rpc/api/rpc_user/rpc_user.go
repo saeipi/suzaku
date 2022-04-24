@@ -4,9 +4,9 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"suzaku/internal/rpc/rpc_category"
-	pb_user "suzaku/pkg/proto/user"
-	pb_com "suzaku/pkg/proto/pb_com"
 	"suzaku/pkg/common/config"
+	pb_com "suzaku/pkg/proto/pb_com"
+	pb_user "suzaku/pkg/proto/user"
 )
 
 type userRpcServer struct {
@@ -16,7 +16,7 @@ type userRpcServer struct {
 
 func NewUserRpcServer(port int) *userRpcServer {
 	return &userRpcServer{
-		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.UserName),
+		Rpc: rpc_category.NewRpcServer(port, config.Config.RPCRegisterName.UserName),
 	}
 }
 

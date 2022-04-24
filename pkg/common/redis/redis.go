@@ -10,7 +10,7 @@ var RedisClient *redisClient
 
 type redisClient struct {
 	client *redis.Client
-	Prefix        string
+	Prefix string
 }
 
 func init() {
@@ -29,5 +29,5 @@ func init() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	RedisClient = &redisClient{client,config.Config.Redis.Prefix}
+	RedisClient = &redisClient{client, config.Config.Redis.Prefix}
 }

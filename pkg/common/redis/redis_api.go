@@ -180,8 +180,8 @@ func HMSet(key string, fields map[string]interface{}) error {
 	return RedisClient.client.HMSet(key, fields).Err()
 }
 
-func HMGet(key string, fields ...string) ([]interface{}, error){
-	return RedisClient.client.HMGet(key,fields...).Result()
+func HMGet(key string, fields ...string) ([]interface{}, error) {
+	return RedisClient.client.HMGet(key, fields...).Result()
 }
 
 func HKeys(key string) (fields []string, err error) {

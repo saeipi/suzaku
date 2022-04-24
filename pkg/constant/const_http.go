@@ -1,9 +1,9 @@
 package constant
 
 const (
-	HttpKeyCookie = "Cookie"
+	HttpKeyCookie           = "Cookie"
 	HttpKeyAuthMethodCookie = "cookie"
 	HttpKeyAuthMethodHeader = "header"
-	HttpKeyToken = "token"
-	HttpKeyJwt = "jwt="
+	HttpKeyToken            = "token"
+	HttpKeyJwt              = "jwt="
 )

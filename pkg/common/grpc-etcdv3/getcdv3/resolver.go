@@ -63,8 +63,13 @@ func (r1 *Resolver) Close() {
 }
 
 func GetConn(schema, etcdaddr, serviceName string) *grpc.ClientConn {
+	var (
+		r   *Resolver
+		ok  bool
+		err error
+	)
 	rwNameResolverMutex.RLock()
-	r, ok := nameResolver[schema+serviceName]
+	r, ok = nameResolver[schema+serviceName]
 	rwNameResolverMutex.RUnlock()
 	if ok {
 		return r.grpcClientConn
@@ -77,7 +82,7 @@ func GetConn(schema, etcdaddr, serviceName string) *grpc.ClientConn {
 		return r.grpcClientConn
 	}
 
-	r, err := NewResolver(schema, etcdaddr, serviceName)
+	r, err = NewResolver(schema, etcdaddr, serviceName)
 	if err != nil {
 		rwNameResolverMutex.Unlock()
 		return nil
@@ -173,44 +178,60 @@ func (r *Resolver) watch(prefix string, addrList []resolver.Address) {
 	}
 }
 
-func GetConn4Unique(schema, etcdaddr, servicename string) []*grpc.ClientConn {
-	gEtcdCli, err := clientv3.New(clientv3.Config{Endpoints: strings.Split(etcdaddr, ",")})
+func GetConn4Unique(schema, etcdAddr, serviceName string) (allConn []*grpc.ClientConn) {
+	var (
+		etcdClient *clientv3.Client
+		ctx        context.Context
+		prefix     string
+		resp       *clientv3.GetResponse
+
+		allService []string
+		key        string
+		index      int
+		flag       int
+		service    string
+
+		clientConn *grpc.ClientConn
+		err        error
+	)
+	etcdClient, err = clientv3.New(clientv3.Config{Endpoints: strings.Split(etcdAddr, ",")})
 	if err != nil {
-		//log.Error("clientv3.New failed", err.Error())
-		return nil
+		//TODO: error
+		return
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, _ = context.WithTimeout(context.Background(), 5*time.Second)
 	//     "%s:///%s"
-	prefix := GetPrefix4Unique(schema, servicename)
+	prefix = GetPrefix4Unique(schema, serviceName)
 
-	resp, err := gEtcdCli.Get(ctx, prefix, clientv3.WithPrefix())
-	//  "%s:///%s:ip:port"   -> %s:ip:port
-	allService := make([]string, 0)
-	if err == nil {
-		for i := range resp.Kvs {
-			k := string(resp.Kvs[i].Key)
+	resp, err = etcdClient.Get(ctx, prefix, clientv3.WithPrefix())
+	etcdClient.Close()
+	if err != nil {
+		//TODO: error
+		return
+	}
+	// "%s:///%s:ip:port"   -> %s:ip:port
+	allService = make([]string, 0)
+	for index = range resp.Kvs {
+		key = string(resp.Kvs[index].Key)
 
-			b := strings.LastIndex(k, "///")
-			k1 := k[b+len("///"):]
+		flag = strings.LastIndex(key, "///")
+		service = key[flag+len("///"):]
 
-			e := strings.Index(k1, "/")
-			k2 := k1[:e]
-			allService = append(allService, k2)
+		flag = strings.Index(service, "/")
+		service = service[:flag]
+		allService = append(allService, service)
+	}
+
+	allConn = make([]*grpc.ClientConn, 0)
+	for _, service = range allService {
+		clientConn = GetConn(schema, etcdAddr, service)
+		if clientConn == nil {
+			//TODO: error
+			continue
 		}
-	} else {
-		gEtcdCli.Close()
-		//log.Error("gEtcdCli.Get failed", err.Error())
-		return nil
+		allConn = append(allConn, clientConn)
 	}
-	gEtcdCli.Close()
-
-	allConn := make([]*grpc.ClientConn, 0)
-	for _, v := range allService {
-		r := GetConn(schema, etcdaddr, v)
-		allConn = append(allConn, r)
-	}
-
 	return allConn
 }
 

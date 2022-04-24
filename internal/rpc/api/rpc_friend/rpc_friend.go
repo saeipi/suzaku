@@ -4,8 +4,8 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"suzaku/internal/rpc/rpc_category"
-	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/common/config"
+	pb_friend "suzaku/pkg/proto/friend"
 	pb_com "suzaku/pkg/proto/pb_com"
 )
 
@@ -16,7 +16,7 @@ type friendRpcServer struct {
 
 func NewFriendRpcServer(port int) (r *friendRpcServer) {
 	return &friendRpcServer{
-		Rpc: rpc_category.NewRpcServer(port,config.Config.RPCRegisterName.FriendName),
+		Rpc: rpc_category.NewRpcServer(port, config.Config.RPCRegisterName.FriendName),
 	}
 }
 

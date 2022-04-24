@@ -26,10 +26,10 @@ func JwtAuth() gin.HandlerFunc {
 			return
 		}
 		/*
-		if config.Config.JwtAuth.IsDev {
-			ctx.Set(constant.KeyUserID, constant.KeyUserAdminUserId)
-			ctx.Set(constant.KeyUserPlatformID, constant.KeyUserAdminPlatform)
-		}*/
+			if config.Config.JwtAuth.IsDev {
+				ctx.Set(constant.KeyUserID, constant.KeyUserAdminUserId)
+				ctx.Set(constant.KeyUserPlatformID, constant.KeyUserAdminPlatform)
+			}*/
 		if err != nil {
 			ctx.Abort()
 			http.Error(ctx, err, http.ErrorCodeHttpJwtTokenErr)

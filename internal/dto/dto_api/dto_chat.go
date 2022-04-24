@@ -12,12 +12,12 @@ type SendMsgReq struct {
 }
 
 type SendMsgData struct {
-	SessionType int32                  `json:"session_type" binding:"required"`
-	MsgFrom     int32                  `json:"msg_from" binding:"required"`
-	ContentType int32                  `json:"content_type" binding:"required"`
-	RecvID      string                 `json:"recv_id" `
-	GroupID     string                 `json:"group_id" `
-	ForceList   []string               `json:"force_list"`
+	SessionType int32    `json:"session_type" binding:"required"`
+	MsgFrom     int32    `json:"msg_from" binding:"required"`
+	ContentType int32    `json:"content_type" binding:"required"`
+	RecvID      string   `json:"recv_id" `
+	GroupID     string   `json:"group_id" `
+	ForceList   []string `json:"force_list"`
 	//Content     []byte                 `json:"content" binding:"required"`
 	Content     []byte                 `json:"content"`
 	Options     map[string]bool        `json:"options" `
@@ -27,7 +27,7 @@ type SendMsgData struct {
 }
 
 type SendMsgResp struct {
-	ServerMsgId string      `json:"server_msg_id,omitempty"`
-	ClientMsgId string      `json:"client_msg_id,omitempty"`
-	SendTime    int64       `json:"send_time,omitempty"`
+	ServerMsgId string `json:"server_msg_id,omitempty"`
+	ClientMsgId string `json:"client_msg_id,omitempty"`
+	SendTime    int64  `json:"send_time,omitempty"`
 }

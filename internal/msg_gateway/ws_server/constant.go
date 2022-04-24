@@ -22,7 +22,7 @@ const (
 	WsChanServerUnregister  = 1000
 	WsMaxConnections        = 20000
 	// TODO: 测试值
-	WsMinimumTimeInterval   = -1//5000
+	WsMinimumTimeInterval = -1 //5000
 )
 
 const (

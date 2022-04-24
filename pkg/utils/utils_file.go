@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"path"
 	"path/filepath"
 	"suzaku/pkg/constant"
 	"time"
-	"math/rand"
 )
+
 /*
 func GetRootPath() string {
 	path, _ := filepath.Abs("./")
 	reg := regexp.MustCompile(global.ProjectName + "(.*)")
 	return reg.ReplaceAllString(path, global.ProjectName+"/")
 }
- */
+*/
 
 // Determine whether the given path is a folder
 func IsDir(path string) bool {
@@ -43,6 +44,7 @@ func Mkdir(path string) (err error) {
 	err = os.Chmod(path, os.ModePerm)
 	return
 }
+
 /*
 func FolderMkdir(basePath string, folder string) (folderPath string) {
 	environment := single_system.Shared().Env.Name
@@ -55,7 +57,7 @@ func FolderMkdir(basePath string, folder string) (folderPath string) {
 	}
 	return
 }
- */
+*/
 
 func ReadJson(path string, model interface{}) error {
 	bytes, err := ioutil.ReadFile(path)

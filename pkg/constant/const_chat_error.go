@@ -1,4 +1,5 @@
 package constant
+
 import "errors"
 
 // key = errCode, string = errMsg
@@ -8,7 +9,7 @@ type ErrInfo struct {
 }
 
 var (
-	OK = ErrInfo{0, ""}
+	OK        = ErrInfo{0, ""}
 	ErrServer = ErrInfo{500, "server error"}
 
 	//	ErrMysql             = ErrInfo{100, ""}
@@ -47,9 +48,9 @@ var (
 	ErrTokenNotValidYet = ErrInfo{704, TokenNotValidYetMsg.Error()}
 	ErrTokenUnknown     = ErrInfo{705, TokenUnknownMsg.Error()}
 
-	ErrAccess = ErrInfo{ErrCode: 801, ErrMsg: AccessMsg.Error()}
-	ErrDB     = ErrInfo{ErrCode: 802, ErrMsg: DBMsg.Error()}
-	ErrArgs   = ErrInfo{ErrCode: 8003, ErrMsg: ArgsMsg.Error()}
+	ErrAccess   = ErrInfo{ErrCode: 801, ErrMsg: AccessMsg.Error()}
+	ErrDB       = ErrInfo{ErrCode: 802, ErrMsg: DBMsg.Error()}
+	ErrArgs     = ErrInfo{ErrCode: 8003, ErrMsg: ArgsMsg.Error()}
 	ErrCallback = ErrInfo{ErrCode: 809, ErrMsg: CallBackMsg.Error()}
 )
 
@@ -61,9 +62,9 @@ var (
 	TokenMalformedMsg   = errors.New("that's not even a token")
 	TokenUnknownMsg     = errors.New("couldn't handle this token")
 
-	AccessMsg = errors.New("no permission")
-	DBMsg     = errors.New("db failed")
-	ArgsMsg   = errors.New("args failed")
+	AccessMsg   = errors.New("no permission")
+	DBMsg       = errors.New("db failed")
+	ArgsMsg     = errors.New("args failed")
 	CallBackMsg = errors.New("callback failed")
 
 	ThirdPartyMsg = errors.New("third party error")
