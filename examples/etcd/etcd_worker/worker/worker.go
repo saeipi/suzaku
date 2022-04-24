@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"runtime"
-	"suzaku/micro/etcd/etcd_worker/cfg"
-	"suzaku/micro/etcd/etcd_worker/executor"
-	"suzaku/micro/etcd/etcd_worker/log"
-	"suzaku/micro/etcd/etcd_worker/register"
+	"suzaku/examples/etcd/etcd_worker/cfg"
+	"suzaku/examples/etcd/etcd_worker/executor"
+	"suzaku/examples/etcd/etcd_worker/log"
+	"suzaku/examples/etcd/etcd_worker/register"
 	"sync"
 )
 
@@ -23,7 +23,7 @@ func initEnv() {
 func initArgs() {
 	// master -config ./cfg/config.yaml
 	// master -h
-	flag.StringVar(&configFile, "config", "../cfg/config.yaml", "指定配置文件")
+	flag.StringVar(&configFile, "config", "./examples/etcd/etcd_worker/cfg/config.yaml", "指定配置文件")
 	flag.Parse()
 }
 

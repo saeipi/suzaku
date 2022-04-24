@@ -3,21 +3,34 @@ package cfg
 import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"suzaku/pkg/common/config"
 )
 
 // 程序配置
 type Config struct {
-	Server  config.ServerConfig `yaml:"server"`
-	Etcd    EtcdConfig          `yaml:"etcd"`
-	Mongodb config.MongoConfig  `yaml:"mongodb"`
+	Server  *Server  `yaml:"server"`
+	Etcd    *Etcd    `yaml:"etcd"`
+	Mongodb *Mongodb `yaml:"mongodb"`
 }
-
-type EtcdConfig struct {
+type Server struct {
+	Port     int    `yaml:"port"`
+	Host     string `yaml:"host"`
+	IsSsl    bool   `yaml:"is_ssl"`
+	CertFile string `yaml:"cert_file"`
+	KeyFile  string `yaml:"key_file"`
+}
+type Etcd struct {
 	ReadTimeout  int      `yaml:"read_timeout"`
 	WriteTimeout int      `yaml:"write_timeout"`
 	Endpoints    []string `yaml:"endpoints"`
 	DialTimeout  int      `yaml:"dial_timeout"`
+}
+type Mongodb struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Db       string `yaml:"db"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Timeout  int    `yaml:"timeout"`
 }
 
 var (

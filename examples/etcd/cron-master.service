@@ -15,9 +15,9 @@ Group=root
 # 进程退出立即重启
 Restart=always
 # 执行命令
-ExecStart=/home/work/suzaku/micro/etcd/etcd_master/master -config=/home/work/suzaku/micro/etcd/etcd_master/config/config.yaml
+ExecStart=/home/work/suzaku/examples/etcd/etcd_master/master -config=/home/work/suzaku/examples/etcd/etcd_master/config/config.yaml
 # 进程工作目录
-WorkingDirectory=/home/work/suzaku/micro/etcd/etcd_master/master
+WorkingDirectory=/home/work/suzaku/examples/etcd/etcd_master/master
 
 [Install]
 # 在系统启动后加载UNIT

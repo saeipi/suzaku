@@ -3,20 +3,20 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"suzaku/micro/etcd/etcd_master/ctrl"
-	"suzaku/pkg/common/config"
+	"suzaku/examples/etcd/etcd_master/cfg"
+	"suzaku/examples/etcd/etcd_master/ctrl"
 )
 
 type ServerMgr struct {
 	server *gin.Engine
-	cfg    config.ServerConfig
+	cfg    *cfg.Server
 }
 
 var (
 	SG_SERMGR *ServerMgr
 )
 
-func InitRouter(cfg config.ServerConfig) (err error) {
+func InitRouter(cfg *cfg.Server) (err error) {
 	var (
 		addr = fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	)

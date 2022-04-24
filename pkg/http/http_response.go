@@ -5,6 +5,16 @@ import (
 	"net/http"
 )
 
+type RespErr struct {
+	Err  error
+	Code int
+}
+
+type Resp struct {
+	RespErr
+	Data interface{}
+}
+
 func Success(ctx *gin.Context, data ...interface{}) {
 	if len(data) == 0 {
 		ctx.JSON(http.StatusOK, gin.H{

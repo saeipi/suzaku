@@ -2,8 +2,8 @@ package executor
 
 import (
 	"fmt"
-	"suzaku/micro/etcd/common"
-	"suzaku/micro/etcd/etcd_worker/log"
+	"suzaku/examples/etcd/common"
+	"suzaku/examples/etcd/etcd_worker/log"
 	"time"
 )
 

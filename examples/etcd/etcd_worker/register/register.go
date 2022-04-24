@@ -4,8 +4,8 @@ import (
 	"context"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"net"
-	"suzaku/micro/etcd/common"
-	"suzaku/micro/etcd/etcd_worker/cfg"
+	"suzaku/examples/etcd/common"
+	"suzaku/examples/etcd/etcd_worker/cfg"
 	"time"
 )
 
@@ -20,7 +20,7 @@ var (
 	SG_REGISTER *Register
 )
 
-func InitRegister(cfg cfg.EtcdConfig) (err error) {
+func InitRegister(cfg *cfg.Etcd) (err error) {
 	var (
 		config  clientv3.Config
 		client  *clientv3.Client

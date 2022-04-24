@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"suzaku/micro/etcd/common"
-	"suzaku/micro/etcd/etcd_worker/cfg"
+	"suzaku/examples/etcd/common"
+	"suzaku/examples/etcd/etcd_worker/cfg"
 	"time"
 )
 
@@ -22,7 +22,7 @@ var (
 )
 
 // 初始化管理器
-func InitJobMgr(cfg cfg.EtcdConfig) (err error) {
+func InitJobMgr(cfg *cfg.Etcd) (err error) {
 	var (
 		config  clientv3.Config
 		client  *clientv3.Client

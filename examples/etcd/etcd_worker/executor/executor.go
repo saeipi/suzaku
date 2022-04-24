@@ -3,7 +3,7 @@ package executor
 import (
 	"math/rand"
 	"os/exec"
-	"suzaku/micro/etcd/common"
+	"suzaku/examples/etcd/common"
 	"time"
 )
 

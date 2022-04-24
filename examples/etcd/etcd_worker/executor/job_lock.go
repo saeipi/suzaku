@@ -3,7 +3,7 @@ package executor
 import (
 	"context"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"suzaku/micro/etcd/common"
+	"suzaku/examples/etcd/common"
 )
 
 // 分布式锁(TXN事务)
