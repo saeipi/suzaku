@@ -19,10 +19,10 @@ type Watcher struct {
 	kvs        map[string]string
 	allService []string
 	schema     string
-	etcdAddr   string
+	address    []string
 }
 
-func NewWatcher(catalog string, endpoints []string, schema string, etcdAddr string) (w *Watcher, err error) {
+func NewWatcher(catalog string, schema string, address []string) (w *Watcher, err error) {
 	var (
 		config  clientv3.Config
 		client  *clientv3.Client
@@ -31,7 +31,7 @@ func NewWatcher(catalog string, endpoints []string, schema string, etcdAddr stri
 	)
 
 	config = clientv3.Config{
-		Endpoints:   endpoints,                              // 集群地址
+		Endpoints:   address,                                // 集群地址
 		DialTimeout: time.Duration(5000) * time.Millisecond, // 连接超时
 	}
 	// 1、建立连接
@@ -50,15 +50,13 @@ func NewWatcher(catalog string, endpoints []string, schema string, etcdAddr stri
 		kvs:        make(map[string]string),
 		allService: make([]string, 0),
 		schema:     schema,
-		etcdAddr:   etcdAddr,
+		address:    address,
 	}
-	// 3、进行监听
-	w.listening()
 	return
 }
 
-// 监听任务变化
-func (j *Watcher) listening() (err error) {
+// 监听变化
+func (w *Watcher) Run() (err error) {
 	var (
 		resp               *clientv3.GetResponse
 		kvpair             *mvccpb.KeyValue
@@ -71,43 +69,43 @@ func (j *Watcher) listening() (err error) {
 	)
 
 	// 1、get目录下的所有键值对，并且获知当前集群的revision
-	if resp, err = j.kv.Get(context.TODO(), j.catalog, clientv3.WithPrefix()); err != nil {
+	if resp, err = w.kv.Get(context.TODO(), w.catalog, clientv3.WithPrefix()); err != nil {
 		return
 	}
 	for _, kvpair = range resp.Kvs {
 		key = string(kvpair.Key)
 		value = string(kvpair.Value)
-		j.kvs[key] = value
+		w.kvs[key] = value
 	}
-	j.updateServices()
+	w.updateServices()
 
 	// 2、从该revision向后监听变化事件
 	go func() {
 		// 从GET时刻的后续版本开始监听变化
 		watchStartRevision = resp.Header.Revision + 1
 		// 监听目录的后续变化
-		watchChan = j.watcher.Watch(context.TODO(), j.catalog, clientv3.WithRev(watchStartRevision), clientv3.WithPrefix())
+		watchChan = w.watcher.Watch(context.TODO(), w.catalog, clientv3.WithRev(watchStartRevision), clientv3.WithPrefix())
 		// 处理监听事件
 		for watchResp = range watchChan {
 			for _, watchEvent = range watchResp.Events {
 				switch watchEvent.Type {
 				case mvccpb.PUT: // 任务保存事件
-					j.rwLock.Lock()
+					w.rwLock.Lock()
 
 					key = string(watchEvent.Kv.Key)
 					value = string(watchEvent.Kv.Value)
-					j.kvs[key] = value
-					j.updateServices()
+					w.kvs[key] = value
+					w.updateServices()
 
-					j.rwLock.Unlock()
+					w.rwLock.Unlock()
 				case mvccpb.DELETE: // 任务被删除了
-					j.rwLock.Lock()
+					w.rwLock.Lock()
 
 					key = string(watchEvent.Kv.Key)
-					delete(j.kvs, key)
-					j.updateServices()
+					delete(w.kvs, key)
+					w.updateServices()
 
-					j.rwLock.Unlock()
+					w.rwLock.Unlock()
 				}
 			}
 		}
@@ -115,21 +113,21 @@ func (j *Watcher) listening() (err error) {
 	return
 }
 
-func (j *Watcher) updateServices() {
+func (w *Watcher) updateServices() {
 	var (
 		maps        map[string]string
 		key         string
 		serviceName string
 	)
-	j.allService = make([]string, 0)
+	w.allService = make([]string, 0)
 	maps = make(map[string]string)
-	for key, _ = range j.kvs {
+	for key, _ = range w.kvs {
 		serviceName = getServiceName(key)
 		if _, ok := maps[serviceName]; ok == true {
 			continue
 		}
 		maps[serviceName] = serviceName
-		j.allService = append(j.allService, serviceName)
+		w.allService = append(w.allService, serviceName)
 	}
 }
 
@@ -145,19 +143,19 @@ func getServiceName(key string) (name string) {
 	return
 }
 
-func (j *Watcher) GetAllConns() (conns []*grpc.ClientConn) {
+func (w *Watcher) GetAllConns() (conns []*grpc.ClientConn) {
 	var (
 		services   []string
 		service    string
 		clientConn *grpc.ClientConn
 	)
-	j.rwLock.RLock()
-	services = j.allService
-	j.rwLock.RUnlock()
+	w.rwLock.RLock()
+	services = w.allService
+	w.rwLock.RUnlock()
 
 	conns = make([]*grpc.ClientConn, 0)
 	for _, service = range services {
-		clientConn = GetConn(j.schema, j.etcdAddr, service)
+		clientConn = GetConn(w.schema, strings.Join(w.address, ","), service)
 		if clientConn == nil {
 			//TODO: error
 			continue

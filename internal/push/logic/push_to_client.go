@@ -3,9 +3,6 @@ package logic
 import (
 	"context"
 	"google.golang.org/grpc"
-	"strings"
-	"suzaku/pkg/common/config"
-	"suzaku/pkg/common/grpc-etcdv3/getcdv3"
 	"suzaku/pkg/constant"
 	pb_push "suzaku/pkg/proto/push"
 	pb_relay "suzaku/pkg/proto/relay"
@@ -28,9 +25,12 @@ func MsgToUser(pushMsg *pb_push.PushMsgReq) {
 	)
 	wsResult = make([]*pb_relay.SingleMsgToUser, 0)
 	isOfflinePush = utils.GetSwitchFromOptions(pushMsg.MsgData.Options, constant.IsOfflinePush)
-	grpcCons = getcdv3.GetConn4Unique(config.Config.Etcd.Schema,
-		strings.Join(config.Config.Etcd.Address, ","),
-		config.Config.RPCRegisterName.OnlineMessageRelayName)
+	/*
+		grpcCons = getcdv3.GetConn4Unique(config.Config.Etcd.Schema,
+			strings.Join(config.Config.Etcd.Address, ","),
+			config.Config.RPCRegisterName.OnlineMessageRelayName)
+	*/
+	grpcCons = watcher.GetAllConns()
 	if len(grpcCons) == 0 {
 		//TODO:error
 		return
