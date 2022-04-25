@@ -7,11 +7,13 @@ require (
 	github.com/Shopify/sarama v1.32.0
 	github.com/ansel1/merry v1.6.2
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
+	github.com/bilibili/discovery v1.2.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/golang/lint v0.0.0-20180702182130-06c8688daad7 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75 // indirect
 	github.com/gorilla/websocket v1.5.0
@@ -37,6 +39,7 @@ require (
 	golang.org/x/text v0.3.7
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
+	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.4
