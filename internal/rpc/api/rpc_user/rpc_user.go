@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
+	"suzaku/pkg/factory"
 	pb_com "suzaku/pkg/proto/pb_com"
 	pb_user "suzaku/pkg/proto/user"
 )
@@ -24,7 +25,7 @@ func (rpc *userRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
-	server = grpc.NewServer()
+	server = factory.NewRPCNewServer()
 	pb_user.RegisterUserServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }

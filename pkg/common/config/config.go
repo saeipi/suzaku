@@ -17,6 +17,7 @@ type config struct {
 	Alarm           Alarm           `yaml:"alarm"`
 	Abnormal        Abnormal        `yaml:"abnormal"`
 	Etcd            Etcd            `yaml:"etcd"`
+	RPCKeepalive    RPCKeepalive    `yaml:"rpc_keepalive"`
 	RPCPort         RPCPort         `yaml:"rpc_port"`
 	RPCRegisterName RPCRegisterName `yaml:"rpc_register_name"`
 	Mysql           Mysql           `yaml:"mysql"`
@@ -71,6 +72,13 @@ type StateChange struct {
 }
 type State struct {
 	StateChange StateChange `yaml:"state_change"`
+}
+type RPCKeepalive struct {
+	IdleTimeout       int `yaml:"idle_timeout"`
+	ForceCloseWait    int `yaml:"force_close_wait"`
+	KeepAliveInterval int `yaml:"keep_alive_interval"`
+	KeepAliveTimeout  int `yaml:"keep_alive_timeout"`
+	MaxLifeTime       int `yaml:"max_life_time"`
 }
 type RPCPort struct {
 	UserPort           []int `yaml:"user_port"`

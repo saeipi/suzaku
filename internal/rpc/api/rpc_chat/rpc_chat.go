@@ -5,6 +5,7 @@ import (
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/kafka"
+	"suzaku/pkg/factory"
 	pb_chat "suzaku/pkg/proto/chart"
 )
 
@@ -29,7 +30,7 @@ func (rpc *chatRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
-	server = grpc.NewServer()
+	server = factory.NewRPCNewServer()
 	pb_chat.RegisterChatServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }

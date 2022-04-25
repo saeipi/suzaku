@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"suzaku/internal/dto/dto_api"
-	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
 	pb_auth "suzaku/pkg/proto/auth"
 	"suzaku/pkg/utils"
@@ -36,7 +36,7 @@ func UserRegister(c *gin.Context) {
 	req = &pb_auth.UserRegisterReq{}
 	utils.CopyStructFields(req, params)
 	//clientConn = getcdv3.GetConn(config.Config.Etcd.Schema, strings.Join(config.Config.Etcd.Address, ","), config.Config.RPCRegisterName.AuthName)
-	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.AuthName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.AuthName)
 	client = pb_auth.NewAuthClient(clientConn)
 	reply, _ = client.UserRegister(context.Background(), req)
 	if reply.Common != nil && reply.Common.Code > 0 {

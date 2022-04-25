@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
+	"suzaku/pkg/factory"
 	pb_friend "suzaku/pkg/proto/friend"
 	pb_com "suzaku/pkg/proto/pb_com"
 )
@@ -24,7 +25,7 @@ func (rpc *friendRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
-	server = grpc.NewServer()
+	server = factory.NewRPCNewServer()
 	pb_friend.RegisterFriendServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }

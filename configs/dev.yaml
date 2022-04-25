@@ -19,6 +19,13 @@ etcd:
   write_timeout: 5000
   dial_timeout: 5000
 
+rpc_keepalive:
+  idle_timeout: 60000 #60s
+  force_close_wait: 20000 #20s
+  keep_alive_interval: 60000 #60s
+  keep_alive_timeout: 20000 #20s
+  max_life_time: 7200000 #2h
+
 rpc_port: #rpc服务端口 默认即可
   user_port: [ 10100 ]
   friend_port: [ 10200 ]

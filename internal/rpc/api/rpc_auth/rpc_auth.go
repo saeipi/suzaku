@@ -11,6 +11,7 @@ import (
 	"suzaku/pkg/common/jwt_auth"
 	"suzaku/pkg/common/redis"
 	"suzaku/pkg/common/snowflake"
+	"suzaku/pkg/factory"
 	pb_auth "suzaku/pkg/proto/auth"
 	pb_com "suzaku/pkg/proto/pb_com"
 )
@@ -30,7 +31,7 @@ func (rpc *authRpcServer) Run() {
 	var (
 		server *grpc.Server
 	)
-	server = grpc.NewServer()
+	server = factory.NewRPCNewServer()
 	pb_auth.RegisterAuthServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }

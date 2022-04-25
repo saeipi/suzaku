@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"suzaku/internal/dto/dto_api"
-	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
+	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
 	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/utils"
@@ -36,7 +36,7 @@ func AddFriend(c *gin.Context) {
 	utils.CopyStructFields(req, params)
 	req.UserId = userId
 
-	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.FriendName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.FriendName)
 	client = pb_friend.NewFriendClient(clientConn)
 	reply, _ = client.AddFriend(context.Background(), req)
 	if reply.Common != nil && reply.Common.Code > 0 {

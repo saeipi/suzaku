@@ -9,6 +9,7 @@ import (
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	pb_relay "suzaku/pkg/proto/relay"
 	"suzaku/pkg/utils"
 )
@@ -32,7 +33,7 @@ func (rpc *RPCServer) Run() {
 	var (
 		server *grpc.Server
 	)
-	server = grpc.NewServer()
+	server = factory.NewRPCNewServer()
 	pb_relay.RegisterOnlineMessageRelayServiceServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }

@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 	"suzaku/internal/dto/dto_api"
-	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
@@ -62,7 +62,7 @@ func SendMessage(c *gin.Context) {
 	token = c.Request.Header.Get(constant.HttpKeyToken)
 	sendMsg = newUserSendMsg(token, params)
 
-	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
 	client = pb_chat.NewChatClient(clientConn)
 
 	reply, err = client.SendMsg(context.Background(), sendMsg)

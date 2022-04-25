@@ -1,10 +1,10 @@
-package grpc_client
+package factory
 
 import (
 	"google.golang.org/grpc"
 	"strings"
-	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/grpc-etcdv3/getcdv3"
+	"suzaku/pkg/common/config"
 )
 
 func ClientConn(serviceName string) (clientConn *grpc.ClientConn) {

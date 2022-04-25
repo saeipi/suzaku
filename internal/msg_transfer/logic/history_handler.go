@@ -6,10 +6,10 @@ import (
 	"github.com/Shopify/sarama"
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/grpc"
-	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/kafka"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	pb_chat "suzaku/pkg/proto/chart"
 	pb_push "suzaku/pkg/proto/push"
 	"suzaku/pkg/utils"
@@ -105,7 +105,7 @@ func sendMessageToPush(message *pb_chat.MsgDataToMQ, pushToUserID string) {
 		PushToUserId: pushToUserID,
 	}
 
-	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.PushName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.PushName)
 	if clientConn == nil {
 		// 消息再次放入kafka消息队列
 		pid, offset, err = producer.SendMessage(&mqPushMsg)
