@@ -35,6 +35,7 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.2
 	go.etcd.io/etcd/client/v3 v3.5.2
 	go.mongodb.org/mongo-driver v1.9.0
+	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 	golang.org/x/text v0.3.7
 	google.golang.org/grpc v1.45.0
