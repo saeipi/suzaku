@@ -19,7 +19,7 @@ func NewManager() (mgr *Manager) {
 
 func (m *Manager) Run() {
 	go m.listener()
-	m.batchCreate(10240)
+	go m.batchCreate(10000)
 }
 
 func (m *Manager) unregisterClient(client *Client) {
@@ -43,7 +43,7 @@ func (m *Manager) listener() {
 		case client = <-m.unregister:
 			m.unregisterClient(client)
 		case <-ticker.C:
-			m.batchCreate(5120)
+			m.batchCreate(5000)
 		}
 	}
 }
