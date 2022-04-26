@@ -19,7 +19,7 @@ func NewManager() (mgr *Manager) {
 
 func (m *Manager) Run() {
 	go m.listener()
-	go m.batchCreate(10000)
+	go m.batchCreate(2)
 }
 
 func (m *Manager) unregisterClient(client *Client) {

@@ -72,6 +72,14 @@ func GetInt64(key string) (int64, error) {
 	return v, err
 }
 
+func Incr(key string) (uint64, error) {
+	v, err := RedisClient.client.Incr(RealKey(key)).Result()
+	if err == redis.Nil {
+		return 0, nil
+	}
+	return uint64(v), err
+}
+
 func GetUint64(key string) (uint64, error) {
 	v, err := RedisClient.client.Do("GET", RealKey(key)).Uint64()
 	if err == redis.Nil {

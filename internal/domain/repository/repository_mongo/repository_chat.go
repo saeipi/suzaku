@@ -31,7 +31,6 @@ func init() {
 }
 
 func (r *mgChatRepository) SaveUserChatMongo2(uid string, sendTime int64, msg *pb_chat.MsgDataToDB) (err error) {
-	return
 	var (
 		db   *mongo.Database
 		coll *mongo.Collection

@@ -32,7 +32,7 @@ func GetAccountCode(account string) (string, error) {
 //Perform seq auto-increment operation of user messages
 func IncrUserSeq(uid string) (uint64, error) {
 	key := userIncrSeq + uid
-	return GetUint64(key)
+	return Incr(key)
 }
 
 //Get the largest Seq
