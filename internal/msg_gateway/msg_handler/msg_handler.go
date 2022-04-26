@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/msg_gateway/protocol"
 	ws "suzaku/internal/msg_gateway/ws_server"
-	"suzaku/internal/rpc/grpc_client"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
 	"suzaku/pkg/utils"
@@ -67,7 +67,7 @@ func (h *MsgHandler) getNewestSeq(client *ws.Client, req *protocol.MessageReq) {
 	rpcReq.UserId = req.SendID
 	rpcReq.OperationId = req.OperationID
 
-	clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
 	if clientConn == nil {
 		//TODO: error
 		return
@@ -160,7 +160,7 @@ func (h *MsgHandler) sendMsgReq(client *ws.Client, req *protocol.MessageReq) {
 			OperationId: req.OperationID,
 			MsgData:     &msgData,
 		}
-		clientConn = grpc_client.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
+		clientConn = factory.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
 		chatClient = pb_chat.NewChatClient(clientConn)
 		reply, err = chatClient.SendMsg(context.Background(), &reqReq)
 		if reply == nil {
