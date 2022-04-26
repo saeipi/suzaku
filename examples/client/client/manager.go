@@ -18,14 +18,8 @@ func NewManager() (mgr *Manager) {
 }
 
 func (m *Manager) Run() {
-	var (
-		i int
-	)
 	go m.listener()
-
-	for i = 0; i < 10000; i = i + 2 {
-		go m.newConnection(strconv.Itoa(i), strconv.Itoa(i+1))
-	}
+	m.batchCreate(10240)
 }
 
 func (m *Manager) unregisterClient(client *Client) {
@@ -40,7 +34,7 @@ func (m *Manager) unregisterClient(client *Client) {
 }
 
 func (m *Manager) listener() {
-	ticker := time.NewTicker(30 * time.Minute)
+	ticker := time.NewTicker(5 * time.Minute)
 	var (
 		client *Client
 	)
@@ -49,7 +43,7 @@ func (m *Manager) listener() {
 		case client = <-m.unregister:
 			m.unregisterClient(client)
 		case <-ticker.C:
-			m.batchCreate(2000)
+			m.batchCreate(5120)
 		}
 	}
 }
@@ -59,7 +53,7 @@ func (m *Manager) batchCreate(count int) {
 		i int
 	)
 	for i = 0; i < count; i = i + 2 {
-		go m.newConnection(strconv.Itoa(i), strconv.Itoa(i+1))
+		m.newConnection(strconv.Itoa(i), strconv.Itoa(i+1))
 	}
 }
 
