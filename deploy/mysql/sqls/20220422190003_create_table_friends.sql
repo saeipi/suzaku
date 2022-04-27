@@ -20,21 +20,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for users
 -- ----------------------------
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(24) DEFAULT '' COMMENT '用户ID',
-  `mobile` varchar(32) DEFAULT '' COMMENT '手机',
-  `platform_id` tinyint(1) DEFAULT '0' COMMENT '平台',
-  `gender` tinyint(1) DEFAULT '0' COMMENT '性别',
+DROP TABLE IF EXISTS `friends`;
+CREATE TABLE `friends` (
+  `owner_user_id` varchar(40) DEFAULT '' COMMENT '添加好友发起者ID',
+  `friend_user_id` varchar(40) DEFAULT '' COMMENT '好友ID',
+  `source` tinyint(1) DEFAULT '0' COMMENT '添加源',
+  `remark` varchar(255) DEFAULT '' COMMENT '备注',
+  `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_userId` (`user_id`) USING BTREE,
-  KEY `idx_ mobile` (`mobile`) USING BTREE,
-  KEY `idx_platformId` (`platform_id`) USING BTREE,
-  KEY `idx_gender` (`gender`) USING BTREE
+  PRIMARY KEY (`owner_user_id`,`friend_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
