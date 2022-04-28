@@ -30,3 +30,15 @@ func (r *userRepository) UserRegister(user *entity_mysql.User) (err error) {
 	err = db.Save(user).Error
 	return
 }
+
+func (r *userRepository) GetUserByUserID(userID string) (err error) {
+	var (
+		db *gorm.DB
+	)
+	db, err = mysql.GormDB()
+	if err != nil {
+		return
+	}
+	//err = db.Model(&entity_mysql.User{}).Where("user_id=?",userID).Find()
+	return
+}
