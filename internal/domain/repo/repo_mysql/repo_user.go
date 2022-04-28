@@ -24,8 +24,7 @@ func (r *userRepository) UserRegister(user *po_mysql.User) (err error) {
 	var (
 		db *gorm.DB
 	)
-	db, err = mysql.GormDB()
-	if err != nil {
+	if db, err = mysql.GormDB();err != nil{
 		return
 	}
 	err = db.Save(user).Error

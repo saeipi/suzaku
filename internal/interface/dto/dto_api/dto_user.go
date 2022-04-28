@@ -2,7 +2,7 @@ package dto_api
 
 import "time"
 
-type UserDto struct {
+type UserInfoResp struct {
 	UserId     string    `gorm:"column:user_id;primary_key" json:"user_id"`       // 用户ID 系统生成
 	SzkId      string    `gorm:"column:szk_id" json:"szk_id"`                     // 账户ID 用户设置
 	Nickname   string    `gorm:"column:nickname" json:"nickname"`                 // 昵称

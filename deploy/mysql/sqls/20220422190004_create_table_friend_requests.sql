@@ -31,7 +31,7 @@ CREATE TABLE `friend_requests` (
   `handle_msg` varchar(255) DEFAULT '' COMMENT '处理消息',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_at` datetime DEFAULT NULL,
-  `handle_at` datetime DEFAULT NULL,
+  `handle_at` datetime DEFAULT NULL COMMENT '处理时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_fromUserId` (`from_user_id`),
   KEY `idx_toUserId` (`to_user_id`)

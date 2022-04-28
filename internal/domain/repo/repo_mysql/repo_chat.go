@@ -23,8 +23,7 @@ func (r *chatRepository) SaveChatLog(log *po_mysql.ChatLog) (err error) {
 	var (
 		db *gorm.DB
 	)
-	db, err = mysql.GormDB()
-	if err != nil {
+	if db, err = mysql.GormDB();err != nil{
 		return
 	}
 	err = db.Save(log).Error

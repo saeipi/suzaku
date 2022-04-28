@@ -39,7 +39,11 @@ func AddFriend(c *gin.Context) {
 	clientConn = factory.ClientConn(config.Config.RPCRegisterName.FriendName)
 	client = pb_friend.NewFriendClient(clientConn)
 	reply, _ = client.AddFriend(context.Background(), req)
-	if reply.Common != nil && reply.Common.Code > 0 {
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if reply.Common.Code > 0 {
 		http.Err(c, reply.Common.Msg, reply.Common.Code)
 		return
 	}
