@@ -8,7 +8,7 @@ import (
 	"suzaku/pkg/proto/pb_ws"
 )
 
-func (rpc *chatRpcServer) GetMaxAndMinSeq(_ context.Context, req *pb_chat.GetMaxAndMinSeqReq) (resp *pb_chat.GetMaxAndMinSeqResp, err error) {
+func (rpc *chatRpcServer) GetMinMaxSeq(_ context.Context, req *pb_chat.GetMinMaxSeqReq) (resp *pb_chat.GetMinMaxSeqResp, err error) {
 	var (
 		maxSeq uint64
 		minSeq uint64
@@ -17,7 +17,7 @@ func (rpc *chatRpcServer) GetMaxAndMinSeq(_ context.Context, req *pb_chat.GetMax
 	)
 	maxSeq, err1 = redis.GetUserMaxSeq(req.UserId)
 	minSeq, err2 = redis.GetUserMinSeq(req.UserId)
-	resp = new(pb_chat.GetMaxAndMinSeqResp)
+	resp = new(pb_chat.GetMinMaxSeqResp)
 	if err1 != nil {
 		resp.MaxSeq = uint32(maxSeq)
 	} else if err1 != redis.ErrorRedisNil {

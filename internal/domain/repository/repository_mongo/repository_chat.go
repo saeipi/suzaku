@@ -152,13 +152,16 @@ func (r *mgChatRepository) GetMsgBySeqListMongo2(uid string, seqList []uint32, o
 func getCurrentTimestampByMill() int64 {
 	return time.Now().UnixNano() / 1e6
 }
+
 func getSeqUid(uid string, seq uint32) string {
 	seqSuffix := seq / singleGocMsgNum
 	return indexGen(uid, seqSuffix)
 }
+
 func indexGen(uid string, seqSuffix uint32) string {
 	return uid + ":" + strconv.FormatInt(int64(seqSuffix), 10)
 }
+
 func isContainInt32(target uint32, List []uint32) bool {
 	for _, element := range List {
 		if target == element {
@@ -167,6 +170,7 @@ func isContainInt32(target uint32, List []uint32) bool {
 	}
 	return false
 }
+
 func genExceptionMessageBySeqList(seqList []uint32) (exceptionMsg []*pb_ws.MsgData) {
 	for _, v := range seqList {
 		msg := new(pb_ws.MsgData)

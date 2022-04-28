@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatClient interface {
-	GetMaxAndMinSeq(ctx context.Context, in *GetMaxAndMinSeqReq, opts ...grpc.CallOption) (*GetMaxAndMinSeqResp, error)
+	GetMinMaxSeq(ctx context.Context, in *GetMinMaxSeqReq, opts ...grpc.CallOption) (*GetMinMaxSeqResp, error)
 	PullMessageBySeqList(ctx context.Context, in *pb_ws.PullMessageBySeqListReq, opts ...grpc.CallOption) (*pb_ws.PullMessageBySeqListResp, error)
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
 }
@@ -32,9 +32,9 @@ func NewChatClient(cc grpc.ClientConnInterface) ChatClient {
 	return &chatClient{cc}
 }
 
-func (c *chatClient) GetMaxAndMinSeq(ctx context.Context, in *GetMaxAndMinSeqReq, opts ...grpc.CallOption) (*GetMaxAndMinSeqResp, error) {
-	out := new(GetMaxAndMinSeqResp)
-	err := c.cc.Invoke(ctx, "/pb_auth.Chat/GetMaxAndMinSeq", in, out, opts...)
+func (c *chatClient) GetMinMaxSeq(ctx context.Context, in *GetMinMaxSeqReq, opts ...grpc.CallOption) (*GetMinMaxSeqResp, error) {
+	out := new(GetMinMaxSeqResp)
+	err := c.cc.Invoke(ctx, "/pb_auth.Chat/GetMinMaxSeq", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (c *chatClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.C
 // All implementations must embed UnimplementedChatServer
 // for forward compatibility
 type ChatServer interface {
-	GetMaxAndMinSeq(context.Context, *GetMaxAndMinSeqReq) (*GetMaxAndMinSeqResp, error)
+	GetMinMaxSeq(context.Context, *GetMinMaxSeqReq) (*GetMinMaxSeqResp, error)
 	PullMessageBySeqList(context.Context, *pb_ws.PullMessageBySeqListReq) (*pb_ws.PullMessageBySeqListResp, error)
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
 	mustEmbedUnimplementedChatServer()
@@ -73,8 +73,8 @@ type ChatServer interface {
 type UnimplementedChatServer struct {
 }
 
-func (UnimplementedChatServer) GetMaxAndMinSeq(context.Context, *GetMaxAndMinSeqReq) (*GetMaxAndMinSeqResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMaxAndMinSeq not implemented")
+func (UnimplementedChatServer) GetMinMaxSeq(context.Context, *GetMinMaxSeqReq) (*GetMinMaxSeqResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMinMaxSeq not implemented")
 }
 func (UnimplementedChatServer) PullMessageBySeqList(context.Context, *pb_ws.PullMessageBySeqListReq) (*pb_ws.PullMessageBySeqListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PullMessageBySeqList not implemented")
@@ -95,20 +95,20 @@ func RegisterChatServer(s grpc.ServiceRegistrar, srv ChatServer) {
 	s.RegisterService(&Chat_ServiceDesc, srv)
 }
 
-func _Chat_GetMaxAndMinSeq_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMaxAndMinSeqReq)
+func _Chat_GetMinMaxSeq_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMinMaxSeqReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServer).GetMaxAndMinSeq(ctx, in)
+		return srv.(ChatServer).GetMinMaxSeq(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb_auth.Chat/GetMaxAndMinSeq",
+		FullMethod: "/pb_auth.Chat/GetMinMaxSeq",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServer).GetMaxAndMinSeq(ctx, req.(*GetMaxAndMinSeqReq))
+		return srv.(ChatServer).GetMinMaxSeq(ctx, req.(*GetMinMaxSeqReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -157,8 +157,8 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ChatServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetMaxAndMinSeq",
-			Handler:    _Chat_GetMaxAndMinSeq_Handler,
+			MethodName: "GetMinMaxSeq",
+			Handler:    _Chat_GetMinMaxSeq_Handler,
 		},
 		{
 			MethodName: "PullMessageBySeqList",

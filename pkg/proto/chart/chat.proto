@@ -26,12 +26,12 @@ message PushMsgDataToMQ{
   string push_to_user_id = 3;
 }
 
-message GetMaxAndMinSeqReq {
+message GetMinMaxSeqReq {
   string user_id = 1;
   string operation_id = 2;
 }
 
-message GetMaxAndMinSeqResp {
+message GetMinMaxSeqResp {
   int32 err_code = 1;
   string err_msg = 2;
   uint32 max_seq = 3;
@@ -53,7 +53,7 @@ message SendMsgResp {
 }
 
 service Chat {
-  rpc GetMaxAndMinSeq(GetMaxAndMinSeqReq) returns(GetMaxAndMinSeqResp);
+  rpc GetMinMaxSeq(GetMinMaxSeqReq) returns(GetMinMaxSeqResp);
   rpc PullMessageBySeqList(pb_ws.PullMessageBySeqListReq) returns(pb_ws.PullMessageBySeqListResp);
   rpc SendMsg(SendMsgReq) returns(SendMsgResp);
 }

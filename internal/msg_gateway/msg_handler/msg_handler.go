@@ -44,26 +44,26 @@ func (h *MsgHandler) MessageCallback(msg *ws.Message) {
 	}
 	switch req.ReqIdentifier {
 	case constant.WSGetNewestSeq:
-		// TODO:暂时屏蔽
-		// h.getNewestSeq(msg.Client, &req)
+		h.getNewestSeq(msg.Client, &req)
 	case constant.WSSendMsg:
 		h.sendMsgReq(msg.Client, &req)
 	case constant.WSPullMsgBySeqList:
+		h.pullMsgBySeqListReq(msg.Client, &req)
 	default:
 	}
 }
 
 func (h *MsgHandler) getNewestSeq(client *ws.Client, req *protocol.MessageReq) {
 	var (
-		rpcReq     pb_chat.GetMaxAndMinSeqReq
-		reply      *pb_chat.GetMaxAndMinSeqResp
+		rpcReq     pb_chat.GetMinMaxSeqReq
+		reply      *pb_chat.GetMinMaxSeqResp
 		clientConn *grpc.ClientConn
 		chatClient pb_chat.ChatClient
-		rpcReply   *pb_chat.GetMaxAndMinSeqResp
+		rpcReply   *pb_chat.GetMinMaxSeqResp
 		err        error
 	)
-	rpcReq = pb_chat.GetMaxAndMinSeqReq{}
-	reply = new(pb_chat.GetMaxAndMinSeqResp)
+	rpcReq = pb_chat.GetMinMaxSeqReq{}
+	reply = new(pb_chat.GetMinMaxSeqResp)
 	rpcReq.UserId = req.SendID
 	rpcReq.OperationId = req.OperationID
 
@@ -73,7 +73,7 @@ func (h *MsgHandler) getNewestSeq(client *ws.Client, req *protocol.MessageReq) {
 		return
 	}
 	chatClient = pb_chat.NewChatClient(clientConn)
-	rpcReply, err = chatClient.GetMaxAndMinSeq(context.Background(), &rpcReq)
+	rpcReply, err = chatClient.GetMinMaxSeq(context.Background(), &rpcReq)
 	if err == nil {
 		//TODO: error
 		reply.ErrCode = 500
@@ -84,7 +84,7 @@ func (h *MsgHandler) getNewestSeq(client *ws.Client, req *protocol.MessageReq) {
 	}
 }
 
-func (h *MsgHandler) getSeqResp(client *ws.Client, req *protocol.MessageReq, pb *pb_chat.GetMaxAndMinSeqResp) {
+func (h *MsgHandler) getSeqResp(client *ws.Client, req *protocol.MessageReq, pb *pb_chat.GetMinMaxSeqResp) {
 	var (
 		replyData pb_ws.GetMaxAndMinSeqResp
 		buffer    []byte
@@ -192,6 +192,70 @@ func (h *MsgHandler) sendMsgResp(client *ws.Client, req *protocol.MessageReq, re
 	replyData.ServerMsgId = reply.GetServerMsgId()
 	replyData.SendTime = reply.GetSendTime()
 	buf, err = proto.Marshal(&replyData)
+	if err != nil {
+		//TODO: error
+		return
+	}
+	resp = protocol.MessageResp{
+		ReqIdentifier: req.ReqIdentifier,
+		MsgIncr:       req.MsgIncr,
+		ErrCode:       reply.GetErrCode(),
+		ErrMsg:        reply.GetErrMsg(),
+		OperationID:   req.OperationID,
+		Data:          buf,
+	}
+	h.sendMessage(client, resp)
+}
+
+func (h *MsgHandler) pullMsgBySeqListReq(client *ws.Client, req *protocol.MessageReq) {
+	var (
+		reply      *pb_ws.PullMessageBySeqListResp
+		isPass     bool
+		errCode    int32
+		errMsg     string
+		data       interface{}
+		rpcReq     pb_ws.PullMessageBySeqListReq
+		clientConn *grpc.ClientConn
+		chatClient pb_chat.ChatClient
+		err        error
+	)
+	reply = new(pb_ws.PullMessageBySeqListResp)
+	isPass, errCode, errMsg, data = h.argsValidate(req, constant.WSPullMsgBySeqList)
+	if isPass {
+		rpcReq = pb_ws.PullMessageBySeqListReq{}
+		rpcReq.SeqList = data.(pb_ws.PullMessageBySeqListReq).SeqList
+		rpcReq.UserId = req.SendID
+		rpcReq.OperationId = req.OperationID
+
+		clientConn = factory.ClientConn(config.Config.RPCRegisterName.OfflineMessageName)
+		chatClient = pb_chat.NewChatClient(clientConn)
+		reply, err = chatClient.PullMessageBySeqList(context.Background(), &rpcReq)
+		if reply == nil {
+			//TODO: error
+			return
+		}
+		if err != nil {
+			reply.ErrCode = 200
+			reply.ErrMsg = err.Error()
+			h.pullMsgBySeqListResp(client, req, reply)
+		} else {
+			h.pullMsgBySeqListResp(client, req, reply)
+		}
+		return
+	}
+	reply.ErrCode = errCode
+	reply.ErrMsg = errMsg
+	h.pullMsgBySeqListResp(client, req, reply)
+}
+
+func (h *MsgHandler) pullMsgBySeqListResp(client *ws.Client, req *protocol.MessageReq, reply *pb_ws.PullMessageBySeqListResp) {
+	var (
+		buf  []byte
+		resp protocol.MessageResp
+		err  error
+	)
+
+	buf, err = proto.Marshal(reply)
 	if err != nil {
 		//TODO: error
 		return
