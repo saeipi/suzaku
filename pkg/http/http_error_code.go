@@ -11,6 +11,7 @@ const (
 	ErrorCodeHttpPlatformIdDoesNotExist = 10008 // 平台信息缺失
 	ErrorCodeHttpGetUserFailed          = 10009 // 获取用户信息失败
 	ErrorCodeHttpAddFriendFailed        = 10010 // 添加好友失败
+	ErrorCodeHttpServiceFailure         = 10011 // 服务故障
 )
 
 const (

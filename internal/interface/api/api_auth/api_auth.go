@@ -39,17 +39,27 @@ func UserRegister(c *gin.Context) {
 	clientConn = factory.ClientConn(config.Config.RPCRegisterName.AuthName)
 	client = pb_auth.NewAuthClient(clientConn)
 	reply, _ = client.UserRegister(context.Background(), req)
-	if reply.Common != nil && reply.Common.Code > 0 {
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if reply.Common.Code > 0 {
 		http.Err(c, reply.Common.Msg, reply.Common.Code)
 		return
 	}
+
 	tokenReq = &pb_auth.UserTokenReq{}
 	utils.CopyStructFields(tokenReq, reply)
 	replyToken, _ = client.UserToken(context.Background(), tokenReq)
-	if replyToken.Common != nil && replyToken.Common.Code > 0 {
+	if replyToken == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if replyToken.Common.Code > 0 {
 		http.Err(c, replyToken.Common.Msg, replyToken.Common.Code)
 		return
 	}
+
 	resp = &dto_api.UserRegisterResp{
 		PlatformId: reply.PlatformId,
 		UserId:     reply.UserId,

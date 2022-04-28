@@ -46,7 +46,7 @@ func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserReg
 	user = &po_mysql.User{
 		UserId:     snowflake.SnowflakeID(),
 		Mobile:     req.Mobile,
-		PlatformId: req.PlatformId,
+		PlatformId: int(req.PlatformId),
 	}
 
 	err = repo_mysql.UserRepo.UserRegister(user)
@@ -55,8 +55,7 @@ func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserReg
 		common.Code = ErrCodeRpcRegisterFailed
 		return
 	}
-	resp.PlatformId = user.PlatformId
-	resp.Id = user.ID
+	resp.PlatformId = int32(user.PlatformId)
 	resp.UserId = user.UserId
 	return
 }
@@ -68,6 +67,7 @@ func (rpc *authRpcServer) UserToken(ctx context.Context, req *pb_auth.UserTokenR
 	)
 	token, expire = jwt_auth.CreateJwtToken(req.UserId, req.PlatformId)
 	resp = &pb_auth.UserTokenResp{
+		Common: &pb_com.CommonResp{},
 		Token:  token,
 		Expire: expire,
 	}

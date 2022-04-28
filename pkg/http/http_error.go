@@ -11,4 +11,5 @@ var (
 	ErrorHttpPlatformIdDoesNotExist = errors.New("平台信息缺失")
 	ErrorHttpGetUserFailed          = errors.New("获取用户信息失败")
 	ErrorHttpAddFriendFailed        = errors.New("添加好友失败")
+	ErrorHttpServiceFailure         = errors.New("服务故障")
 )

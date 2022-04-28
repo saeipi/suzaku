@@ -63,7 +63,7 @@ mysql:
   address: [ 127.0.0.1:3306 ]
   username: root
   password:
-  db: szk
+  db: sdb
   max_open_conn: 20
   max_idle_conn: 10
   conn_lifetime: 120000

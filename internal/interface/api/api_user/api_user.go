@@ -28,9 +28,13 @@ func SelfInfo(c *gin.Context) {
 	}
 	req = &pb_user.UserInfoReq{UserId: userId}
 	//clientConn = getcdv3.GetConn(config.Config.Etcd.Schema, strings.Join(config.Config.Etcd.Address, ","), config.Config.RPCRegisterName.AuthName)
-	clientConn = factory.ClientConn(config.Config.RPCRegisterName.AuthName)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.UserName)
 	client = pb_user.NewUserClient(clientConn)
 	reply, _ = client.UserInfo(context.Background(), req)
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
 	if reply.Common != nil && reply.Common.Code > 0 {
 		http.Err(c, reply.Common.Msg, reply.Common.Code)
 		return
