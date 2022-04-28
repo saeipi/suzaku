@@ -12,14 +12,6 @@ import (
 	"time"
 )
 
-/*
-func GetRootPath() string {
-	path, _ := filepath.Abs("./")
-	reg := regexp.MustCompile(global.ProjectName + "(.*)")
-	return reg.ReplaceAllString(path, global.ProjectName+"/")
-}
-*/
-
 // Determine whether the given path is a folder
 func IsDir(path string) bool {
 	s, err := os.Stat(path)
@@ -44,20 +36,6 @@ func Mkdir(path string) (err error) {
 	err = os.Chmod(path, os.ModePerm)
 	return
 }
-
-/*
-func FolderMkdir(basePath string, folder string) (folderPath string) {
-	environment := single_system.Shared().Env.Name
-	folderPath = fmt.Sprintf("%s/%s/", basePath, folder)
-	if environment == "" || environment == global.EnvironmentDev {
-		folderPath = fmt.Sprintf("./upload/%s/", folder)
-	}
-	if IsDir(folderPath)==false {
-		Mkdir(folderPath)
-	}
-	return
-}
-*/
 
 func ReadJson(path string, model interface{}) error {
 	bytes, err := ioutil.ReadFile(path)
@@ -125,4 +103,106 @@ func GetNewFileNameAndContentType(fileName string, fileType int) (string, string
 		contentType = "image/" + suffix[1:]
 	}
 	return newName, contentType
+}
+
+// ----------- i18n -------------
+var (
+	commonBaseSearchPaths = []string{
+		".",
+		"..",
+		"../..",
+		"../../..",
+	}
+)
+
+func findPath(path string, baseSearchPaths []string, workingDirFirst bool, filter func(os.FileInfo) bool) string {
+	if filepath.IsAbs(path) {
+		if _, err := os.Stat(path); err == nil {
+			return path
+		}
+
+		return ""
+	}
+
+	searchPaths := []string{}
+	if workingDirFirst {
+		searchPaths = append(searchPaths, baseSearchPaths...)
+	}
+
+	// Attempt to search relative to the location of the running binary either before
+	// or after searching relative to the working directory, depending on `workingDirFirst`.
+	var binaryDir string
+	if exe, err := os.Executable(); err == nil {
+		if exe, err = filepath.EvalSymlinks(exe); err == nil {
+			if exe, err = filepath.Abs(exe); err == nil {
+				binaryDir = filepath.Dir(exe)
+			}
+		}
+	}
+	if binaryDir != "" {
+		for _, baseSearchPath := range baseSearchPaths {
+			searchPaths = append(
+				searchPaths,
+				filepath.Join(binaryDir, baseSearchPath),
+			)
+		}
+	}
+
+	if !workingDirFirst {
+		searchPaths = append(searchPaths, baseSearchPaths...)
+	}
+
+	for _, parent := range searchPaths {
+		found, err := filepath.Abs(filepath.Join(parent, path))
+		if err != nil {
+			continue
+		} else if fileInfo, err := os.Stat(found); err == nil {
+			if filter != nil {
+				if filter(fileInfo) {
+					return found
+				}
+			} else {
+				return found
+			}
+		}
+	}
+
+	return ""
+}
+
+func FindPath(path string, baseSearchPaths []string, filter func(os.FileInfo) bool) string {
+	return findPath(path, baseSearchPaths, true, filter)
+}
+
+// FindFile looks for the given file in nearby ancestors relative to the current working
+// directory as well as the directory of the executable.
+func FindFile(path string) string {
+	return FindPath(path, commonBaseSearchPaths, func(fileInfo os.FileInfo) bool {
+		return !fileInfo.IsDir()
+	})
+}
+
+// fileutils.FindDir looks for the given directory in nearby ancestors relative to the current working
+// directory as well as the directory of the executable, falling back to `./` if not found.
+func FindDir(dir string) (string, bool) {
+	found := FindPath(dir, commonBaseSearchPaths, func(fileInfo os.FileInfo) bool {
+		return fileInfo.IsDir()
+	})
+	if found == "" {
+		return "./", false
+	}
+
+	return found, true
+}
+
+// FindDirRelBinary looks for the given directory in nearby ancestors relative to the
+// directory of the executable, then relative to the working directory, falling back to `./` if not found.
+func FindDirRelBinary(dir string) (string, bool) {
+	found := findPath(dir, commonBaseSearchPaths, false, func(fileInfo os.FileInfo) bool {
+		return fileInfo.IsDir()
+	})
+	if found == "" {
+		return "./", false
+	}
+	return found, true
 }
