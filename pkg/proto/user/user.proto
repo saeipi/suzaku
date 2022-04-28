@@ -1,5 +1,6 @@
 syntax ="proto3";
 import  "pb_com/common.proto";
+import public "google/protobuf/timestamp.proto";
 package pb_user;
 option go_package = "./user;pb_user";
 
@@ -15,6 +16,15 @@ message UserInfoReq {
 message UserInfoResp {
   pb_com.CommonResp common = 1;
   string user_id = 2; // 用户ID
+  string szk_id = 3; // 账户ID
+  string nickname = 4; // 昵称
+  string gender = 5; // 性别
+  google.protobuf.Timestamp birth = 6; // 生日
+  string email = 7; // Email
+  string mobile = 8; // 手机号
+  string avatar_url = 9; // 头像
+  string country = 10; // 国家
+  string city = 11; // 城市
 }
 
 service User {

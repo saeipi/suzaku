@@ -86,14 +86,14 @@ type User struct {
 	SzkId      string    `gorm:"column:szk_id" json:"szk_id"`                     // 账户ID 用户设置
 	Nickname   string    `gorm:"column:nickname" json:"nickname"`                 // 昵称
 	Gender     int       `gorm:"column:gender;default:0" json:"gender"`           // 性别
-	Birth      int       `gorm:"column:birth;default:0" json:"birth"`             // 生日 时间戳
+	Birth      time.Time `gorm:"column:birth" json:"birth"`                       // 生日
 	Email      string    `gorm:"column:email" json:"email"`                       // Email
 	Mobile     string    `gorm:"column:mobile" json:"mobile"`                     // 手机号
 	PlatformId int       `gorm:"column:platform_id;default:0" json:"platform_id"` // 平台
 	AvatarUrl  string    `gorm:"column:avatar_url" json:"avatar_url"`             // 头像
 	Country    string    `gorm:"column:country" json:"country"`                   // 国家
 	City       string    `gorm:"column:city" json:"city"`                         // 城市
-	Ex         string    `gorm:"column:ex" json:"ex"`                             // 备注
+	Ex         string    `gorm:"column:ex" json:"ex"`                             // 扩展字段
 	CreatedAt  time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt  time.Time `gorm:"column:updated_at" json:"updated_at"`
 	DeletedAt  time.Time `gorm:"column:deleted_at;default:NULL" json:"deleted_at"`

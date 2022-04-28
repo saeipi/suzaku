@@ -20,7 +20,7 @@ func SelfInfo(c *gin.Context) {
 		clientConn *grpc.ClientConn
 		client     pb_user.UserClient
 		reply      *pb_user.UserInfoResp
-		resp       *dto_api.UserInfoResp
+		resp       *dto_api.UserDto
 	)
 	userId, _, ok = utils.RequestIdentity(c)
 	if ok == false {
@@ -35,7 +35,7 @@ func SelfInfo(c *gin.Context) {
 		http.Err(c, reply.Common.Msg, reply.Common.Code)
 		return
 	}
-	resp = &dto_api.UserInfoResp{}
+	resp = &dto_api.UserDto{}
 	utils.CopyStructFields(resp, reply)
 	http.Success(c, resp)
 }

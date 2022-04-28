@@ -13,11 +13,18 @@ abnormal:
   level: 0
 
 etcd:
-  address: [ 10.0.115.108:2379 ]
+  address: [ 127.0.0.1:2379 ]
   schema: suzaku
   read_timeout: 5000
   write_timeout: 5000
   dial_timeout: 5000
+
+rpc_keepalive:
+  idle_timeout: 60000 #60s
+  force_close_wait: 20000 #20s
+  keep_alive_interval: 60000 #60s
+  keep_alive_timeout: 20000 #20s
+  max_life_time: 7200000 #2h
 
 rpc_port: #rpc服务端口 默认即可
   user_port: [ 10100 ]
@@ -53,17 +60,17 @@ rpc_register_name: #rpc注册服务名，默认即可
   admin_cms_name: AdminCMS
 
 mysql:
-  address: [ 10.0.115.108:3306 ]
+  address: [ 127.0.0.1:3306 ]
   username: root
   password:
-  db: suzaku
+  db: szk
   max_open_conn: 20
   max_idle_conn: 10
   conn_lifetime: 120000
   charset: utf8
 
 mongo:
-  address: [ 10.0.115.108:27017 ]
+  address: [ 127.0.0.1:27017 ]
   username: admin
   password: 123456
   db: suzaku
@@ -73,17 +80,17 @@ mongo:
   retain_chat_records: 3650
 
 redis:
-  address: [ 10.0.115.108:6379 ]
+  address: [ 127.0.0.1:6379 ]
   db: 0
   password: ""
-  prefix: "suzaku:"
+  prefix: "szk:"
 
 kafka:
   ws2mschat:
-    addr: [ 10.0.115.108:9092 ]
+    addr: [ 127.0.0.1:9092 ]
     topic: "ws2ms_chat"
   ms2pschat:
-    addr: [ 10.0.115.108:9092 ]
+    addr: [ 127.0.0.1:9092 ]
     topic: "ms2ps_chat"
   consumer_group_id:
     msgToMongo: mongo
@@ -91,7 +98,7 @@ kafka:
     msgToPush: push
 
 mq:
-  host: 10.0.115.108
+  host: 127.0.0.1
   port: 5672
   user: guest
   password: guest
@@ -110,7 +117,7 @@ monlog:
   batch_size: 100
   commit_timeout: 1000
   mongo:
-    address: [ 10.0.115.108:27017 ]
+    address: [ 127.0.0.1:27017 ]
     username: admin
     password: 123456
     db: suzaku
@@ -143,7 +150,7 @@ credential: #腾讯cos，发送图片、视频、文件时需要，请自行申�
   minio: #MinIO 发送图片、视频、文件时需要，请自行申请后替换，必须修改。 客户端初始化时相应改动
     bucket: suzaku
     location: us-east-1
-    endpoint: http://10.0.115.108:9000
+    endpoint: http://127.0.0.1:9000
     access_key: 17098899839
     secret_key: 360001969
 
@@ -153,7 +160,7 @@ log:
   rotation_count: 3 #日志数量
   #日志级别 6表示全都打印，测试阶段建议设置为6
   level: 6
-  es_address: [ 10.0.115.108:9201 ]
+  es_address: [ 127.0.0.1:9201 ]
   es_username: ""
   es_password: ""
   es_switch: false
