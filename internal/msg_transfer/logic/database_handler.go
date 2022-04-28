@@ -1,7 +1,7 @@
 package logic
 
 import (
-	"suzaku/internal/domain/repository/repository_mongo"
+	"suzaku/internal/domain/repo/repo_mongo"
 	"suzaku/pkg/common/redis"
 	pb_chat "suzaku/pkg/proto/chart"
 )
@@ -20,6 +20,6 @@ func saveUserChat(uid string, msg *pb_chat.MsgDataToMQ) (err error) {
 	msg.MsgData.Seq = uint32(seq)
 	pbSaveData = pb_chat.MsgDataToDB{}
 	pbSaveData.MsgData = msg.MsgData
-	repository_mongo.MgChatRepo.SaveUserChatMongo2(uid, pbSaveData.MsgData.SendTime, &pbSaveData)
+	repo_mongo.MgChatRepo.SaveUserChatMongo2(uid, pbSaveData.MsgData.SendTime, &pbSaveData)
 	return
 }

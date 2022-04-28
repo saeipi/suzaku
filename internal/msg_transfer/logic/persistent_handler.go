@@ -5,8 +5,8 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/jinzhu/copier"
-	"suzaku/internal/domain/entity/entity_mysql"
-	"suzaku/internal/domain/repository/repository_mysql"
+	"suzaku/internal/domain/po_mysql"
+	"suzaku/internal/domain/repo/repo_mysql"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/kafka"
 	"suzaku/pkg/constant"
@@ -60,10 +60,10 @@ func (h *PersistentConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 
 func (h *PersistentConsumerHandler) InsertMessageToChatLog(msg pb_chat.MsgDataToMQ) (err error) {
 	var (
-		chatLog *entity_mysql.ChatLog
+		chatLog *po_mysql.ChatLog
 		tips    pb_ws.TipsComm
 	)
-	chatLog = new(entity_mysql.ChatLog)
+	chatLog = new(po_mysql.ChatLog)
 	copier.Copy(chatLog, msg.MsgData)
 	switch msg.MsgData.SessionType {
 	case constant.GroupChatType:
@@ -84,7 +84,7 @@ func (h *PersistentConsumerHandler) InsertMessageToChatLog(msg pb_chat.MsgDataTo
 	}
 	chatLog.CreateTime = utils.UnixMillSecondToTime(msg.MsgData.CreateTime)
 	chatLog.SendTime = utils.UnixMillSecondToTime(msg.MsgData.SendTime)
-	err = repository_mysql.ChatRepo.SaveChatLog(chatLog)
+	err = repo_mysql.ChatRepo.SaveChatLog(chatLog)
 	if err != nil {
 		//TODO:错误
 	}

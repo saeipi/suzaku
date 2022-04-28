@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
-	"suzaku/internal/dto/dto_api"
+	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/factory"

@@ -2,7 +2,7 @@ package rpc_chat
 
 import (
 	"context"
-	"suzaku/internal/domain/repository/repository_mongo"
+	"suzaku/internal/domain/repo/repo_mongo"
 	"suzaku/pkg/common/redis"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
@@ -44,7 +44,7 @@ func (rpc *chatRpcServer) PullMessageBySeqList(_ context.Context, req *pb_ws.Pul
 		seqMsg []*pb_ws.MsgData
 	)
 	resp = new(pb_ws.PullMessageBySeqListResp)
-	seqMsg, err = repository_mongo.MgChatRepo.GetMsgBySeqListMongo2(req.UserId, req.SeqList, req.OperationId)
+	seqMsg, err = repo_mongo.MgChatRepo.GetMsgBySeqListMongo2(req.UserId, req.SeqList, req.OperationId)
 	if err != nil {
 		//TODO:error
 		resp.ErrCode = 201

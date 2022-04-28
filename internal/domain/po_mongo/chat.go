@@ -1,4 +1,4 @@
-package entity_mongo
+package po_mongo
 
 type UserChat struct {
 	UID string `bson:"uid"`

@@ -1,4 +1,4 @@
-package repository_mongo
+package repo_mongo
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"strconv"
-	"suzaku/internal/domain/entity/entity_mongo"
+	"suzaku/internal/domain/po_mongo"
 	"suzaku/pkg/common/mongodb"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
@@ -39,9 +39,9 @@ func (r *mgChatRepository) SaveUserChatMongo2(uid string, sendTime int64, msg *p
 		//newTime int64
 		seqUid  string
 		filter  bson.M
-		msgInfo entity_mongo.MessageInfo
+		msgInfo po_mongo.MessageInfo
 
-		chat entity_mongo.UserChat
+		chat po_mongo.UserChat
 	)
 	ctx, _ = NewContext()
 	db, err = mongodb.MgDB()
@@ -49,13 +49,13 @@ func (r *mgChatRepository) SaveUserChatMongo2(uid string, sendTime int64, msg *p
 		//TODO:错误
 		return
 	}
-	coll = db.Collection(entity_mongo.MongoCollectionMsg)
+	coll = db.Collection(po_mongo.MongoCollectionMsg)
 
 	//newTime = getCurrentTimestampByMill()
 	seqUid = getSeqUid(uid, msg.MsgData.Seq)
 	filter = bson.M{"uid": seqUid}
 
-	msgInfo = entity_mongo.MessageInfo{}
+	msgInfo = po_mongo.MessageInfo{}
 	msgInfo.SendTime = sendTime
 	if msgInfo.Msg, err = proto.Marshal(msg.MsgData); err != nil {
 		//TODO:错误
@@ -63,7 +63,7 @@ func (r *mgChatRepository) SaveUserChatMongo2(uid string, sendTime int64, msg *p
 	}
 
 	if err = coll.FindOneAndUpdate(ctx, filter, bson.M{"$push": bson.M{"msg": msgInfo}}).Err(); err != nil {
-		chat = entity_mongo.UserChat{}
+		chat = po_mongo.UserChat{}
 		chat.UID = seqUid
 		chat.Msg = append(chat.Msg, msgInfo)
 
@@ -86,7 +86,7 @@ func (r *mgChatRepository) GetMsgBySeqListMongo2(uid string, seqList []uint32, o
 		ctx  context.Context
 
 		seqs        map[string][]uint32
-		chat        entity_mongo.UserChat
+		chat        po_mongo.UserChat
 		reqUid      string
 		values      []uint32
 		singleCount int
@@ -98,7 +98,7 @@ func (r *mgChatRepository) GetMsgBySeqListMongo2(uid string, seqList []uint32, o
 	if err != nil {
 		return
 	}
-	coll = db.Collection(entity_mongo.MongoCollectionMsg)
+	coll = db.Collection(po_mongo.MongoCollectionMsg)
 	ctx, _ = NewContext()
 
 	seqMsg = make([]*pb_ws.MsgData, 0)
@@ -116,7 +116,7 @@ func (r *mgChatRepository) GetMsgBySeqListMongo2(uid string, seqList []uint32, o
 		}
 		return
 	}(uid, seqList)
-	chat = entity_mongo.UserChat{}
+	chat = po_mongo.UserChat{}
 
 	for reqUid, values = range seqs {
 		if err = coll.FindOne(ctx, bson.M{"uid": reqUid}).Decode(&chat); err != nil {

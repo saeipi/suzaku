@@ -1,4 +1,4 @@
-package entity_mongo
+package po_mongo
 
 const (
 	MongoCollectionMsg = "msg"

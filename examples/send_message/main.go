@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"suzaku/internal/dto/dto_api"
+	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/utils"
 )
 

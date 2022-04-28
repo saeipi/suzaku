@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go/v7"
 	"mime/multipart"
-	"suzaku/internal/dto/dto_api"
+	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/log"
 	"suzaku/pkg/common/minioc"

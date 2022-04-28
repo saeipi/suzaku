@@ -1,4 +1,4 @@
-package entity_mysql
+package po_mysql
 
 import (
 	"suzaku/pkg/constant"

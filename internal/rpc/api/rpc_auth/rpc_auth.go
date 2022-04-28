@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"suzaku/internal/domain/entity/entity_mysql"
-	"suzaku/internal/domain/repository/repository_mysql"
+	"suzaku/internal/domain/po_mysql"
+	"suzaku/internal/domain/repo/repo_mysql"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/jwt_auth"
@@ -38,18 +38,18 @@ func (rpc *authRpcServer) Run() {
 
 func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, err error) {
 	var (
-		user   *entity_mysql.User
+		user   *po_mysql.User
 		common = &pb_com.CommonResp{}
 	)
 	resp = &pb_auth.UserRegisterResp{Common: common}
 
-	user = &entity_mysql.User{
+	user = &po_mysql.User{
 		UserId:     snowflake.SnowflakeID(),
 		Mobile:     req.Mobile,
 		PlatformId: req.PlatformId,
 	}
 
-	err = repository_mysql.UserRepo.UserRegister(user)
+	err = repo_mysql.UserRepo.UserRegister(user)
 	if err != nil {
 		common.Msg = err.Error()
 		common.Code = ErrCodeRpcRegisterFailed
