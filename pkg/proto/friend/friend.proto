@@ -11,6 +11,7 @@ option go_package = "./friend;pb_friend";
 message AddFriendReq {
   string from_user_id = 1; // 用户ID
   string to_user_id = 2; // 添加好友用户ID
+  string req_msg = 3; // 请求信息
 }
 
 message AddFriendResp {

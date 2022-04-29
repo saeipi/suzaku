@@ -25,6 +25,12 @@ func UserRegister(c *gin.Context) {
 		replyToken *pb_auth.UserTokenResp
 		resp       *dto_api.UserRegisterResp
 	)
+	//TODO:测试自动生成
+	func() {
+		c.Request.PostForm.Set("udid", utils.GetUUID())
+		c.Request.PostForm.Set("verification_code", "666666")
+	}()
+
 	if err = c.BindJSON(&params); err != nil {
 		http.Error(c, err, http.ErrorCodeHttpReqDeserializeFailed)
 		return

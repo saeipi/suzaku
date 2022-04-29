@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` varchar(40) DEFAULT '' COMMENT '用户ID 系统生成',
   `szk_id` varchar(40) DEFAULT '' COMMENT '账户ID 用户设置',
+  `udid` varchar(40) DEFAULT '' COMMENT '设备唯一标识',
   `nickname` varchar(60) DEFAULT '' COMMENT '昵称',
   `gender` tinyint(1) DEFAULT '0' COMMENT '性别',
   `birth` datetime DEFAULT NULL COMMENT '生日',
@@ -31,8 +32,7 @@ CREATE TABLE `users` (
   `mobile` varchar(32) DEFAULT '' COMMENT '手机号',
   `platform_id` tinyint(1) DEFAULT '0' COMMENT '注册平台',
   `avatar_url` varchar(255) DEFAULT '' COMMENT '头像',
-  `country` varchar(128) DEFAULT '' COMMENT '国家',
-  `city` varchar(128) DEFAULT '' COMMENT '城市',
+  `city_id` int DEFAULT '0' COMMENT '城市ID',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `users` (
   KEY `idx_mobile` (`mobile`),
   KEY `idx_platformId` (`platform_id`),
   KEY `idx_gender` (`gender`),
-  KEY `id_gender_city` (`gender`,`city`)
+  KEY `id_gender_cityId` (`gender`,`city_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -34,7 +34,7 @@ func AddFriend(c *gin.Context) {
 
 	req = &pb_friend.AddFriendReq{}
 	utils.CopyStructFields(req, params)
-	req.UserId = userId
+	req.FromUserId = userId
 
 	clientConn = factory.ClientConn(config.Config.RPCRegisterName.FriendName)
 	client = pb_friend.NewFriendClient(clientConn)

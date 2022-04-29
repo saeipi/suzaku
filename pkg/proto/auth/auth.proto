@@ -12,6 +12,8 @@ message UserRegisterReq {
   string secret = 1; // 秘钥
   int32 platform_id = 2; // 平台
   string mobile = 3; // 手机号
+  string udid = 4; // 设备唯一标识
+  string verification_code = 5; // 验证码
 }
 
 message UserRegisterResp {
