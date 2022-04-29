@@ -28,8 +28,8 @@ CREATE TABLE `friends` (
   `source` tinyint(1) DEFAULT '0' COMMENT '添加源',
   `remark` varchar(255) DEFAULT '' COMMENT '备注',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  `created_at` datetime DEFAULT NULL,
-  `deleted_at` datetime DEFAULT NULL,
+  `created_ts` bigint DEFAULT '0',
+  `deleted_ts` bigint DEFAULT '0',
   PRIMARY KEY (`owner_user_id`,`friend_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

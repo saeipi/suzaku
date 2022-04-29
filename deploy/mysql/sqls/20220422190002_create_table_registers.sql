@@ -25,7 +25,7 @@ CREATE TABLE `registers` (
   `user_id` varchar(40) DEFAULT '' COMMENT '用户ID 系统生成',
   `password` varchar(32) DEFAULT '' COMMENT '密码',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  `updated_at` datetime DEFAULT NULL,
+  `updated_ts` bigint DEFAULT '0',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

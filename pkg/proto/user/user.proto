@@ -19,7 +19,8 @@ message UserInfoResp {
   string szk_id = 3; // 账户ID
   string nickname = 4; // 昵称
   string gender = 5; // 性别
-  google.protobuf.Timestamp birth = 6; // 生日
+  //google.protobuf.Timestamp birth = 6; // 生日
+  int64 birth_ts = 6; // 生日
   string email = 7; // Email
   string mobile = 8; // 手机号
   string avatar_url = 9; // 头像

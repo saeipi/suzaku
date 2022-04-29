@@ -3,6 +3,7 @@ package api_friend
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"google.golang.org/grpc"
 	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
@@ -48,4 +49,46 @@ func AddFriend(c *gin.Context) {
 		return
 	}
 	http.Success(c)
+}
+
+func FriendRequestList(c *gin.Context) {
+	var (
+		userId     string
+		ok         bool
+		params     dto_api.FriendRequestListReq
+		req        *pb_friend.GetFriendRequestListReq
+		clientConn *grpc.ClientConn
+		client     pb_friend.FriendClient
+		reply      *pb_friend.GetFriendRequestListResp
+		resp       *dto_api.FriendRequestListResp
+		err        error
+	)
+	userId, _, ok = utils.RequestIdentity(c)
+	if ok == false {
+		return
+	}
+	if err = c.ShouldBindQuery(&params); err != nil {
+		http.Error(c, err, http.ErrorCodeHttpReqDeserializeFailed)
+		return
+	}
+	req = &pb_friend.GetFriendRequestListReq{
+		UserId:   userId,
+		Role:     pb_friend.FRIEND_REQUEST_ROLE(params.Role),
+		Page:     int32(params.Page),
+		PageSize: int32(params.PageSize),
+	}
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.FriendName)
+	client = pb_friend.NewFriendClient(clientConn)
+	reply, _ = client.GetFriendRequestList(context.Background(), req)
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if reply.Common.Code > 0 {
+		http.Err(c, reply.Common.Msg, reply.Common.Code)
+		return
+	}
+	resp = &dto_api.FriendRequestListResp{}
+	copier.Copy(resp, reply)
+	http.Success(c, resp)
 }

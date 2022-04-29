@@ -30,8 +30,8 @@ CREATE TABLE `friend_requests` (
   `req_msg` varchar(255) DEFAULT '' COMMENT '添加好友消息',
   `handle_msg` varchar(255) DEFAULT '' COMMENT '处理消息',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  `created_at` datetime DEFAULT NULL,
-  `handle_at` datetime DEFAULT NULL COMMENT '处理时间',
+  `created_ts` bigint DEFAULT '0',
+  `handle_ts` bigint DEFAULT '0',
   PRIMARY KEY (`req_id`),
   KEY `idx_fromUserId` (`from_user_id`),
   KEY `idx_toUserId` (`to_user_id`)

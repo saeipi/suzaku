@@ -1,5 +1,6 @@
 syntax ="proto3";
 import  "pb_com/common.proto";
+import public "google/protobuf/timestamp.proto";
 package pb_friend;
 option go_package = "./friend;pb_friend";
 
@@ -20,6 +21,41 @@ message AddFriendResp {
   pb_com.CommonResp common = 1;
 }
 
+enum FRIEND_REQUEST_ROLE
+{
+  NONE = 0;
+  SPONSOR = 1; // 自己是发起者
+  INVITED = 2; // 自己是受邀人
+}
+
+message GetFriendRequestListReq {
+  string user_id = 1;
+  FRIEND_REQUEST_ROLE role = 2; // 角色
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message GetFriendRequestListResp {
+  pb_com.CommonResp common = 1;
+  int64 total_rows = 2;
+  repeated FriendRequestItem list = 3;
+}
+
+message FriendRequestItem {
+  string req_id = 1; // 事件ID
+  string from_user_id = 2; // 发起人ID
+  string to_user_id = 3; // 目标人ID
+  string req_msg = 4; // 添加好友消息
+  int32 handle_result = 5; // 结果
+  string handle_msg = 6; // 处理消息
+  int64 created_ts = 7; // 发起时间
+  int64 handle_ts = 8; // 处理时间
+//  google.protobuf.Timestamp created_at = 7; // 发起时间
+//  google.protobuf.Timestamp handle_at = 8; // 处理时间
+}
+
+
 service Friend {
   rpc AddFriend(AddFriendReq) returns(AddFriendResp);
+  rpc GetFriendRequestList(GetFriendRequestListReq) returns(GetFriendRequestListResp);
 }
