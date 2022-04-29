@@ -1,43 +1,16 @@
-package rpc_friend
+package rpc_chat
 
 import (
-	"context"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
-	"suzaku/internal/domain/po_mysql"
+	"suzaku/internal/domain/do"
 	"suzaku/internal/domain/repo/repo_mysql"
 	"suzaku/pkg/constant"
 	pb_friend "suzaku/pkg/proto/friend"
-	"suzaku/pkg/proto/pb_com"
 	pb_ws "suzaku/pkg/proto/pb_ws"
 )
 
-func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, err error) {
-	var (
-		common        = &pb_com.CommonResp{}
-		friendRequest *po_mysql.FriendRequest
-	)
-	resp = &pb_friend.AddFriendResp{Common: common}
-	if _, err = repo_mysql.UserRepo.GetUserByUserID(req.ToUserId); err != nil {
-		common.Code = ErrorCodeUserIdNotExist
-		common.Msg = ErrorUserIdNotExist
-		return
-	}
-	friendRequest = &po_mysql.FriendRequest{
-		FromUserId: req.FromUserId,
-		ToUserId:   req.ToUserId,
-		ReqMsg:     req.ReqMsg,
-	}
-	err = repo_mysql.FriendRepo.SaveFriendRequest(friendRequest)
-	if err != nil {
-		common.Code = ErrorCodeSaveDatabaseFailed
-		common.Msg = ErrorSaveDatabaseFailed
-		return
-	}
-	return
-}
-
-func (rpc *friendRpcServer) friendApplicationNotification(req *pb_friend.AddFriendReq) {
+func FriendApplicationNotification(req *pb_friend.AddFriendReq) {
 	var (
 		tips *pb_ws.FriendApplicationTips
 	)
@@ -45,15 +18,16 @@ func (rpc *friendRpcServer) friendApplicationNotification(req *pb_friend.AddFrie
 		FromUserId: req.FromUserId,
 		ToUserId:   req.ToUserId,
 	}}
-	tips = tips
+	friendNotification(req, constant.FriendApplicationNotification, tips)
 }
 
-func (rpc *friendRpcServer) friendNotification(req *pb_friend.AddFriendReq, contentType int32, msg proto.Message) {
+func friendNotification(req *pb_friend.AddFriendReq, contentType int32, msg proto.Message) {
 	var (
 		tips             pb_ws.TipsComm
 		marshaler        jsonpb.Marshaler
 		fromUserNickname string
 		toUserNickname   string
+		notification     *do.NotificationMsg
 		err              error
 	)
 	tips.Detail, err = proto.Marshal(msg)
@@ -83,4 +57,19 @@ func (rpc *friendRpcServer) friendNotification(req *pb_friend.AddFriendReq, cont
 	default:
 		return
 	}
+	notification = &do.NotificationMsg{
+		SendID:      req.FromUserId,
+		RecvID:      req.ToUserId,
+		Content:     nil,
+		MsgFrom:     constant.SysMsgType,
+		ContentType: contentType,
+		SessionType: constant.SingleChatType,
+		OperationID: req.OperationId,
+	}
+	notification.Content, err = proto.Marshal(&tips)
+	if err != nil {
+		//TODO:错误处理
+		return
+	}
+	Notification(notification)
 }

@@ -36,6 +36,7 @@ type config struct {
 	Log             Log             `yaml:"log"`
 	Secret          string          `yaml:"secret"`
 	Callback        Callback        `yaml:"callback"`
+	IosPush         IosPush         `yaml:"ios_push"`
 }
 type Tsl struct {
 	CertFile string `yaml:"cert_file"`
@@ -244,6 +245,11 @@ type Callback struct {
 	CallbackBeforeSendGroupMsg  CallbackBeforeSendGroupMsg  `yaml:"callbackBeforeSendGroupMsg"`
 	CallbackAfterSendGroupMsg   CallbackAfterSendGroupMsg   `yaml:"callback_after_send_group_msg"`
 	CallbackWordFilter          CallbackWordFilter          `yaml:"callback_word_filter"`
+}
+
+type IosPush struct {
+	PushSound  string `yaml:"push_sound"`
+	BadgeCount bool   `yaml:"badge_count"`
 }
 
 var (

@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `friend_requests`;
 CREATE TABLE `friend_requests` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `req_id` varchar(40) DEFAULT '' COMMENT '事件ID',
   `from_user_id` varchar(40) DEFAULT '' COMMENT '发起人ID',
   `to_user_id` varchar(40) DEFAULT '' COMMENT '目标人ID',
   `operator_user_id` varchar(40) DEFAULT '' COMMENT '处理人ID',
@@ -32,7 +32,7 @@ CREATE TABLE `friend_requests` (
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_at` datetime DEFAULT NULL,
   `handle_at` datetime DEFAULT NULL COMMENT '处理时间',
-  PRIMARY KEY (`id`) USING BTREE,
+  PRIMARY KEY (`req_id`),
   KEY `idx_fromUserId` (`from_user_id`),
   KEY `idx_toUserId` (`to_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

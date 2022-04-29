@@ -189,3 +189,8 @@ callback:
     enable: false
     callback_time_out: 2
     callback_failed_continue: true
+
+#ios系统推送声音以及标记计数
+ios_push:
+  push_sound: "xxx"
+  badge_count: true

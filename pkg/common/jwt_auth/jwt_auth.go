@@ -10,8 +10,8 @@ import (
 const (
 	JwtIssuer               = "tKh3fMwWepCds9jbTuJ9IGYJYbPIZnj"
 	JwtTokenKey             = "suzaku_jwt_token_2021"
-	JwtTokenExpireIn        = 3600 * 24 * 6
-	JwtRefreshTokenExpireIn = 3600 * 24 * 30 // 刷新token的时长
+	JwtTokenExpireIn        = 3600 * 24 * 30
+	JwtRefreshTokenExpireIn = 3600 * 24 * 60 // 刷新token的时长
 	JwtRefreshTokenKey      = "suzaku_jwt_refresh_token_2021"
 )
 

@@ -47,5 +47,5 @@ func AddFriend(c *gin.Context) {
 		http.Err(c, reply.Common.Msg, reply.Common.Code)
 		return
 	}
-	http.Success(c, reply)
+	http.Success(c)
 }

@@ -1,4 +1,4 @@
-package msg
+package do
 
 type NotificationMsg struct {
 	SendID      string
