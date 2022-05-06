@@ -29,7 +29,7 @@ func (r *userRepository) UserRegister(user *po_mysql.User) (err error) {
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Save(user).Error
+	err = db.Create(user).Error
 	return
 }
 

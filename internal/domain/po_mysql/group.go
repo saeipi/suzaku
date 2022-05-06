@@ -1,4 +1,5 @@
 package po_mysql
+import "time"
 
 type Group struct {
 	GroupId       string `gorm:"column:group_id;primary_key" json:"group_id"`
@@ -11,6 +12,7 @@ type Group struct {
 	Status        int    `gorm:"column:status;default:0" json:"status"`
 	CreateTs      int64  `gorm:"column:create_ts;default:0" json:"create_ts"`
 	Ex            string `gorm:"column:ex" json:"ex"`
+	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 type GroupMember struct {

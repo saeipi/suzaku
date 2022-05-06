@@ -23,13 +23,14 @@ func main() {
 
 func JoinGroup(userIDs []string) {
 	var (
-		group  po_mysql.Group
-		gp     po_mysql.Group
+		group  *po_mysql.Group
+		gp     *po_mysql.Group
 		userID string
-		member po_mysql.GroupMember
+		mb     *po_mysql.GroupMember
+		member *po_mysql.GroupMember
 		err    error
 	)
-	group = po_mysql.Group{
+	group = &po_mysql.Group{
 		GroupId:       TestGroupID,
 		GroupName:     "无双",
 		Notification:  "",
@@ -56,7 +57,7 @@ func JoinGroup(userIDs []string) {
 	}
 
 	for _, userID = range userIDs {
-		member = po_mysql.GroupMember{
+		member = &po_mysql.GroupMember{
 			GroupId:        TestGroupID,
 			UserId:         userID,
 			Nickname:       userID,
@@ -67,6 +68,14 @@ func JoinGroup(userIDs []string) {
 			OperatorUserId: "",
 			MuteEndTime:    0,
 			Ex:             "",
+		}
+		mb, err = repo_mysql.GroupRepo.IsJoined(member.GroupId, member.UserId)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if mb == nil {
+
 		}
 		err = repo_mysql.GroupRepo.Join(member)
 		if err != nil {

@@ -28,7 +28,7 @@ func (r *friendRepository) SaveFriendRequest(req *po_mysql.FriendRequest) (err e
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Save(req).Error
+	err = db.Create(req).Error
 	return
 }
 
