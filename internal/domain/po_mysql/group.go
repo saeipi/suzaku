@@ -25,3 +25,15 @@ type GroupMember struct {
 	MuteEndTime    int64  `gorm:"column:mute_end_time;default:0" json:"mute_end_time"` // 禁言结束时间
 	Ex             string `gorm:"column:ex" json:"ex"`                                 // 扩展字段
 }
+
+type GroupRequest struct {
+	UserId       string `gorm:"column:user_id;primary_key" json:"user_id"`           // 事件ID
+	GroupId      string `gorm:"column:group_id" json:"group_id"`                     // 发起人ID
+	HandleUserId string `gorm:"column:handle_user_id" json:"handle_user_id"`         // 处理人ID
+	HandleResult int    `gorm:"column:handle_result;default:0" json:"handle_result"` // 结果
+	HandleMsg    string `gorm:"column:handle_msg" json:"handle_msg"`                 // 处理消息
+	ReqMsg       string `gorm:"column:req_msg" json:"req_msg"`                       // 添加好友消息
+	ReqTs        int64  `gorm:"column:req_ts;default:0" json:"req_ts"`               // 请求时间
+	HandleTs     int64  `gorm:"column:handle_ts;default:0" json:"handle_ts"`
+	Ex           string `gorm:"column:ex" json:"ex"` // 扩展字段
+}

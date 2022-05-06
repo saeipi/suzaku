@@ -8,26 +8,24 @@ message GroupInfo{
   string group_name = 2;
   string notification = 3;
   string introduction = 4;
-  string face_url = 5;
-  string owner_user_id = 6;
-  uint32 create_time = 7;
-  uint32 member_count = 8;
-  string ex = 9;
-  int32 status = 10;
-  string creator_user_id = 11;
-  int32 group_type = 12;
+  string avatar_url = 5;
+  string creator_user_id = 6;
+  uint32 group_type = 7;
+  uint32 status = 8;
+  string create_ts = 9;
+  int32 ex = 10;
 }
 
-message GroupMemberFullInfo {
+message GroupMemberInfo {
   string group_id = 1 ;
   string user_id = 2 ;
-  int32 role_level = 3;
-  int64 join_time = 4;
-  string nickname = 5;
-  string face_url = 6;
-  int32 app_manger_level = 7;
-  int32 join_source = 8;
-  string operator_user_id = 9;
+  string nickname = 3;
+  string user_avatar_url = 4;
+  int32 role_level = 5;
+  int64 join_time = 6;
+  int32 join_source = 7;
+  string operator_user_id = 8;
+  int64 mute_end_time = 9;
   string ex = 10;
 }
 
@@ -163,15 +161,15 @@ message TipsComm{
 // OnGroupCreated()
 message GroupCreatedTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
-  repeated GroupMemberFullInfo member_list = 3;
+  GroupMemberInfo op_user = 2;
+  repeated GroupMemberInfo member_list = 3;
   int64 operation_time = 4;
-  GroupMemberFullInfo group_owner_user = 5;
+  GroupMemberInfo group_owner_user = 5;
 }
 
 // OnGroupInfoSet()
 message GroupInfoSetTips{
-  GroupMemberFullInfo op_user = 1; //who do this
+  GroupMemberInfo op_user = 1; //who do this
   int64 mute_time = 2;
   GroupInfo group = 3;
 }
@@ -187,29 +185,29 @@ message JoinGroupApplicationTips{
 // Actively leave the group
 message MemberQuitTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo quit_user = 2;
+  GroupMemberInfo quit_user = 2;
   int64 operation_time = 3;
 }
 
 // OnApplicationGroupAccepted()
 message GroupApplicationAcceptedTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
+  GroupMemberInfo op_user = 2;
   string  handle_msg = 4;
 }
 
 // OnApplicationGroupRejected()
 message GroupApplicationRejectedTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
+  GroupMemberInfo op_user = 2;
   string  handle_msg = 4;
 }
 
 // OnTransferGroupOwner()
 message GroupOwnerTransferredTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
-  GroupMemberFullInfo new_group_owner = 3;
+  GroupMemberInfo op_user = 2;
+  GroupMemberInfo new_group_owner = 3;
   int64 operation_time = 4;
 }
 
@@ -217,23 +215,23 @@ message GroupOwnerTransferredTips{
 // OnMemberKicked()
 message MemberKickedTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
-  repeated GroupMemberFullInfo kicked_user_list = 3;
+  GroupMemberInfo op_user = 2;
+  repeated GroupMemberInfo kicked_user_list = 3;
   int64 operation_time = 4;
 }
 
 // OnMemberInvited()
 message MemberInvitedTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo op_user = 2;
-  repeated GroupMemberFullInfo invited_user_list = 3;
+  GroupMemberInfo op_user = 2;
+  repeated GroupMemberInfo invited_user_list = 3;
   int64 operation_time = 4;
 }
 
 // Actively join the group
 message MemberEnterTips{
   GroupInfo group = 1;
-  GroupMemberFullInfo entrant_user = 2;
+  GroupMemberInfo entrant_user = 2;
   int64 operation_time = 3;
 }
 

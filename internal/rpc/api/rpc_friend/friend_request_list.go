@@ -10,11 +10,12 @@ import (
 	"suzaku/pkg/proto/pb_com"
 )
 
-func (rpc *friendRpcServer) GetFriendRequestList(_ context.Context, req *pb_friend.GetFriendRequestListReq) (resp *pb_friend.GetFriendRequestListResp, err error) {
+func (rpc *friendRpcServer) GetFriendRequestList(_ context.Context, req *pb_friend.GetFriendRequestListReq) (resp *pb_friend.GetFriendRequestListResp, _ error) {
 	var (
 		query     *do.MysqlQuery
 		list      []*po_mysql.FriendRequest
 		totalRows int64
+		err       error
 	)
 	resp = &pb_friend.GetFriendRequestListResp{Common: &pb_com.CommonResp{}}
 	query = do.NewMysqlQuery()

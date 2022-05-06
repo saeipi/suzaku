@@ -5,16 +5,17 @@ import (
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
 	"suzaku/internal/rpc/api/rpc_chat"
-	"suzaku/pkg/common/snowflake"
 	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/proto/pb_com"
+	"time"
 )
 
-func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, err error) {
+func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, _ error) {
 	var (
 		common        = &pb_com.CommonResp{}
 		friendRequest *po_mysql.FriendRequest
 		toUser        *po_mysql.User
+		err           error
 	)
 	resp = &pb_friend.AddFriendResp{Common: common}
 	if toUser, err = repo_mysql.UserRepo.GetUserBySzkID(req.ToSzkId); err != nil {
@@ -24,11 +25,11 @@ func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFrien
 	}
 	req.ToUserId = toUser.UserId
 	friendRequest = &po_mysql.FriendRequest{
-		ReqId:          snowflake.SnowflakeID(),
-		FromUserId:     req.FromUserId,
-		ToUserId:       req.ToUserId,
-		ReqMsg:         req.ReqMsg,
-		OperatorUserId: req.OperationId,
+		FromUserId:   req.FromUserId,
+		ToUserId:     req.ToUserId,
+		ReqMsg:       req.ReqMsg,
+		HandleUserId: req.OperationId,
+		ReqTs:        time.Now().Unix(),
 	}
 	err = repo_mysql.FriendRepo.SaveFriendRequest(friendRequest)
 	if err != nil {

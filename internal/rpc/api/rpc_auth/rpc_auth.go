@@ -36,10 +36,11 @@ func (rpc *authRpcServer) Run() {
 	rpc.Rpc.RunServer(server)
 }
 
-func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, err error) {
+func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, _ error) {
 	var (
 		user   *po_mysql.User
 		common = &pb_com.CommonResp{}
+		err error
 	)
 	resp = &pb_auth.UserRegisterResp{Common: common}
 

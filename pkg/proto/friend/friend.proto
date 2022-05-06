@@ -42,15 +42,15 @@ message GetFriendRequestListResp {
 }
 
 message FriendRequestItem {
-  string req_id = 1; // 事件ID
-  string from_user_id = 2; // 发起人ID
-  string to_user_id = 3; // 目标人ID
-  string req_msg = 4; // 添加好友消息
-  int32 handle_result = 5; // 结果
-  string handle_msg = 6; // 处理消息
-  int64 created_ts = 7; // 发起时间
-  int64 handle_ts = 8; // 处理时间
-//  google.protobuf.Timestamp created_at = 7; // 发起时间
+  string from_user_id = 1; // 发起人ID
+  string to_user_id = 2; // 目标人ID
+  string req_msg = 3; // 添加好友消息
+  int32 handle_result = 4; // 结果
+  string handle_msg = 5; // 处理消息
+  int64 req_ts = 6; // 发起时间
+  int64 handle_ts = 7; // 处理时间
+  string handle_user_id = 8; // 处理人ID
+//  google.protobuf.Timestamp req_ts = 7; // 发起时间
 //  google.protobuf.Timestamp handle_at = 8; // 处理时间
 }
 

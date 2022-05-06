@@ -8,7 +8,7 @@ import (
 	"suzaku/pkg/proto/pb_ws"
 )
 
-func (rpc *chatRpcServer) GetMinMaxSeq(_ context.Context, req *pb_chat.GetMinMaxSeqReq) (resp *pb_chat.GetMinMaxSeqResp, err error) {
+func (rpc *chatRpcServer) GetMinMaxSeq(_ context.Context, req *pb_chat.GetMinMaxSeqReq) (resp *pb_chat.GetMinMaxSeqResp, _ error) {
 	var (
 		maxSeq uint64
 		minSeq uint64
