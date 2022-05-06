@@ -27,10 +27,10 @@ CREATE TABLE `group_members` (
   `nickname` varchar(255) DEFAULT '' COMMENT '在群中的昵称',
   `user_avatar_url` varchar(255) DEFAULT '' COMMENT '在群中的头像',
   `role_level` int DEFAULT '0' COMMENT '角色等级',
-  `join_time` bigint DEFAULT '0' COMMENT '加入时间',
+  `join_ts` bigint DEFAULT '0' COMMENT '加入时间',
   `join_source` int DEFAULT '0' COMMENT '来源',
   `operator_user_id` varchar(64) DEFAULT '' COMMENT '操作员',
-  `mute_end_time` bigint DEFAULT '0' COMMENT '禁言结束时间',
+  `mute_end_ts` bigint DEFAULT '0' COMMENT '禁言结束时间',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   PRIMARY KEY (`group_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

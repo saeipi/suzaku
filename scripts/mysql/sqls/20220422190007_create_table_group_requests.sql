@@ -27,9 +27,10 @@ CREATE TABLE `group_requests` (
   `handle_user_id` varchar(40) DEFAULT '' COMMENT '处理人ID',
   `handle_result` tinyint(1) DEFAULT '0' COMMENT '结果',
   `handle_msg` varchar(255) DEFAULT '' COMMENT '处理消息',
+  `handle_ts` bigint DEFAULT '0',
   `req_msg` varchar(255) DEFAULT '' COMMENT '添加好友消息',
   `req_ts` bigint DEFAULT '0' COMMENT '请求时间',
-  `handle_ts` bigint DEFAULT '0',
+  `req_source` int DEFAULT '0' COMMENT '来源',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   PRIMARY KEY (`user_id`,`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

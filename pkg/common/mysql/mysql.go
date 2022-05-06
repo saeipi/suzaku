@@ -93,3 +93,21 @@ func (m *mysqlDB) getDB(address string, dbName string) (db *gorm.DB, err error) 
 func GormDB() (db *gorm.DB, err error) {
 	return GetDB(config.Config.Mysql.Address[0], config.Config.Mysql.Db)
 }
+
+//事务处理
+func Transaction(handle func(tx *gorm.DB) (err error)) (err error) {
+	var (
+		db *gorm.DB
+	)
+	db, err = GormDB()
+	if err != nil {
+		return
+	}
+	tx := db.Begin(&sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	err = handle(tx)
+	if err != nil {
+		return
+	}
+	err = tx.Commit().Error
+	return
+}

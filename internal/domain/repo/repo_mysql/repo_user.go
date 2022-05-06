@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	UserRegister(user *po_mysql.User) (err error)
 	GetUserByUserID(userID string) (user *po_mysql.User, err error)
+	TxGetUserByUserID(userID string, tx *gorm.DB) (user *po_mysql.User, err error)
 	GetUserBySzkID(szkID string) (user *po_mysql.User, err error)
 	GetFromToUserNickname(fromUserID, toUserID string) (fromUserNickname string, toUserNickname string, err error)
 }
@@ -42,6 +43,10 @@ func (r *userRepository) GetUserByUserID(userID string) (user *po_mysql.User, er
 		return
 	}
 	err = db.Where("user_id=?", userID).Find(&user).Error
+	return
+}
+func (r *userRepository) TxGetUserByUserID(userID string, tx *gorm.DB) (user *po_mysql.User, err error) {
+	err = tx.Where("user_id=?", userID).Find(&user).Error
 	return
 }
 

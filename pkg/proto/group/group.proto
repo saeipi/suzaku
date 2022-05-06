@@ -4,6 +4,38 @@ import  "pb_com/common.proto";
 option go_package = "./group;pb_group";
 package group;
 
+enum HANDLE_JOIN_GROUP_RESULT
+{
+    NONE = 0;
+    APPROVE = 1; // 同意
+    RESOLUTELY = 2; // 拒绝
+}
+
+// 加入群申请
+message RequestJoinGroupReq{
+  string group_id = 1;
+  string req_msg = 2;
+  string user_id = 3;
+  string operation_id = 4;
+  int32 req_source = 5;
+}
+
+message RequestJoinGroupResp{
+  pb_com.CommonResp common = 1;
+}
+
+message HandleRequestJoinGroupReq{
+  string group_id = 1;
+  string user_id = 2;
+  string handle_msg = 3;
+  string operation_id = 4;
+  int32 handle_result = 5;
+}
+
+message HandleRequestJoinGroupResp{
+  pb_com.CommonResp common = 1;
+}
+
 message GroupMemberInfo{
   string UserID = 1;
   int32 RoleLevel = 2;
@@ -71,16 +103,6 @@ message TransferGroupOwnerReq {
   string OpUserID = 5; //app manager or group owner
 }
 message TransferGroupOwnerResp{
-  pb_com.CommonResp common = 1;
-}
-// 加入群
-message RequestJoinGroupReq{
-  string group_id = 1;
-  string req_message = 2;
-  string user_id = 3;
-  string operation_id = 4;
-}
-message RequestJoinGroupResp{
   pb_com.CommonResp common = 1;
 }
 
@@ -157,7 +179,7 @@ message GetJoinedGroupListResp{
   repeated pb_ws.GroupInfo group_list = 2;
 }
 
-// 要求用户加入群
+// 邀请用户加入群
 message InviteUserToGroupReq {
   string operation_id = 2;
   string group_id = 3;
@@ -351,8 +373,10 @@ message SetGroupMemberNicknameResp{
 }
 
 service group{
-  rpc createGroup(CreateGroupReq) returns(CreateGroupResp);
   rpc requestJoinGroup(RequestJoinGroupReq) returns(RequestJoinGroupResp);
+  rpc handleRequestJoinGroup(HandleRequestJoinGroupReq) returns(HandleRequestJoinGroupResp);
+
+  rpc createGroup(CreateGroupReq) returns(CreateGroupResp);
   rpc quitGroup(QuitGroupReq) returns(QuitGroupResp);
   rpc getGroupsInfo(GetGroupsInfoReq) returns(GetGroupsInfoResp);
   rpc setGroupInfo(SetGroupInfoReq) returns(SetGroupInfoResp);
