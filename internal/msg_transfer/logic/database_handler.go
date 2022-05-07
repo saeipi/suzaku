@@ -7,7 +7,6 @@ import (
 )
 
 func saveUserChat(uid string, msg *pb_chat.MsgDataToMQ) (err error) {
-	return
 	var (
 		seq        uint64
 		pbSaveData pb_chat.MsgDataToDB
@@ -21,6 +20,6 @@ func saveUserChat(uid string, msg *pb_chat.MsgDataToMQ) (err error) {
 	msg.MsgData.Seq = uint32(seq)
 	pbSaveData = pb_chat.MsgDataToDB{}
 	pbSaveData.MsgData = msg.MsgData
-	repo_mongo.MgChatRepo.SaveUserChatMongo2(uid, pbSaveData.MsgData.SendTime, &pbSaveData)
+	repo_mongo.MgChatRepo.SaveUserChatMongo2(uid, pbSaveData.MsgData.SendTs, &pbSaveData)
 	return
 }

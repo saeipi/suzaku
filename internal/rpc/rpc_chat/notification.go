@@ -32,7 +32,7 @@ func Notification(n *do.NotificationMsg) {
 	msg.MsgFrom = n.MsgFrom
 	msg.ContentType = n.ContentType
 	msg.SessionType = n.SessionType
-	msg.CreateTime = utils.GetCurrentTimestampByMill()
+	msg.CreatedTs = utils.GetCurrentTimestampByMill() // 微妙
 	msg.ClientMsgId = utils.GetMsgID(n.SendID)
 	msg.Options = make(map[string]bool, 7)
 	switch n.SessionType {

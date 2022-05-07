@@ -21,7 +21,7 @@ func copyCallbackCommonReq(msg *pb_chat.SendMsgReq) callback.CommonCallbackReq {
 		MsgFrom:          msg.MsgData.MsgFrom,
 		ContentType:      msg.MsgData.ContentType,
 		Status:           msg.MsgData.Status,
-		CreateTime:       msg.MsgData.CreateTime,
+		CreatedTs:        msg.MsgData.CreatedTs,
 		Content:          string(msg.MsgData.Content),
 	}
 }
@@ -151,7 +151,7 @@ func copyCallbackCommonReqStruct(msg *pb_chat.SendMsgReq) do.CommonCallbackReq {
 		MsgFrom:          msg.MsgData.MsgFrom,
 		ContentType:      msg.MsgData.ContentType,
 		Status:           msg.MsgData.Status,
-		CreateTime:       msg.MsgData.CreateTime,
+		CreatedTs:        msg.MsgData.CreatedTs,
 		Content:          string(msg.MsgData.Content),
 	}
 }

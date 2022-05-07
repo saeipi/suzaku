@@ -59,18 +59,17 @@ func (h *PersistentConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 }
 
 func (h *PersistentConsumerHandler) InsertMessageToChatLog(msg pb_chat.MsgDataToMQ) (err error) {
-	return
 	var (
-		chatLog *po_mysql.ChatLog
+		message *po_mysql.Message
 		tips    pb_ws.TipsComm
 	)
-	chatLog = new(po_mysql.ChatLog)
-	copier.Copy(chatLog, msg.MsgData)
+	message = new(po_mysql.Message)
+	copier.Copy(message, msg.MsgData)
 	switch msg.MsgData.SessionType {
 	case constant.GroupChatType:
-		chatLog.RecvID = msg.MsgData.GroupId
+		message.RecvId = msg.MsgData.GroupId
 	case constant.SingleChatType:
-		chatLog.RecvID = msg.MsgData.RecvId
+		message.RecvId = msg.MsgData.RecvId
 	}
 	if msg.MsgData.ContentType >= constant.NotificationBegin && msg.MsgData.ContentType <= constant.NotificationEnd {
 		_ = proto.Unmarshal(msg.MsgData.Content, &tips)
@@ -79,13 +78,12 @@ func (h *PersistentConsumerHandler) InsertMessageToChatLog(msg pb_chat.MsgDataTo
 			EnumsAsInts:  false,
 			EmitDefaults: false,
 		}
-		chatLog.Content, _ = marshaler.MarshalToString(&tips)
+		message.Content, _ = marshaler.MarshalToString(&tips)
 	} else {
-		chatLog.Content = string(msg.MsgData.Content)
+		message.Content = string(msg.MsgData.Content)
 	}
-	chatLog.CreateTime = utils.UnixMillSecondToTime(msg.MsgData.CreateTime)
-	chatLog.SendTime = utils.UnixMillSecondToTime(msg.MsgData.SendTime)
-	err = repo_mysql.ChatRepo.SaveChatLog(chatLog)
+	message.SendTs = msg.MsgData.SendTs
+	err = repo_mysql.ChatRepo.SaveMessage(message)
 	if err != nil {
 		//TODO:错误
 	}

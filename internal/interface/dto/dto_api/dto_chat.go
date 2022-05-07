@@ -6,7 +6,7 @@ type SendMsgReq struct {
 	SenderPlatformID int32       `json:"sender_platform_id" binding:"required"`
 	SendID           string      `json:"send_id" binding:"required"`
 	SenderNickName   string      `json:"sender_nick_name"`
-	SenderFaceURL    string      `json:"sender_face_url"`
+	SenderAvatarUrl  string      `json:"sender_avatar_url"`
 	OperationID      string      `json:"operation_id" binding:"required"`
 	Data             SendMsgData `json:"data"`
 }
@@ -22,7 +22,7 @@ type SendMsgData struct {
 	Content     []byte                 `json:"content"`
 	Options     map[string]bool        `json:"options" `
 	ClientMsgID string                 `json:"client_msg_id" binding:"required"`
-	CreateTime  int64                  `json:"create_time" binding:"required"`
+	CreatedTs  int64                   `json:"created_ts" binding:"required"`
 	OffLineInfo *pb_ws.OfflinePushInfo `json:"off_line_info,omitempty" `
 }
 

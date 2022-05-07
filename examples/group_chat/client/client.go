@@ -214,7 +214,7 @@ func (c *Client) SendGroup(groupId string) (err error) {
 	if c.closed == true {
 		return
 	}
-	ts = time.Now().Unix()
+	ts = utils.GetCurrentTimestampByMill()
 	msgData = pb_ws.MsgData{
 		SendId:           c.userID, // 发送者ID
 		RecvId:           "",       // 接收者ID
@@ -223,14 +223,14 @@ func (c *Client) SendGroup(groupId string) (err error) {
 		ServerMsgId:      "",
 		SenderPlatformId: 1,
 		SenderNickname:   c.nickname,
-		SenderFaceUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
+		SenderAvatarUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
 		SessionType:      2, // 单聊为1，群聊为2
 		MsgFrom:          int32(rand.Uint64()) + 1,
 		ContentType:      101, // 消息类型，101表示文本，102表示图片
 		Content:          nil, // 内部是json 对象
 		Seq:              1,
-		SendTime:         ts,
-		CreateTime:       ts,
+		SendTs:         ts,
+		CreatedTs:       ts,
 		Status:           0,
 		Options:          nil,
 		OfflinePushInfo:  nil, // |否| 离线推送的具体内容，如果不填写，使用服务器默认推送标题

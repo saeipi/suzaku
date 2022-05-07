@@ -4,10 +4,11 @@ import (
 	"gorm.io/gorm"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
+	"time"
 )
 
 type ChatRepository interface {
-	SaveChatLog(log *po_mysql.ChatLog) (err error)
+	SaveMessage(msg *po_mysql.Message) (err error)
 }
 
 var ChatRepo ChatRepository
@@ -19,13 +20,14 @@ func init() {
 	ChatRepo = new(chatRepository)
 }
 
-func (r *chatRepository) SaveChatLog(log *po_mysql.ChatLog) (err error) {
+func (r *chatRepository) SaveMessage(msg *po_mysql.Message) (err error) {
 	var (
 		db *gorm.DB
 	)
-	if db, err = mysql.GormDB();err != nil{
+	msg.CreatedTs = time.Now().Unix()
+	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Create(log).Error
+	err = db.Create(msg).Error
 	return
 }

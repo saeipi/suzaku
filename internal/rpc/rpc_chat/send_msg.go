@@ -18,7 +18,7 @@ type MsgCallBackReq struct {
 	SendID       string `json:"send_id"`
 	RecvID       string `json:"recv_id"`
 	Content      string `json:"content"`
-	SendTime     int64  `json:"send_id"`
+	SendTs       int64  `json:"send_ts"`
 	MsgFrom      int32  `json:"msg_from"`
 	ContentType  int32  `json:"content_type"`
 	SessionType  int32  `json:"session_type"`
@@ -39,7 +39,7 @@ type MsgCallBackResp struct {
 
 func (rpc *chatRpcServer) encapsulateMsgData(msg *pb_ws.MsgData) {
 	msg.ServerMsgId = GetMsgID(msg.SendId)
-	msg.SendTime = utils.GetCurrentTimestampByMill()
+	msg.SendTs = utils.GetCurrentTimestampByMill()
 	switch msg.ContentType {
 	case constant.Text:
 		fallthrough
@@ -113,7 +113,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		SendID:      pb.MsgData.SendId,
 		RecvID:      pb.MsgData.RecvId,
 		Content:     string(pb.MsgData.Content),
-		SendTime:    pb.MsgData.SendTime,
+		SendTs:      pb.MsgData.SendTs,
 		MsgFrom:     pb.MsgData.MsgFrom,
 		ContentType: pb.MsgData.ContentType,
 		SessionType: pb.MsgData.SessionType,
@@ -174,7 +174,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		if err = callbackAfterSendSingleMsg(pb); err != nil {
 			// TODO:错误
 		}
-		return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTime)
+		return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTs)
 	case constant.GroupChatType:
 		// callback
 		canSend, err = callbackBeforeSendGroupMsg(pb)
@@ -232,7 +232,7 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 			}
 		}
 	}
-	return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTime)
+	return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTs)
 }
 
 func returnMsg(replay *pb_chat.SendMsgResp, pb *pb_chat.SendMsgReq, errCode int32, errMsg, serverMsgID string, sendTime int64) (*pb_chat.SendMsgResp, error) {
