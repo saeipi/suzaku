@@ -11,7 +11,7 @@ enum HANDLE_JOIN_GROUP_RESULT
     RESOLUTELY = 2; // 拒绝
 }
 
-// 加入群申请
+// 1、加入群申请
 message RequestJoinGroupReq{
   string group_id = 1;
   string req_msg = 2;
@@ -19,11 +19,11 @@ message RequestJoinGroupReq{
   string operation_id = 4;
   int32 req_source = 5;
 }
-
 message RequestJoinGroupResp{
   pb_com.CommonResp common = 1;
 }
 
+// 2、处理入群请求
 message HandleRequestJoinGroupReq{
   string group_id = 1;
   string user_id = 2;
@@ -31,14 +31,34 @@ message HandleRequestJoinGroupReq{
   string operation_id = 4;
   int32 handle_result = 5;
 }
-
 message HandleRequestJoinGroupResp{
   pb_com.CommonResp common = 1;
 }
 
+// 3、获取群全部成员
+message GetGroupAllMemberReq {
+  string group_id = 1; //No verification permission
+  string operation_id = 2;
+}
+message GetGroupAllMemberResp {
+  pb_com.CommonResp common = 1;
+  repeated pb_ws.GroupMemberInfo member_list = 2;
+}
+
+// 4、获取群全部成员基础信息
+message GetGroupAllMemberBasicReq {
+  string group_id = 1; //No verification permission
+  string operation_id = 2;
+}
+
+message GetGroupAllMemberBasicResp {
+  pb_com.CommonResp common = 1;
+  repeated GroupMemberInfo member_list = 2;
+}
+
 message GroupMemberInfo{
-  string UserID = 1;
-  int32 RoleLevel = 2;
+  string user_id = 1;
+  int32 role_level = 2;
 }
 
 message CreateGroupReq{
@@ -190,16 +210,6 @@ message InviteUserToGroupReq {
 message InviteUserToGroupResp {
   pb_com.CommonResp common = 1;
   repeated  Id2Result id2_result_list = 2; // 0 ok, -1 error
-}
-
-// 获取群全部成员
-message GetGroupAllMemberReq {
-  string user_id = 2; //No verification permission
-  string operation_id = 3;
-}
-message GetGroupAllMemberResp {
-  pb_com.CommonResp common = 1;
-  repeated pb_ws.GroupMemberInfo member_list = 2;
 }
 
 message CMSGroup {
@@ -376,6 +386,9 @@ service group{
   rpc requestJoinGroup(RequestJoinGroupReq) returns(RequestJoinGroupResp);
   rpc handleRequestJoinGroup(HandleRequestJoinGroupReq) returns(HandleRequestJoinGroupResp);
 
+  rpc getGroupAllMember(GetGroupAllMemberReq) returns(GetGroupAllMemberResp);
+  rpc getGroupAllMemberBasic(GetGroupAllMemberBasicReq) returns(GetGroupAllMemberBasicResp);
+
   rpc createGroup(CreateGroupReq) returns(CreateGroupResp);
   rpc quitGroup(QuitGroupReq) returns(QuitGroupResp);
   rpc getGroupsInfo(GetGroupsInfoReq) returns(GetGroupsInfoResp);
@@ -389,7 +402,7 @@ service group{
   rpc kickGroupMember(KickGroupMemberReq) returns (KickGroupMemberResp);
   rpc getJoinedGroupList(GetJoinedGroupListReq) returns (GetJoinedGroupListResp);
   rpc inviteUserToGroup(InviteUserToGroupReq) returns (InviteUserToGroupResp);
-  rpc getGroupAllMember(GetGroupAllMemberReq) returns(GetGroupAllMemberResp);
+
 
   rpc GetGroupById(GetGroupByIdReq) returns(GetGroupByIdResp);
   rpc GetGroup(GetGroupReq) returns(GetGroupResp);

@@ -3,9 +3,13 @@ package rpc_chat
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
+	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/redis"
 	"suzaku/pkg/constant"
+	"suzaku/pkg/factory"
 	pb_chat "suzaku/pkg/proto/chart"
+	pb_group "suzaku/pkg/proto/group"
 	"suzaku/pkg/proto/pb_ws"
 	"suzaku/pkg/utils"
 )
@@ -88,6 +92,13 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		canSend   bool
 		replay    pb_chat.SendMsgResp
 		isSend    bool
+
+		//群消息
+		clientConn        *grpc.ClientConn
+		client            pb_group.GroupClient
+		groupAllMemberReq *pb_group.GetGroupAllMemberBasicReq
+		reply             *pb_group.GetGroupAllMemberBasicResp
+		memberUserIdList  []string
 	)
 	replay = pb_chat.SendMsgResp{}
 	rpc.encapsulateMsgData(pb.MsgData)
@@ -164,6 +175,62 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 			// TODO:错误
 		}
 		return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTime)
+	case constant.GroupChatType:
+		// callback
+		canSend, err = callbackBeforeSendGroupMsg(pb)
+		if err != nil {
+			// TODO:ERROR
+		}
+		// TODO: 调试强制发送
+		func() {
+			canSend = true
+		}()
+		if canSend == false {
+			return returnMsg(&replay, pb, 201, "callbackBeforeSendGroupMsg result stop rpc and return", "", 0)
+		}
+		clientConn = factory.ClientConn(config.Config.RPCRegisterName.GroupName)
+		client = pb_group.NewGroupClient(clientConn)
+		groupAllMemberReq = &pb_group.GetGroupAllMemberBasicReq{
+			GroupId:     pb.MsgData.GroupId,
+			OperationId: pb.OperationId,
+		}
+		reply, err = client.GetGroupAllMemberBasic(context.Background(), groupAllMemberReq)
+		if err != nil {
+			// TODO:ERROR
+			return returnMsg(&replay, pb, 201, err.Error(), "", 0)
+		}
+		if reply.Common.Code != 0 {
+			return returnMsg(&replay, pb, reply.Common.Code, reply.Common.Msg, "", 0)
+		}
+		memberUserIdList = func(members []*pb_group.GroupMemberInfo) (userIds []string) {
+			userIds = make([]string, 0)
+			for _, v := range members {
+				userIds = append(userIds, v.UserId)
+			}
+			return
+		}(reply.MemberList)
+
+		//TODO:消息分类处理
+		switch pb.MsgData.ContentType {
+		case constant.MemberKickedNotification:
+		case constant.MemberQuitNotification:
+		case constant.AtText:
+		}
+		for _, userId := range memberUserIdList {
+			pb.MsgData.RecvId = userId
+			isSend = modifyMessageByUserMessageReceiveOpt(userId, pb.MsgData.GroupId, constant.GroupChatType, pb)
+			// TODO: 调试强制发送
+			func() {
+				isSend = true
+			}()
+			if isSend == true {
+				msgToMQ.MsgData = pb.MsgData
+				err = rpc.sendMsgToKafka(&msgToMQ, userId)
+				if err != nil {
+					return returnMsg(&replay, pb, 201, "kafka send msg err", "", 0)
+				}
+			}
+		}
 	}
 	return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTime)
 }

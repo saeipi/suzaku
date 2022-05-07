@@ -16,6 +16,7 @@ type GroupRepository interface {
 	HandleRequestJoin(req *pb_group.HandleRequestJoinGroupReq) (result *do.JoinGroupResult, err error)
 	Join(member *po_mysql.GroupMember) (err error)
 	IsJoined(groupID string, userID string) (member *po_mysql.GroupMember, err error)
+	AllMember(groupId string) (members []*po_mysql.GroupMember, err error)
 }
 
 var GroupRepo GroupRepository
@@ -164,5 +165,17 @@ func (r *groupRepository) TxGetGroupRequest(groupId, userId string, tx *gorm.DB)
 
 func (r *groupRepository) TxGetGroup(groupId string, tx *gorm.DB) (group *po_mysql.Group, err error) {
 	err = tx.Where("group_id=?", groupId).Find(&group).Error
+	return
+}
+
+func (r *groupRepository) AllMember(groupId string) (members []*po_mysql.GroupMember, err error) {
+	members = make([]*po_mysql.GroupMember,0)
+	var (
+		db *gorm.DB
+	)
+	if db, err = mysql.GormDB(); err != nil {
+		return
+	}
+	err = db.Where("group_id = ?",groupId).Find(&members).Error
 	return
 }

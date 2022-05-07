@@ -63,10 +63,10 @@ func JoinGroup(userIDs []string) {
 			Nickname:       userID,
 			UserAvatarUrl:  "",
 			RoleLevel:      1,
-			JoinTime:       1651752902,
+			JoinTs:         1651752902,
 			JoinSource:     0,
 			OperatorUserId: "",
-			MuteEndTime:    0,
+			MuteEndTs:      0,
 			Ex:             "",
 		}
 		mb, err = repo_mysql.GroupRepo.IsJoined(member.GroupId, member.UserId)

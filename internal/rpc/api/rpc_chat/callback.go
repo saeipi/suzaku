@@ -1,6 +1,7 @@
 package rpc_chat
 
 import (
+	"suzaku/internal/domain/do"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/http"
@@ -101,6 +102,58 @@ func callbackBeforeSendSingleMsg(msg *pb_chat.SendMsgReq) (canSend bool, err err
 		}
 	}
 	return
+}
+
+func callbackBeforeSendGroupMsg(msg *pb_chat.SendMsgReq) (canSend bool, err error) {
+	var (
+		req  do.CallbackAfterSendGroupMsgReq
+		resp *do.CallbackBeforeSendGroupMsgResp
+	)
+	if !config.Config.Callback.CallbackBeforeSendGroupMsg.Enable {
+		canSend = true
+		return
+	}
+	commonCallbackReq := copyCallbackCommonReqStruct(msg)
+	commonCallbackReq.CallbackCommand = constant.CallbackBeforeSendGroupMsgCommand
+	req = do.CallbackAfterSendGroupMsgReq{
+		CommonCallbackReq: commonCallbackReq,
+		GroupID:           msg.MsgData.GroupId,
+	}
+	resp = &do.CallbackBeforeSendGroupMsgResp{CommonCallbackResp: do.CommonCallbackResp{}}
+
+	if err = http.PostReturn(config.Config.Callback.CallbackURL, req, resp, config.Config.Callback.CallbackBeforeSendGroupMsg.CallbackTimeOut); err != nil {
+		if !config.Config.Callback.CallbackBeforeSendGroupMsg.CallbackFailedContinue {
+			canSend = false
+			return
+		} else {
+			canSend = true
+			return
+		}
+	} else {
+		if resp.ActionCode == constant.ActionForbidden && resp.ErrCode == constant.CallbackHandleSuccess {
+			canSend = false
+			return
+		}
+	}
+	canSend = true
+	return
+}
+
+func copyCallbackCommonReqStruct(msg *pb_chat.SendMsgReq) do.CommonCallbackReq {
+	return do.CommonCallbackReq{
+		SendId:           msg.MsgData.SendId,
+		ServerMsgId:      msg.MsgData.ServerMsgId,
+		ClientMsgId:      msg.MsgData.ClientMsgId,
+		OperationId:      msg.OperationId,
+		SenderPlatformId: msg.MsgData.SenderPlatformId,
+		SenderNickname:   msg.MsgData.SenderNickname,
+		SessionType:      msg.MsgData.SessionType,
+		MsgFrom:          msg.MsgData.MsgFrom,
+		ContentType:      msg.MsgData.ContentType,
+		Status:           msg.MsgData.Status,
+		CreateTime:       msg.MsgData.CreateTime,
+		Content:          string(msg.MsgData.Content),
+	}
 }
 
 func callbackAfterSendSingleMsg(msg *pb_chat.SendMsgReq) error {
