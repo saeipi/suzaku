@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"suzaku/internal/rpc/api/rpc_friend"
+	"suzaku/internal/rpc/rpc_friend"
 )
 
 func main() {

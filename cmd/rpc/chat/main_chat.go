@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"suzaku/internal/rpc/api/rpc_chat"
+	"suzaku/internal/rpc/rpc_chat"
 )
 
 func main() {

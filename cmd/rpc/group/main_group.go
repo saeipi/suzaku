@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"suzaku/internal/rpc/api/rpc_group"
+	"suzaku/internal/rpc/rpc_group"
 )
 
 func main() {

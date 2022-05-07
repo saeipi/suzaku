@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"suzaku/internal/rpc/api/rpc_auth"
+	"suzaku/internal/rpc/rpc_auth"
 )
 
 func main() {

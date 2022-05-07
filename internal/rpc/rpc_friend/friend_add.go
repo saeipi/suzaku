@@ -4,7 +4,7 @@ import (
 	"context"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
-	"suzaku/internal/rpc/api/rpc_chat"
+	"suzaku/internal/rpc/rpc_chat"
 	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/proto/pb_com"
 	"time"
