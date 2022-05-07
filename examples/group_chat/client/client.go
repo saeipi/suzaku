@@ -197,18 +197,16 @@ func (c *Client) messageHandler(message []byte) {
 	if msgData.MsgFrom%2 == 0 {
 		time.Sleep(time.Second * 1)
 	}
-	fmt.Println("收到消息:", c.userID, req.ReqIdentifier, req.OperationID, req.SendID, req.Token)
-	c.SendUser(req.SendID)
+	fmt.Println("收到消息:", c.userID, req.SendID, string(msgData.Content))
 }
 
-func (c *Client) SendUser(recvId string) (err error) {
+func (c *Client) SendGroup(groupId string) (err error) {
 	var (
-		ts         int64
-		contentMap map[string]interface{}
-		bodyBytes  []byte
-		req        protocol.MessageReq
-		reqBytes   []byte
-		msgData    pb_ws.MsgData
+		ts        int64
+		bodyBytes []byte
+		req       protocol.MessageReq
+		reqBytes  []byte
+		msgData   pb_ws.MsgData
 	)
 	if c.conn == nil {
 		return
@@ -216,21 +214,17 @@ func (c *Client) SendUser(recvId string) (err error) {
 	if c.closed == true {
 		return
 	}
-
 	ts = time.Now().Unix()
-	contentMap = map[string]interface{}{}
-	contentMap["content"] = "文本聊天消息"
-
 	msgData = pb_ws.MsgData{
 		SendId:           c.userID, // 发送者ID
-		RecvId:           recvId,   // 接收者ID
-		GroupId:          "",
-		ClientMsgId:      strconv.Itoa(int(ts)),
+		RecvId:           "",       // 接收者ID
+		GroupId:          groupId,
+		ClientMsgId:      utils.GetMsgID(c.userID),
 		ServerMsgId:      "",
 		SenderPlatformId: 1,
 		SenderNickname:   c.nickname,
 		SenderFaceUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
-		SessionType:      1, // 单聊为1，群聊为2
+		SessionType:      2, // 单聊为1，群聊为2
 		MsgFrom:          int32(rand.Uint64()) + 1,
 		ContentType:      101, // 消息类型，101表示文本，102表示图片
 		Content:          nil, // 内部是json 对象
@@ -241,8 +235,7 @@ func (c *Client) SendUser(recvId string) (err error) {
 		Options:          nil,
 		OfflinePushInfo:  nil, // |否| 离线推送的具体内容，如果不填写，使用服务器默认推送标题
 	}
-	msgData.Content, _ = utils.ObjEncode(contentMap)
-
+	msgData.Content = utils.Str2Bytes("群文本聊天消息"+ c.userID)
 	bodyBytes, err = proto.Marshal(&msgData)
 	if err != nil {
 		return
@@ -251,8 +244,8 @@ func (c *Client) SendUser(recvId string) (err error) {
 		ReqIdentifier: constant.WSSendMsg,
 		Token:         strconv.Itoa(int(ts)) + ":" + c.userID,
 		SendID:        c.userID,
-		OperationID:   strconv.Itoa(int(ts)) + ":" + c.userID,
-		MsgIncr:       strconv.Itoa(int(ts)) + ":" + c.userID,
+		OperationID:   c.userID,
+		MsgIncr:       utils.GenMsgIncr(c.userID),
 		Data:          bodyBytes,
 	}
 	reqBytes, err = utils.ObjEncode(req)

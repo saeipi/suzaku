@@ -13,3 +13,7 @@ func GetMsgID(sendID string) string {
 func int64ToString(i int64) string {
 	return strconv.FormatInt(i, 10)
 }
+
+func GenMsgIncr(userID string) string {
+	return userID + "_" + int64ToString(GetCurrentTimestampByNano())
+}

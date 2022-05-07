@@ -59,6 +59,7 @@ func (h *PersistentConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 }
 
 func (h *PersistentConsumerHandler) InsertMessageToChatLog(msg pb_chat.MsgDataToMQ) (err error) {
+	return
 	var (
 		chatLog *po_mysql.ChatLog
 		tips    pb_ws.TipsComm

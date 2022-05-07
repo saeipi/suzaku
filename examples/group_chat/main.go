@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"suzaku/examples/group_chat/client"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
 	"sync"
@@ -16,8 +17,8 @@ func main() {
 	var userIDs = []string{"123", "456", "789", "1011", "1213", "1415"}
 	wg.Add(1)
 	JoinGroup(userIDs)
-	//manager := client.NewManager()
-	//manager.Run(userIDs, usercase.TestGroupID)
+	manager := client.NewManager()
+	manager.Run(userIDs, TestGroupID)
 	wg.Wait()
 }
 
@@ -75,7 +76,10 @@ func JoinGroup(userIDs []string) {
 			return
 		}
 		if mb == nil {
-
+			continue
+		}
+		if mb.UserId != "" {
+			continue
 		}
 		err = repo_mysql.GroupRepo.Join(member)
 		if err != nil {

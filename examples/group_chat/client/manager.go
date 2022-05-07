@@ -1,7 +1,6 @@
 package client
 
 import (
-	"strconv"
 	"sync"
 )
 
@@ -16,9 +15,12 @@ func NewManager() (mgr *Manager) {
 	return
 }
 
-func (m *Manager) Run(userIDs []string,groupId string) {
+func (m *Manager) Run(userIDs []string, groupId string) {
 	go m.listener()
-	go m.batchCreate(userIDs)
+	m.batchCreate(userIDs)
+	for _, c := range m.clients {
+		c.SendGroup(groupId)
+	}
 }
 
 func (m *Manager) unregisterClient(client *Client) {
@@ -46,27 +48,22 @@ func (m *Manager) listener() {
 
 func (m *Manager) batchCreate(userIDs []string) {
 	var (
-		i int
+		userId string
 	)
-	for i = 0; i < len(userIDs); i = i + 2 {
-		m.newConnection(strconv.Itoa(i), strconv.Itoa(i+1))
+	for _, userId = range userIDs {
+		m.newConnection(userId)
 	}
 }
 
-func (m *Manager) newConnection(uid1 string, uid2 string) {
+func (m *Manager) newConnection(userId string) {
 	var (
-		client1 *Client
-		client2 *Client
+		client *Client
 	)
-	client1 = NewClient(uid1, m)
-	client2 = NewClient(uid2, m)
+	client = NewClient(userId, m)
 
 	m.rwLock.Lock()
-	if client1.conn != nil && client2.conn != nil {
-		m.clients[uid1] = client1
-		m.clients[uid2] = client2
+	if client.conn != nil {
+		m.clients[userId] = client
 	}
 	m.rwLock.Unlock()
-
-	client1.SendUser(uid2)
 }

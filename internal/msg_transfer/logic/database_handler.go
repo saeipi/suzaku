@@ -7,6 +7,7 @@ import (
 )
 
 func saveUserChat(uid string, msg *pb_chat.MsgDataToMQ) (err error) {
+	return
 	var (
 		seq        uint64
 		pbSaveData pb_chat.MsgDataToDB
