@@ -6,23 +6,24 @@ import (
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
 	"sync"
+	"time"
 )
 
 const (
-	TestGroupID = "123123"
+	TestGroupID = "666888"
 )
 
 func main() {
 	var wg sync.WaitGroup
 	var userIDs = []string{"123", "456", "789", "1011", "1213", "1415"}
 	wg.Add(1)
-	JoinGroup(userIDs)
+	JoinGroup(userIDs, TestGroupID)
 	manager := client.NewManager()
 	manager.Run(userIDs, TestGroupID)
 	wg.Wait()
 }
 
-func JoinGroup(userIDs []string) {
+func JoinGroup(userIDs []string, groupId string) {
 	var (
 		group  *po_mysql.Group
 		gp     *po_mysql.Group
@@ -32,15 +33,15 @@ func JoinGroup(userIDs []string) {
 		err    error
 	)
 	group = &po_mysql.Group{
-		GroupId:       TestGroupID,
-		GroupName:     "无双",
+		GroupId:       groupId,
+		GroupName:     "朱雀",
 		Notification:  "",
 		Introduction:  "",
 		AvatarUrl:     "",
 		CreatorUserId: "",
 		GroupType:     1,
 		Status:        1,
-		CreateTs:      1651752358,
+		CreatedTs:     time.Now().Unix(),
 		Ex:            "",
 	}
 
@@ -59,12 +60,12 @@ func JoinGroup(userIDs []string) {
 
 	for _, userID = range userIDs {
 		member = &po_mysql.GroupMember{
-			GroupId:        TestGroupID,
+			GroupId:        groupId,
 			UserId:         userID,
 			Nickname:       userID,
 			UserAvatarUrl:  "",
 			RoleLevel:      1,
-			JoinTs:         1651752902,
+			JoinedTs:       time.Now().Unix(),
 			JoinSource:     0,
 			OperatorUserId: "",
 			MuteEndTs:      0,

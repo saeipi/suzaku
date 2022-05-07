@@ -39,7 +39,7 @@ CREATE TABLE `users` (
   `deleted_ts` bigint DEFAULT '0',
   PRIMARY KEY (`user_id`),
   KEY `idx_szkId` (`szk_id`),
-   KEY `idx_udid` (`udid`),
+  KEY `idx_udid` (`udid`),
   KEY `idx_mobile` (`mobile`),
   KEY `idx_platformId` (`platform_id`),
   KEY `idx_gender` (`gender`),

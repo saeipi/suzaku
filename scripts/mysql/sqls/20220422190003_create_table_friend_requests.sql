@@ -28,7 +28,7 @@ CREATE TABLE `friend_requests` (
   `handle_result` tinyint(1) DEFAULT '0' COMMENT '结果',
   `req_msg` varchar(255) DEFAULT '' COMMENT '添加好友消息',
   `handle_msg` varchar(255) DEFAULT '' COMMENT '处理消息',
-  `handle_ts` bigint DEFAULT '0',
+  `handled_ts` bigint DEFAULT '0',
   `req_ts` bigint DEFAULT '0' COMMENT '请求时间',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   PRIMARY KEY (`from_user_id`,`to_user_id`)

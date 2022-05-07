@@ -111,7 +111,7 @@ func (r *groupRepository) HandleRequestJoin(req *pb_group.HandleRequestJoinGroup
 			UserId:         groupRequest.UserId,
 			Nickname:       user.Nickname,
 			UserAvatarUrl:  user.AvatarUrl,
-			JoinTs:         joinTs,
+			JoinedTs:       joinTs,
 			JoinSource:     groupRequest.ReqSource,
 			OperatorUserId: groupRequest.HandleUserId,
 		}
@@ -169,13 +169,13 @@ func (r *groupRepository) TxGetGroup(groupId string, tx *gorm.DB) (group *po_mys
 }
 
 func (r *groupRepository) AllMember(groupId string) (members []*po_mysql.GroupMember, err error) {
-	members = make([]*po_mysql.GroupMember,0)
+	members = make([]*po_mysql.GroupMember, 0)
 	var (
 		db *gorm.DB
 	)
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Where("group_id = ?",groupId).Find(&members).Error
+	err = db.Where("group_id = ?", groupId).Find(&members).Error
 	return
 }
