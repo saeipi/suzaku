@@ -162,6 +162,8 @@ func (c *Client) write() {
 	}
 }
 
+var msgCount = 0
+
 func (c *Client) messageHandler(message []byte) {
 	if c.curCount > c.endCount {
 		c.Close()
@@ -194,10 +196,8 @@ func (c *Client) messageHandler(message []byte) {
 	if msgData.MsgFrom == 0 {
 		return
 	}
-	if msgData.MsgFrom%2 == 0 {
-		time.Sleep(time.Second * 1)
-	}
-	fmt.Println("收到消息:", c.userID, req.SendID, string(msgData.Content))
+	msgCount++
+	fmt.Println("收到消息:", c.userID, req.SendID, string(msgData.Content), msgCount)
 }
 
 func (c *Client) SendGroup(groupId string) (err error) {
