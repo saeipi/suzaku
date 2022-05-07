@@ -232,15 +232,15 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 			}
 		}
 	}
-	return returnMsg(&replay, pb, 0, "", msgToMQ.MsgData.ServerMsgId, msgToMQ.MsgData.SendTs)
+	return returnMsg(&replay, pb, 0, "", pb.MsgData.ServerMsgId, pb.MsgData.SendTs)
 }
 
-func returnMsg(replay *pb_chat.SendMsgResp, pb *pb_chat.SendMsgReq, errCode int32, errMsg, serverMsgID string, sendTime int64) (*pb_chat.SendMsgResp, error) {
+func returnMsg(replay *pb_chat.SendMsgResp, pb *pb_chat.SendMsgReq, errCode int32, errMsg, serverMsgID string, sendTs int64) (*pb_chat.SendMsgResp, error) {
 	replay.ErrCode = errCode
 	replay.ErrMsg = errMsg
 	replay.ServerMsgId = serverMsgID
 	replay.ClientMsgId = pb.MsgData.ClientMsgId
-	replay.SendTime = sendTime
+	replay.SendTs = sendTs
 	return replay, nil
 }
 

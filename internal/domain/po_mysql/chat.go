@@ -1,9 +1,5 @@
 package po_mysql
 
-/*
-CreatedTs:调用 SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) 的时间
-SendTs:进入消息队列的时间
-*/
 type Message struct {
 	ServerMsgId      string `gorm:"column:server_msg_id;primary_key" json:"server_msg_id"`         // 服务端生成
 	ClientMsgId      string `gorm:"column:client_msg_id" json:"client_msg_id"`                     // 客户端生成
@@ -17,7 +13,7 @@ type Message struct {
 	ContentType      int    `gorm:"column:content_type;default:0" json:"content_type"`
 	Content          string `gorm:"column:content" json:"content"`
 	Status           int    `gorm:"column:status;default:0" json:"status"`
-	SendTs           int64  `gorm:"column:send_ts;default:0" json:"send_ts"`       // 进入消息队列的时间
+	SendTs           int64  `gorm:"column:send_ts;default:0" json:"send_ts"`       // 消息发送的具体时间(毫秒) 进入消息队列的时间
 	CreatedTs        int64  `gorm:"column:created_ts;default:0" json:"created_ts"` // 创建消息的时间，在send_ts前面
 	Ex               string `gorm:"column:ex" json:"ex"`
 }

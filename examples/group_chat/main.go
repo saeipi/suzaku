@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"suzaku/examples/group_chat/client"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
@@ -15,7 +16,14 @@ const (
 
 func main() {
 	var wg sync.WaitGroup
-	var userIDs = []string{"123", "456", "789", "1011", "1213", "1415"}
+	var (
+		userIDs []string
+		index   int
+	)
+	for index = 1000; index < 1500; index++ {
+		userIDs = append(userIDs, strconv.Itoa(index))
+	}
+
 	wg.Add(1)
 	JoinGroup(userIDs, TestGroupID)
 	manager := client.NewManager()

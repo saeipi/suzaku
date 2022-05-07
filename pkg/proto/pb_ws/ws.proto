@@ -119,7 +119,7 @@ message GetMaxAndMinSeqResp {
 message UserSendMsgResp {
   string server_msg_id = 1;
   string client_msg_id = 2;
-  int64  send_time = 3;
+  int64  send_ts = 3;
 
 }
 message MsgData {

@@ -190,7 +190,7 @@ func (h *MsgHandler) sendMsgResp(client *ws.Client, req *protocol.MessageReq, re
 	)
 	replyData.ClientMsgId = reply.GetClientMsgId()
 	replyData.ServerMsgId = reply.GetServerMsgId()
-	replyData.SendTime = reply.GetSendTime()
+	replyData.SendTs = reply.GetSendTs()
 	buf, err = proto.Marshal(&replyData)
 	if err != nil {
 		//TODO: error

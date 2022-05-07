@@ -43,6 +43,9 @@ func (rpc *groupRpcServer) GetGroupAllMemberBasic(_ context.Context, req *pb_gro
 			return
 		}
 		copier.Copy(&resp.MemberList, &members)
+		if len(members) == 0 {
+			return
+		}
 		valJson, _ = utils.ObjToJson(resp.MemberList)
 		err = redis.Set(key, valJson, 0)
 		if err != nil {

@@ -44,7 +44,7 @@ func (h *PersistentConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 	//Control whether to store history messages (mysql)
 	isPersist = utils.GetSwitchFromOptions(msgFromMQ.MsgData.Options, constant.IsPersistent)
 	if isPersist == true {
-		if msgKey == msgFromMQ.MsgData.RecvId && msgFromMQ.MsgData.SessionType == constant.SingleChatType {
+		if msgFromMQ.MsgData.SessionType == constant.SingleChatType && msgKey == msgFromMQ.MsgData.RecvId {
 			if err = h.InsertMessageToChatLog(msgFromMQ); err != nil {
 				//TODO:错误
 				return

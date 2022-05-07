@@ -49,7 +49,7 @@ message SendMsgResp {
   string err_msg = 2;
   string server_msg_id = 3;
   string client_msg_id = 4;
-  int64  send_time = 5;
+  int64  send_ts = 5;
 }
 
 service Chat {

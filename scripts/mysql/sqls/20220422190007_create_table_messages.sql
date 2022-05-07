@@ -34,8 +34,8 @@ CREATE TABLE `messages` (
   `content_type` int DEFAULT '0',
   `content` varchar(3000) CHARACTER SET utf8 DEFAULT '',
   `status` tinyint DEFAULT '0',
-  `send_ts` bigint DEFAULT '0' COMMENT '进入消息队列的时间',
-  `created_ts` bigint DEFAULT '0' COMMENT '创建消息的时间，在send_ts前面',
+  `send_ts` bigint DEFAULT '0' COMMENT '消息发送的具体时间(毫秒)',
+  `created_ts` bigint DEFAULT '0' COMMENT '创建消息的时间，在send_ts之前',
   `ex` varchar(255) CHARACTER SET utf8 DEFAULT '',
   PRIMARY KEY (`server_msg_id`),
   KEY `idx_sendId_recvId_sessionType_createdTs` (`send_id`,`recv_id`,`session_type`,`created_ts`)

@@ -223,19 +223,18 @@ func (c *Client) SendGroup(groupId string) (err error) {
 		ServerMsgId:      "",
 		SenderPlatformId: 1,
 		SenderNickname:   c.nickname,
-		SenderAvatarUrl:    "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
+		SenderAvatarUrl:  "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
 		SessionType:      2, // 单聊为1，群聊为2
 		MsgFrom:          int32(rand.Uint64()) + 1,
 		ContentType:      101, // 消息类型，101表示文本，102表示图片
 		Content:          nil, // 内部是json 对象
 		Seq:              1,
-		SendTs:         ts,
-		CreatedTs:       ts,
+		CreatedTs:        ts,
 		Status:           0,
 		Options:          nil,
 		OfflinePushInfo:  nil, // |否| 离线推送的具体内容，如果不填写，使用服务器默认推送标题
 	}
-	msgData.Content = utils.Str2Bytes("群文本聊天消息"+ c.userID)
+	msgData.Content = utils.Str2Bytes("群文本聊天消息" + c.userID)
 	bodyBytes, err = proto.Marshal(&msgData)
 	if err != nil {
 		return
