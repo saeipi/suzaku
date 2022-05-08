@@ -6,6 +6,7 @@ import (
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
 	pb_group "suzaku/pkg/proto/group"
+	"suzaku/pkg/utils"
 	"time"
 )
 
@@ -35,7 +36,7 @@ func init() {
 */
 func (r *groupRepository) Create(group *po_mysql.Group, avatar *po_mysql.GroupAvatar) (err error) {
 	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
-		group.CreatedTs = time.Now().Unix()
+		group.CreatedTs = utils.NowTimestamp()
 		terr = tx.Save(group).Error
 		if terr != nil {
 			return
