@@ -13,6 +13,7 @@ const (
 	JwtTokenExpireIn        = 3600 * 24 * 30
 	JwtRefreshTokenExpireIn = 3600 * 24 * 60 // 刷新token的时长
 	JwtRefreshTokenKey      = "suzaku_jwt_refresh_token_2021"
+	JwtField                = "jwt="
 )
 
 func CreateJwtToken(userId string, platform int32) (tokenString string, expireIn int64) {
@@ -35,6 +36,7 @@ func CreateJwtToken(userId string, platform int32) (tokenString string, expireIn
 		expireIn = -1
 		return
 	}
+	tokenString = JwtField + tokenString
 	return
 }
 

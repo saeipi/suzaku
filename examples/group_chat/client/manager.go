@@ -15,11 +15,10 @@ func NewManager() (mgr *Manager) {
 	return
 }
 
-var sendCount = 0
-
 func (m *Manager) Run(userIDs []string, groupId string) {
 	go m.listener()
 	m.batchCreate(userIDs)
+	var sendCount = 0
 	for _, c := range m.clients {
 		sendCount++
 		if sendCount > 100 {

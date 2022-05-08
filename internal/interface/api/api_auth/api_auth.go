@@ -6,7 +6,6 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
-	"suzaku/pkg/constant"
 	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
 	pb_auth "suzaku/pkg/proto/auth"
@@ -64,7 +63,7 @@ func UserRegister(c *gin.Context) {
 	resp = &dto_api.UserRegisterResp{
 		PlatformId: reply.PlatformId,
 		UserId:     reply.UserId,
-		Token:      constant.HttpKeyJwt + replyToken.Token,
+		Token:      replyToken.Token,
 		Expire:     replyToken.Expire,
 	}
 	http.Success(c, resp)

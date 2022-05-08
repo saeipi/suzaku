@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"suzaku/internal/msg_gateway/protocol"
 	"suzaku/internal/msg_gateway/ws_server"
+	"suzaku/pkg/common/jwt_auth"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/proto/pb_ws"
 	"suzaku/pkg/utils"
@@ -39,22 +40,23 @@ type Client struct {
 
 func NewClient(userID string, mgr *Manager) (client *Client) {
 	var (
-		u    url.URL
-		q    url.Values
-		ts   int64
-		conn *websocket.Conn
-		// resp *http.Response
-		// buf []byte
-		err error
+		u url.URL
+		//q      url.Values
+		ts     int64
+		conn   *websocket.Conn
+		header map[string][]string
+		token  string
+		err    error
 	)
 	ts = time.Now().Unix()
-	// localhost:17778
 	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
-	q = u.Query()
-	q.Set("user_id", userID)
-	q.Set("platform_id", "1")
-	u.RawQuery = q.Encode()
-
+	/*
+		q = u.Query()
+		q.Set("user_id", userID)
+		q.Set("platform_id", "1")
+		u.RawQuery = q.Encode()
+	*/
+	token, _ = jwt_auth.CreateJwtToken(userID, 1)
 	client = &Client{
 		mgr:        mgr,
 		conn:       nil,
@@ -68,8 +70,11 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		curCount:   0,
 		endCount:   10000, // rand.Intn(100-10) + 10
 	}
-
-	conn, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
+	header = make(map[string][]string)
+	header[constant.KeyUserID] = []string{userID}
+	header[constant.KeyUserPlatformID] = []string{"1"}
+	header[constant.HttpKeyCookie] = []string{token}
+	conn, _, err = websocket.DefaultDialer.Dial(u.String(), header)
 	if err != nil {
 		fmt.Println("创建连接失败")
 		return

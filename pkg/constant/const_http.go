@@ -5,5 +5,5 @@ const (
 	HttpKeyAuthMethodCookie = "cookie"
 	HttpKeyAuthMethodHeader = "header"
 	HttpKeyToken            = "token"
-	HttpKeyJwt              = "jwt="
+	//HttpKeyJwt              = "jwt="
 )
