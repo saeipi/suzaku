@@ -1,7 +1,7 @@
 package api_server
 
 import (
-	"suzaku/internal/router/router_api"
+	"suzaku/internal/router"
 	"suzaku/internal/server/gin_server"
 	"suzaku/pkg/common/config"
 )
@@ -15,7 +15,7 @@ func NewApiServer() *ApiServer {
 		ginServer *gin_server.GinServer
 	)
 	ginServer = gin_server.NewGinServer()
-	router_api.RegisterRouter(ginServer.Engine)
+	router.Register(ginServer.Engine)
 	return &ApiServer{ginServer}
 }
 

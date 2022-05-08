@@ -1,11 +1,11 @@
-package router_api
+package router
 
 import (
 	"github.com/gin-gonic/gin"
 	"suzaku/pkg/common/middleware"
 )
 
-func RegisterRouter(engine *gin.Engine) {
+func Register(engine *gin.Engine) {
 	publicGroup := engine.Group("open")
 	registerPublicRoutes(publicGroup)
 
