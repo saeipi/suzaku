@@ -4,8 +4,9 @@ type User struct {
 	UserId     string `gorm:"column:user_id;primary_key" json:"user_id"`       // 用户ID 系统生成
 	SzkId      string `gorm:"column:szk_id" json:"szk_id"`                     // 账户ID 用户设置
 	Udid       string `gorm:"column:udid" json:"udid"`                         // 设备唯一标识
+	Status     int32  `gorm:"column:status;default:0" json:"status"`           // 用户状态
 	Nickname   string `gorm:"column:nickname" json:"nickname"`                 // 昵称
-	Gender     int    `gorm:"column:gender;default:0" json:"gender"`           // 性别
+	Gender     int32  `gorm:"column:gender;default:0" json:"gender"`           // 性别
 	BirthTs    int64  `gorm:"column:birth_ts;default:0" json:"birth_ts"`       // 生日
 	Email      string `gorm:"column:email" json:"email"`                       // Email
 	Mobile     string `gorm:"column:mobile" json:"mobile"`                     // 手机号
