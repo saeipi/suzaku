@@ -39,6 +39,6 @@ CREATE TABLE `messages` (
   `ex` varchar(255) CHARACTER SET utf8 DEFAULT '',
   PRIMARY KEY (`server_msg_id`),
   KEY `idx_sendId_recvId_sessionType_createdTs` (`send_id`,`recv_id`,`session_type`,`created_ts`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1194,8 +1194,8 @@ type MsgData struct {
 	ClientMsgId      string           `protobuf:"bytes,4,opt,name=client_msg_id,json=clientMsgId,proto3" json:"client_msg_id,omitempty"`
 	ServerMsgId      string           `protobuf:"bytes,5,opt,name=server_msg_id,json=serverMsgId,proto3" json:"server_msg_id,omitempty"`
 	SenderPlatformId int32            `protobuf:"varint,6,opt,name=sender_platform_id,json=senderPlatformId,proto3" json:"sender_platform_id,omitempty"`
-	SenderNickname   string           `protobuf:"bytes,7,opt,name=sender_nickname,json=senderNickname,proto3" json:"sender_nickname,omitempty"`
-	SenderAvatarUrl  string           `protobuf:"bytes,8,opt,name=sender_avatar_url,json=senderAvatarUrl,proto3" json:"sender_avatar_url,omitempty"`
+	SenderNickname   string           `protobuf:"bytes,7,opt,name=sender_nickname,json=senderNickname,proto3" json:"sender_nickname,omitempty"`      // 待确认是否可以删除
+	SenderAvatarUrl  string           `protobuf:"bytes,8,opt,name=sender_avatar_url,json=senderAvatarUrl,proto3" json:"sender_avatar_url,omitempty"` // 待确认是否可以删除
 	SessionType      int32            `protobuf:"varint,9,opt,name=session_type,json=sessionType,proto3" json:"session_type,omitempty"`
 	MsgFrom          int32            `protobuf:"varint,10,opt,name=msg_from,json=msgFrom,proto3" json:"msg_from,omitempty"`
 	ContentType      int32            `protobuf:"varint,11,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`

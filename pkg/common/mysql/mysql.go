@@ -50,6 +50,7 @@ func (m *mysqlDB) open(address string, dbName string) (err error) {
 		fmt.Println("Failed to connect db:", err)
 		return
 	}
+	db = db.Debug()
 
 	sqlDB, err = db.DB()
 	if err != nil {

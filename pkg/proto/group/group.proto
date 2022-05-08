@@ -56,6 +56,21 @@ message GetGroupAllMemberBasicResp {
   repeated GroupMemberInfo member_list = 2;
 }
 
+// 5、获取群成员分页列表
+message GetGroupMemberListReq {
+  string group_id = 1;
+  string user_id = 2;
+  string operation_id = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+message GetGroupMemberListResp {
+  pb_com.CommonResp common = 1;
+  int64 total_rows = 2;
+  repeated pb_ws.GroupMemberInfo member_list = 3;
+}
+
 message GroupMemberInfo{
   string user_id = 1;
   int32 role_level = 2;
@@ -145,17 +160,6 @@ message QuitGroupReq{
 }
 message QuitGroupResp{
   pb_com.CommonResp common = 1;
-}
-
-// 获取群成员列表
-message GetGroupMemberListReq {
-  string group_id = 1;
-  string operation_id = 2;
-}
-
-message GetGroupMemberListResp {
-  pb_com.CommonResp common = 1;
-  repeated pb_ws.GroupMemberInfo member_list = 2;
 }
 
 // 获取群指定成员信息列表
@@ -388,6 +392,7 @@ service group{
 
   rpc getGroupAllMember(GetGroupAllMemberReq) returns(GetGroupAllMemberResp);
   rpc getGroupAllMemberBasic(GetGroupAllMemberBasicReq) returns(GetGroupAllMemberBasicResp);
+  rpc getGroupMemberList(GetGroupMemberListReq) returns(GetGroupMemberListResp);
 
   rpc createGroup(CreateGroupReq) returns(CreateGroupResp);
   rpc quitGroup(QuitGroupReq) returns(QuitGroupResp);
@@ -397,12 +402,11 @@ service group{
   rpc getUserReqApplicationList(GetUserReqApplicationListReq) returns(GetUserReqApplicationListResp);
   rpc transferGroupOwner(TransferGroupOwnerReq) returns(TransferGroupOwnerResp);
   rpc groupApplicationResponse(GroupApplicationResponseReq) returns(GroupApplicationResponseResp);
-  rpc getGroupMemberList(GetGroupMemberListReq) returns(GetGroupMemberListResp);
+
   rpc getGroupMembersInfo(GetGroupMembersInfoReq) returns(GetGroupMembersInfoResp);
   rpc kickGroupMember(KickGroupMemberReq) returns (KickGroupMemberResp);
   rpc getJoinedGroupList(GetJoinedGroupListReq) returns (GetJoinedGroupListResp);
   rpc inviteUserToGroup(InviteUserToGroupReq) returns (InviteUserToGroupResp);
-
 
   rpc GetGroupById(GetGroupByIdReq) returns(GetGroupByIdResp);
   rpc GetGroup(GetGroupReq) returns(GetGroupResp);

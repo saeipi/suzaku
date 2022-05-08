@@ -17,6 +17,7 @@ type GroupRepository interface {
 	Join(member *po_mysql.GroupMember) (err error)
 	IsJoined(groupID string, userID string) (member *po_mysql.GroupMember, err error)
 	AllMember(groupId string) (members []*po_mysql.GroupMember, err error)
+	MemberList(req *pb_group.GetGroupMemberListReq) (members []*po_mysql.GroupMember, totalRows int64, err error)
 }
 
 var GroupRepo GroupRepository
@@ -177,5 +178,22 @@ func (r *groupRepository) AllMember(groupId string) (members []*po_mysql.GroupMe
 		return
 	}
 	err = db.Where("group_id = ?", groupId).Find(&members).Error
+	return
+}
+
+func (r *groupRepository) MemberList(req *pb_group.GetGroupMemberListReq) (members []*po_mysql.GroupMember, totalRows int64, err error) {
+	members = make([]*po_mysql.GroupMember, 0)
+	var (
+		db *gorm.DB
+	)
+	if db, err = mysql.GormDB(); err != nil {
+		return
+	}
+	err = db.Model(po_mysql.GroupMember{}).
+		Where("group_id = ?", req.GroupId).
+		Count(&totalRows).
+		Limit(int(req.PageSize)).
+		Offset(int((req.Page - 1) * req.PageSize)).
+		Find(&members).Error
 	return
 }

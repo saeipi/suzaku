@@ -18,3 +18,11 @@ type User struct {
 	UpdatedTs  int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
 	DeletedTs  int64  `gorm:"column:deleted_ts;default:0" json:"deleted_ts"`
 }
+
+type UserAvatar struct {
+	UserId          string `gorm:"column:user_id;primary_key" json:"user_id"`
+	AvatarUrl       string `gorm:"column:avatar_url" json:"avatar_url"`               // 小图
+	AvatarUrlMiddle string `gorm:"column:avatar_url_middle" json:"avatar_url_middle"` // 中图
+	AvatarUrlBig    string `gorm:"column:avatar_url_big" json:"avatar_url_big"`       // 大图
+	UpdatedTs       int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
+}

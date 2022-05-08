@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `group_id` varchar(32) DEFAULT '',
   `group_name` varchar(255) DEFAULT '' COMMENT '名称',
+  `avatar_url` varchar(255) DEFAULT '' COMMENT '头像',
   `notification` varchar(255) DEFAULT '' COMMENT '通知',
   `introduction` varchar(255) DEFAULT '' COMMENT '介绍',
-  `avatar_url` varchar(255) DEFAULT '' COMMENT '头像',
   `creator_user_id` varchar(40) DEFAULT '' COMMENT '创建者ID',
   `group_type` int DEFAULT '0',
   `status` int DEFAULT '0',

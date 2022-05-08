@@ -13,7 +13,27 @@ type Message struct {
 	ContentType      int    `gorm:"column:content_type;default:0" json:"content_type"`
 	Content          string `gorm:"column:content" json:"content"`
 	Status           int    `gorm:"column:status;default:0" json:"status"`
-	SendTs           int64  `gorm:"column:send_ts;default:0" json:"send_ts"`       // 消息发送的具体时间(毫秒) 进入消息队列的时间
-	CreatedTs        int64  `gorm:"column:created_ts;default:0" json:"created_ts"` // 创建消息的时间，在send_ts前面
+	SendTs           int64  `gorm:"column:send_ts;default:0" json:"send_ts"`       // 消息发送的具体时间(毫秒)
+	CreatedTs        int64  `gorm:"column:created_ts;default:0" json:"created_ts"` // 创建消息的时间，在send_ts之前
 	Ex               string `gorm:"column:ex" json:"ex"`
 }
+
+/*
+ContentType:
+	Text           = 101
+	Picture        = 102
+	Voice          = 103
+	Video          = 104
+	File           = 105
+	AtText         = 106
+	Merger         = 107
+	Card           = 108
+	Location       = 109
+	Custom         = 110
+	Revoke         = 111
+	HasReadReceipt = 112
+	Typing         = 113
+	Quote          = 114
+	Common         = 200
+	GroupMsg       = 201
+*/

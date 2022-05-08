@@ -3,14 +3,22 @@ package po_mysql
 type Group struct {
 	GroupId       string `gorm:"column:group_id;primary_key" json:"group_id"`
 	GroupName     string `gorm:"column:group_name" json:"group_name"`           // 名称
+	AvatarUrl     string `gorm:"column:avatar_url" json:"avatar_url"`           // 头像
 	Notification  string `gorm:"column:notification" json:"notification"`       // 通知
 	Introduction  string `gorm:"column:introduction" json:"introduction"`       // 介绍
-	AvatarUrl     string `gorm:"column:avatar_url" json:"avatar_url"`           // 头像
 	CreatorUserId string `gorm:"column:creator_user_id" json:"creator_user_id"` // 创建者ID
 	GroupType     int    `gorm:"column:group_type;default:0" json:"group_type"`
 	Status        int    `gorm:"column:status;default:0" json:"status"`
 	CreatedTs     int64  `gorm:"column:created_ts;default:0" json:"created_ts"`
 	Ex            string `gorm:"column:ex" json:"ex"` // 扩展字段
+}
+
+type GroupAvatar struct {
+	GroupId         string `gorm:"column:group_id;primary_key" json:"group_id"`
+	AvatarUrl       string `gorm:"column:avatar_url" json:"avatar_url"`               // 小图
+	AvatarUrlMiddle string `gorm:"column:avatar_url_middle" json:"avatar_url_middle"` // 中图
+	AvatarUrlBig    string `gorm:"column:avatar_url_big" json:"avatar_url_big"`       // 大图
+	UpdatedTs       int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
 }
 
 type GroupMember struct {

@@ -22,6 +22,7 @@ type GroupClient interface {
 	HandleRequestJoinGroup(ctx context.Context, in *HandleRequestJoinGroupReq, opts ...grpc.CallOption) (*HandleRequestJoinGroupResp, error)
 	GetGroupAllMember(ctx context.Context, in *GetGroupAllMemberReq, opts ...grpc.CallOption) (*GetGroupAllMemberResp, error)
 	GetGroupAllMemberBasic(ctx context.Context, in *GetGroupAllMemberBasicReq, opts ...grpc.CallOption) (*GetGroupAllMemberBasicResp, error)
+	GetGroupMemberList(ctx context.Context, in *GetGroupMemberListReq, opts ...grpc.CallOption) (*GetGroupMemberListResp, error)
 	CreateGroup(ctx context.Context, in *CreateGroupReq, opts ...grpc.CallOption) (*CreateGroupResp, error)
 	QuitGroup(ctx context.Context, in *QuitGroupReq, opts ...grpc.CallOption) (*QuitGroupResp, error)
 	GetGroupsInfo(ctx context.Context, in *GetGroupsInfoReq, opts ...grpc.CallOption) (*GetGroupsInfoResp, error)
@@ -30,7 +31,6 @@ type GroupClient interface {
 	GetUserReqApplicationList(ctx context.Context, in *GetUserReqApplicationListReq, opts ...grpc.CallOption) (*GetUserReqApplicationListResp, error)
 	TransferGroupOwner(ctx context.Context, in *TransferGroupOwnerReq, opts ...grpc.CallOption) (*TransferGroupOwnerResp, error)
 	GroupApplicationResponse(ctx context.Context, in *GroupApplicationResponseReq, opts ...grpc.CallOption) (*GroupApplicationResponseResp, error)
-	GetGroupMemberList(ctx context.Context, in *GetGroupMemberListReq, opts ...grpc.CallOption) (*GetGroupMemberListResp, error)
 	GetGroupMembersInfo(ctx context.Context, in *GetGroupMembersInfoReq, opts ...grpc.CallOption) (*GetGroupMembersInfoResp, error)
 	KickGroupMember(ctx context.Context, in *KickGroupMemberReq, opts ...grpc.CallOption) (*KickGroupMemberResp, error)
 	GetJoinedGroupList(ctx context.Context, in *GetJoinedGroupListReq, opts ...grpc.CallOption) (*GetJoinedGroupListResp, error)
@@ -90,6 +90,15 @@ func (c *groupClient) GetGroupAllMember(ctx context.Context, in *GetGroupAllMemb
 func (c *groupClient) GetGroupAllMemberBasic(ctx context.Context, in *GetGroupAllMemberBasicReq, opts ...grpc.CallOption) (*GetGroupAllMemberBasicResp, error) {
 	out := new(GetGroupAllMemberBasicResp)
 	err := c.cc.Invoke(ctx, "/group.group/getGroupAllMemberBasic", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupClient) GetGroupMemberList(ctx context.Context, in *GetGroupMemberListReq, opts ...grpc.CallOption) (*GetGroupMemberListResp, error) {
+	out := new(GetGroupMemberListResp)
+	err := c.cc.Invoke(ctx, "/group.group/getGroupMemberList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -162,15 +171,6 @@ func (c *groupClient) TransferGroupOwner(ctx context.Context, in *TransferGroupO
 func (c *groupClient) GroupApplicationResponse(ctx context.Context, in *GroupApplicationResponseReq, opts ...grpc.CallOption) (*GroupApplicationResponseResp, error) {
 	out := new(GroupApplicationResponseResp)
 	err := c.cc.Invoke(ctx, "/group.group/groupApplicationResponse", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *groupClient) GetGroupMemberList(ctx context.Context, in *GetGroupMemberListReq, opts ...grpc.CallOption) (*GetGroupMemberListResp, error) {
-	out := new(GetGroupMemberListResp)
-	err := c.cc.Invoke(ctx, "/group.group/getGroupMemberList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -356,6 +356,7 @@ type GroupServer interface {
 	HandleRequestJoinGroup(context.Context, *HandleRequestJoinGroupReq) (*HandleRequestJoinGroupResp, error)
 	GetGroupAllMember(context.Context, *GetGroupAllMemberReq) (*GetGroupAllMemberResp, error)
 	GetGroupAllMemberBasic(context.Context, *GetGroupAllMemberBasicReq) (*GetGroupAllMemberBasicResp, error)
+	GetGroupMemberList(context.Context, *GetGroupMemberListReq) (*GetGroupMemberListResp, error)
 	CreateGroup(context.Context, *CreateGroupReq) (*CreateGroupResp, error)
 	QuitGroup(context.Context, *QuitGroupReq) (*QuitGroupResp, error)
 	GetGroupsInfo(context.Context, *GetGroupsInfoReq) (*GetGroupsInfoResp, error)
@@ -364,7 +365,6 @@ type GroupServer interface {
 	GetUserReqApplicationList(context.Context, *GetUserReqApplicationListReq) (*GetUserReqApplicationListResp, error)
 	TransferGroupOwner(context.Context, *TransferGroupOwnerReq) (*TransferGroupOwnerResp, error)
 	GroupApplicationResponse(context.Context, *GroupApplicationResponseReq) (*GroupApplicationResponseResp, error)
-	GetGroupMemberList(context.Context, *GetGroupMemberListReq) (*GetGroupMemberListResp, error)
 	GetGroupMembersInfo(context.Context, *GetGroupMembersInfoReq) (*GetGroupMembersInfoResp, error)
 	KickGroupMember(context.Context, *KickGroupMemberReq) (*KickGroupMemberResp, error)
 	GetJoinedGroupList(context.Context, *GetJoinedGroupListReq) (*GetJoinedGroupListResp, error)
@@ -403,6 +403,9 @@ func (UnimplementedGroupServer) GetGroupAllMember(context.Context, *GetGroupAllM
 func (UnimplementedGroupServer) GetGroupAllMemberBasic(context.Context, *GetGroupAllMemberBasicReq) (*GetGroupAllMemberBasicResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroupAllMemberBasic not implemented")
 }
+func (UnimplementedGroupServer) GetGroupMemberList(context.Context, *GetGroupMemberListReq) (*GetGroupMemberListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupMemberList not implemented")
+}
 func (UnimplementedGroupServer) CreateGroup(context.Context, *CreateGroupReq) (*CreateGroupResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
 }
@@ -426,9 +429,6 @@ func (UnimplementedGroupServer) TransferGroupOwner(context.Context, *TransferGro
 }
 func (UnimplementedGroupServer) GroupApplicationResponse(context.Context, *GroupApplicationResponseReq) (*GroupApplicationResponseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupApplicationResponse not implemented")
-}
-func (UnimplementedGroupServer) GetGroupMemberList(context.Context, *GetGroupMemberListReq) (*GetGroupMemberListResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGroupMemberList not implemented")
 }
 func (UnimplementedGroupServer) GetGroupMembersInfo(context.Context, *GetGroupMembersInfoReq) (*GetGroupMembersInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroupMembersInfo not implemented")
@@ -568,6 +568,24 @@ func _Group_GetGroupAllMemberBasic_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GroupServer).GetGroupAllMemberBasic(ctx, req.(*GetGroupAllMemberBasicReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Group_GetGroupMemberList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupMemberListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServer).GetGroupMemberList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/group.group/getGroupMemberList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServer).GetGroupMemberList(ctx, req.(*GetGroupMemberListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -712,24 +730,6 @@ func _Group_GroupApplicationResponse_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GroupServer).GroupApplicationResponse(ctx, req.(*GroupApplicationResponseReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Group_GetGroupMemberList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGroupMemberListReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GroupServer).GetGroupMemberList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/group.group/getGroupMemberList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServer).GetGroupMemberList(ctx, req.(*GetGroupMemberListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1100,6 +1100,10 @@ var Group_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Group_GetGroupAllMemberBasic_Handler,
 		},
 		{
+			MethodName: "getGroupMemberList",
+			Handler:    _Group_GetGroupMemberList_Handler,
+		},
+		{
 			MethodName: "createGroup",
 			Handler:    _Group_CreateGroup_Handler,
 		},
@@ -1130,10 +1134,6 @@ var Group_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "groupApplicationResponse",
 			Handler:    _Group_GroupApplicationResponse_Handler,
-		},
-		{
-			MethodName: "getGroupMemberList",
-			Handler:    _Group_GetGroupMemberList_Handler,
 		},
 		{
 			MethodName: "getGroupMembersInfo",

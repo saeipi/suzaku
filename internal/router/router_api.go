@@ -6,22 +6,23 @@ import (
 )
 
 func Register(engine *gin.Engine) {
-	publicGroup := engine.Group("open")
-	registerPublicRoutes(publicGroup)
+	publicRouter := engine.Group("open")
+	registerPublicRoutes(publicRouter)
 
-	privateGroup := engine.Group("api")
-	registerPrivateRouter(privateGroup)
+	privateRouter := engine.Group("api")
+	registerPrivateRouter(privateRouter)
 }
 
-func registerPublicRoutes(group *gin.RouterGroup) {
-	auth(group)
+func registerPublicRoutes(router *gin.RouterGroup) {
+	auth(router)
 }
 
-func registerPrivateRouter(group *gin.RouterGroup) {
+func registerPrivateRouter(router *gin.RouterGroup) {
 	// 授权验证
-	group.Use(middleware.JwtAuth())
-	user(group)
-	friend(group)
-	chat(group)
-	minio(group)
+	router.Use(middleware.JwtAuth())
+	user(router)
+	friend(router)
+	chat(router)
+	minio(router)
+	group(router)
 }

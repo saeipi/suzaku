@@ -74,7 +74,7 @@ func (rpc *authRpcServer) UserToken(ctx context.Context, req *pb_auth.UserTokenR
 	}
 	// TODO:调试用
 	if expire > 0 {
-		err = redis.Set(fmt.Sprintf(redis.RedisKeyJwtUserTokenKey, req.UserId, req.PlatformId), token, int(expire)*1000)
+		err = redis.Set(fmt.Sprintf(redis.RedisKeyJwtUserToken, req.UserId, req.PlatformId), token, int(expire)*1000)
 	}
 	return
 }
