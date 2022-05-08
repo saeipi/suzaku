@@ -21,7 +21,7 @@ func (m *Manager) Run(userIDs []string, groupId string) {
 	var sendCount = 0
 	for _, c := range m.clients {
 		sendCount++
-		if sendCount > 100 {
+		if sendCount > 1 {
 			break
 		}
 		c.SendGroup(groupId)

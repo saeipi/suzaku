@@ -35,10 +35,13 @@ func init() {
 */
 func (r *groupRepository) Create(group *po_mysql.Group, avatar *po_mysql.GroupAvatar) (err error) {
 	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
+		group.CreatedTs = time.Now().Unix()
 		terr = tx.Save(group).Error
 		if terr != nil {
 			return
 		}
+		avatar.GroupId = group.GroupId
+		avatar.UpdatedTs = group.CreatedTs
 		terr = tx.Save(avatar).Error
 		return
 	})

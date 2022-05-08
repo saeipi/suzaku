@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
+	"time"
 )
 
 type UserRepository interface {
@@ -26,11 +27,14 @@ func init() {
 
 func (r *userRepository) UserRegister(user *po_mysql.User, avatar *po_mysql.UserAvatar) (err error) {
 	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
+		user.CreatedTs = time.Now().Unix()
+		user.UpdatedTs = user.CreatedTs
 		terr = tx.Save(user).Error
 		if terr != nil {
 			return
 		}
 		avatar.UserId = user.UserId
+		avatar.UpdatedTs = user.CreatedTs
 		terr = tx.Save(avatar).Error
 		return
 	})

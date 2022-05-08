@@ -20,7 +20,7 @@ func main() {
 		userIDs []string
 		index   int
 	)
-	for index = 1000; index < 1500; index++ {
+	for index = 1000; index < 1050; index++ {
 		userIDs = append(userIDs, strconv.Itoa(index))
 	}
 
