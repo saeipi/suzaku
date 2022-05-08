@@ -34,6 +34,7 @@ func main() {
 func JoinGroup(userIDs []string, groupId string) {
 	var (
 		group  *po_mysql.Group
+		avatar *po_mysql.GroupAvatar
 		gp     *po_mysql.Group
 		userID string
 		mb     *po_mysql.GroupMember
@@ -59,7 +60,8 @@ func JoinGroup(userIDs []string, groupId string) {
 		return
 	}
 	if gp.GroupId == "" {
-		err = repo_mysql.GroupRepo.Create(group)
+		avatar = new(po_mysql.GroupAvatar)
+		err = repo_mysql.GroupRepo.Create(group, avatar)
 		if err != nil {
 			fmt.Println(err)
 			return

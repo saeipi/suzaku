@@ -39,8 +39,9 @@ func (rpc *authRpcServer) Run() {
 func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserRegisterReq) (resp *pb_auth.UserRegisterResp, _ error) {
 	var (
 		user   *po_mysql.User
+		avatar *po_mysql.UserAvatar
 		common = &pb_com.CommonResp{}
-		err error
+		err    error
 	)
 	resp = &pb_auth.UserRegisterResp{Common: common}
 
@@ -49,8 +50,9 @@ func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserReg
 		Mobile:     req.Mobile,
 		PlatformId: int(req.PlatformId),
 	}
+	avatar = new(po_mysql.UserAvatar)
 
-	err = repo_mysql.UserRepo.UserRegister(user)
+	err = repo_mysql.UserRepo.UserRegister(user, avatar)
 	if err != nil {
 		common.Msg = err.Error()
 		common.Code = ErrCodeRpcRegisterFailed

@@ -7,7 +7,7 @@ import (
 )
 
 type UserRepository interface {
-	UserRegister(user *po_mysql.User) (err error)
+	UserRegister(user *po_mysql.User, avatar *po_mysql.UserAvatar) (err error)
 	GetUserByUserID(userID string) (user *po_mysql.User, err error)
 	TxGetUserByUserID(userID string, tx *gorm.DB) (user *po_mysql.User, err error)
 	TxGetAvatarByUserID(userID string, tx *gorm.DB) (avatar *po_mysql.UserAvatar, err error)
@@ -24,14 +24,16 @@ func init() {
 	UserRepo = new(userRepository)
 }
 
-func (r *userRepository) UserRegister(user *po_mysql.User) (err error) {
-	var (
-		db *gorm.DB
-	)
-	if db, err = mysql.GormDB(); err != nil {
+func (r *userRepository) UserRegister(user *po_mysql.User, avatar *po_mysql.UserAvatar) (err error) {
+	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
+		terr = tx.Save(user).Error
+		if terr != nil {
+			return
+		}
+		avatar.UserId = user.UserId
+		terr = tx.Save(avatar).Error
 		return
-	}
-	err = db.Create(user).Error
+	})
 	return
 }
 

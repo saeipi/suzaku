@@ -10,7 +10,7 @@ import (
 )
 
 type GroupRepository interface {
-	Create(group *po_mysql.Group) (err error)
+	Create(group *po_mysql.Group, avatar *po_mysql.GroupAvatar) (err error)
 	GroupExist(groupID string) (res *po_mysql.Group, err error)
 	RequestJoin(request *po_mysql.GroupRequest) (err error)
 	HandleRequestJoin(req *pb_group.HandleRequestJoinGroupReq) (result *do.JoinGroupResult, err error)
@@ -33,14 +33,15 @@ func init() {
 存:传指针对象，Create时不需要&，同时会Out表中的数据
 读:返回指针对象，Find时需要&
 */
-func (r *groupRepository) Create(group *po_mysql.Group) (err error) {
-	var (
-		db *gorm.DB
-	)
-	if db, err = mysql.GormDB(); err != nil {
+func (r *groupRepository) Create(group *po_mysql.Group, avatar *po_mysql.GroupAvatar) (err error) {
+	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
+		terr = tx.Save(group).Error
+		if terr != nil {
+			return
+		}
+		terr = tx.Save(avatar).Error
 		return
-	}
-	err = db.Create(group).Error
+	})
 	return
 }
 
