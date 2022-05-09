@@ -1,6 +1,7 @@
 package po_mysql
 
 type User struct {
+	GormTs
 	UserId     string `gorm:"column:user_id;primary_key" json:"user_id"`       // 用户ID 系统生成
 	SzkId      string `gorm:"column:szk_id" json:"szk_id"`                     // 账户ID 用户设置
 	Udid       string `gorm:"column:udid" json:"udid"`                         // 设备唯一标识
@@ -14,9 +15,6 @@ type User struct {
 	AvatarUrl  string `gorm:"column:avatar_url" json:"avatar_url"`             // 头像
 	CityId     int    `gorm:"column:city_id;default:0" json:"city_id"`         // 城市ID
 	Ex         string `gorm:"column:ex" json:"ex"`                             // 扩展字段
-	CreatedTs  int64  `gorm:"column:created_ts;default:0" json:"created_ts"`
-	UpdatedTs  int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
-	DeletedTs  int64  `gorm:"column:deleted_ts;default:0" json:"deleted_ts"`
 }
 
 type UserAvatar struct {
@@ -24,5 +22,5 @@ type UserAvatar struct {
 	AvatarUrl       string `gorm:"column:avatar_url" json:"avatar_url"`               // 小图
 	AvatarUrlMiddle string `gorm:"column:avatar_url_middle" json:"avatar_url_middle"` // 中图
 	AvatarUrlBig    string `gorm:"column:avatar_url_big" json:"avatar_url_big"`       // 大图
-	UpdatedTs       int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
+	UpdatedTs       int64  `gorm:"column:updated_ts;autoUpdateTime:milli" json:"updated_ts"`
 }
