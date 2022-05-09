@@ -7,7 +7,6 @@ import (
 	"suzaku/internal/rpc/rpc_chat"
 	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/proto/pb_com"
-	"time"
 )
 
 func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFriendReq) (resp *pb_friend.AddFriendResp, _ error) {
@@ -29,7 +28,6 @@ func (rpc *friendRpcServer) AddFriend(_ context.Context, req *pb_friend.AddFrien
 		ToUserId:     req.ToUserId,
 		ReqMsg:       req.ReqMsg,
 		HandleUserId: req.OperationId,
-		ReqTs:        time.Now().Unix(),
 	}
 	err = repo_mysql.FriendRepo.SaveFriendRequest(friendRequest)
 	if err != nil {

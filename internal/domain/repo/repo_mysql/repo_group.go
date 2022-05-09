@@ -67,7 +67,6 @@ func (r *groupRepository) RequestJoin(request *po_mysql.GroupRequest) (err error
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	request.ReqTs = time.Now().Unix()
 	err = db.Create(request).Error
 	return
 }
