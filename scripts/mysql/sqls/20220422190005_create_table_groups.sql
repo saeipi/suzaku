@@ -22,8 +22,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
-  `group_id` varchar(32) DEFAULT '',
-  `group_name` varchar(255) DEFAULT '' COMMENT '名称',
+  `group_id` varchar(40) DEFAULT '',
+  `group_name` varchar(60) DEFAULT '' COMMENT '名称',
   `avatar_url` varchar(255) DEFAULT '' COMMENT '头像',
   `notification` varchar(255) DEFAULT '' COMMENT '通知',
   `introduction` varchar(255) DEFAULT '' COMMENT '介绍',
