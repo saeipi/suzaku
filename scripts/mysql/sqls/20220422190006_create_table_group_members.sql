@@ -32,7 +32,11 @@ CREATE TABLE `group_members` (
   `operator_user_id` varchar(64) DEFAULT '' COMMENT '操作员',
   `mute_end_ts` bigint DEFAULT '0' COMMENT '禁言结束时间',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  PRIMARY KEY (`group_id`,`user_id`)
+  `created_ts` bigint DEFAULT '0',
+  `updated_ts` bigint DEFAULT '0',
+  `deleted_ts` bigint DEFAULT '0',
+  PRIMARY KEY (`group_id`,`user_id`),
+  KEY `idx_deletedTs` (`deleted_ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -30,9 +30,12 @@ CREATE TABLE `groups` (
   `creator_user_id` varchar(40) DEFAULT '' COMMENT '创建者ID',
   `group_type` int DEFAULT '0',
   `status` int DEFAULT '0',
-  `created_ts` bigint DEFAULT '0',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  PRIMARY KEY (`group_id`)
+  `created_ts` bigint DEFAULT '0',
+  `updated_ts` bigint DEFAULT '0',
+  `deleted_ts` bigint DEFAULT '0',
+  PRIMARY KEY (`group_id`),
+  KEY `idx_deletedTs` (`deleted_ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

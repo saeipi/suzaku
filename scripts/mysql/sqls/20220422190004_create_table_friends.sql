@@ -29,8 +29,10 @@ CREATE TABLE `friends` (
   `remark` varchar(255) DEFAULT '' COMMENT '备注',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_ts` bigint DEFAULT '0',
+  `updated_ts` bigint DEFAULT '0',
   `deleted_ts` bigint DEFAULT '0',
-  PRIMARY KEY (`owner_user_id`,`friend_user_id`)
+  PRIMARY KEY (`owner_user_id`,`friend_user_id`),
+  KEY `idx_deletedTs` (`deleted_ts`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

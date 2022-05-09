@@ -39,6 +39,7 @@ CREATE TABLE `users` (
   `updated_ts` bigint DEFAULT '0',
   `deleted_ts` bigint DEFAULT '0',
   PRIMARY KEY (`user_id`),
+  KEY `idx_deletedTs` (`deleted_ts`),
   KEY `idx_szkId` (`szk_id`),
   KEY `idx_status` (`status`),
   KEY `idx_udid` (`udid`),

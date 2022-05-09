@@ -1,7 +1,7 @@
 package po_mysql
 
 type User struct {
-	GormTs
+	GormModel
 	UserId     string `gorm:"column:user_id;primary_key" json:"user_id"`       // 用户ID 系统生成
 	SzkId      string `gorm:"column:szk_id" json:"szk_id"`                     // 账户ID 用户设置
 	Udid       string `gorm:"column:udid" json:"udid"`                         // 设备唯一标识
@@ -18,9 +18,9 @@ type User struct {
 }
 
 type UserAvatar struct {
+	GormUpdatedTs
 	UserId          string `gorm:"column:user_id;primary_key" json:"user_id"`
 	AvatarUrl       string `gorm:"column:avatar_url" json:"avatar_url"`               // 小图
 	AvatarUrlMiddle string `gorm:"column:avatar_url_middle" json:"avatar_url_middle"` // 中图
 	AvatarUrlBig    string `gorm:"column:avatar_url_big" json:"avatar_url_big"`       // 大图
-	UpdatedTs       int64  `gorm:"column:updated_ts;autoUpdateTime:milli" json:"updated_ts"`
 }

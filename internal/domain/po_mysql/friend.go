@@ -11,3 +11,15 @@ type FriendRequest struct {
 	ReqTs        int64  `gorm:"column:req_ts;default:0" json:"req_ts"` // 请求时间
 	Ex           string `gorm:"column:ex" json:"ex"`                   // 扩展字段
 }
+
+type Friend struct {
+	OwnerUserId    string `gorm:"column:owner_user_id;primary_key" json:"owner_user_id"` // 添加好友发起者ID
+	FriendUserId   string `gorm:"column:friend_user_id" json:"friend_user_id"`           // 好友ID
+	OperatorUserId string `gorm:"column:operator_user_id" json:"operator_user_id"`       // 处理人ID
+	Source         int    `gorm:"column:source;default:0" json:"source"`                 // 添加源
+	Remark         string `gorm:"column:remark" json:"remark"`                           // 备注
+	Ex             string `gorm:"column:ex" json:"ex"`                                   // 扩展字段
+	CreatedTs      int64  `gorm:"column:created_ts;default:0" json:"created_ts"`
+	UpdatedTs      int64  `gorm:"column:updated_ts;default:0" json:"updated_ts"`
+	DeletedTs      int64  `gorm:"column:deleted_ts;default:0" json:"deleted_ts"`
+}
