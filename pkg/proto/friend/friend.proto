@@ -9,6 +9,14 @@ option go_package = "./friend;pb_friend";
 //  string msg = 2;
 //}
 
+
+enum HANDLE_FRIEND_REQUEST_RESULT
+{
+  FRIEND_REQUEST_RESULT_NONE = 0;
+  APPROVE = 1; // 同意
+  RESOLUTELY = 2; // 拒绝
+}
+
 message AddFriendReq {
   string from_user_id = 1; // 邀请者ID
   string to_szk_id = 2; // 添加好友账户ID
@@ -48,14 +56,27 @@ message FriendRequestItem {
   int32 handle_result = 4; // 结果
   string handle_msg = 5; // 处理消息
   int64 req_ts = 6; // 发起时间
-  int64 handle_ts = 7; // 处理时间
+  int64 handled_ts = 7; // 处理时间
   string handle_user_id = 8; // 处理人ID
 //  google.protobuf.Timestamp req_ts = 7; // 发起时间
 //  google.protobuf.Timestamp handle_at = 8; // 处理时间
 }
 
+// 处理添加好友申请
+message HandleFriendRequestReq {
+  string user_id = 1;
+  string from_user_id = 2;
+  string handle_user_id = 3;
+  string handle_msg = 4;
+  int32 handle_result = 5;
+}
+
+message HandleFriendRequestResp {
+  pb_com.CommonResp common = 1;
+}
 
 service Friend {
   rpc AddFriend(AddFriendReq) returns(AddFriendResp);
   rpc GetFriendRequestList(GetFriendRequestListReq) returns(GetFriendRequestListResp);
+  rpc HandleFriendRequest(HandleFriendRequestReq) returns(HandleFriendRequestResp);
 }

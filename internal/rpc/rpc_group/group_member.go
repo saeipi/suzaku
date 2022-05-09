@@ -31,7 +31,7 @@ func (rpc *groupRpcServer) GetGroupAllMemberBasic(_ context.Context, req *pb_gro
 	}
 	if err != nil {
 		// TODO:错误
-		resp.Common.Code = 101
+		resp.Common.Code = 777
 		resp.Common.Msg = err.Error()
 		return
 	}
@@ -39,7 +39,7 @@ func (rpc *groupRpcServer) GetGroupAllMemberBasic(_ context.Context, req *pb_gro
 		members, err = repo_mysql.GroupRepo.AllMember(req.GroupId)
 		if err != nil {
 			// TODO:错误
-			resp.Common.Code = 101
+			resp.Common.Code = 777
 			resp.Common.Msg = err.Error()
 			return
 		}
@@ -51,7 +51,7 @@ func (rpc *groupRpcServer) GetGroupAllMemberBasic(_ context.Context, req *pb_gro
 		err = redis.Set(key, valJson, 0)
 		if err != nil {
 			// TODO:错误
-			resp.Common.Code = 101
+			resp.Common.Code = 777
 			resp.Common.Msg = err.Error()
 			return
 		}
