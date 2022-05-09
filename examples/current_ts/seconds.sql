@@ -24,9 +24,9 @@ DROP TABLE IF EXISTS `seconds`;
 CREATE TABLE `seconds` (
   `id` int NOT NULL AUTO_INCREMENT,
   `second` bigint DEFAULT '0',
-  `created_at` bigint DEFAULT '0',
-  `updated_at` bigint DEFAULT '0',
-  `deleted_at` bigint DEFAULT '0',
+  `created_ts` bigint DEFAULT '0',
+  `updated_ts` bigint DEFAULT '0',
+  `deleted_ts` bigint DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 

@@ -1,5 +1,7 @@
 package po_mysql
 
+import "time"
+
 type GormCreatedTs struct {
 	CreatedTs int64 `gorm:"column:created_ts;autoCreateTime:milli" json:"created_ts"`
 }
@@ -21,4 +23,8 @@ type GormModel struct {
 	CreatedTs int64 `gorm:"column:created_ts;autoCreateTime:milli" json:"created_ts"`
 	UpdatedTs int64 `gorm:"column:updated_ts;autoUpdateTime:milli" json:"updated_ts"`
 	DeletedTs int64 `gorm:"column:deleted_ts;default:0" json:"deleted_ts"`
+}
+
+func Deleted()(column string, value interface{}){
+	return "deleted_ts",time.Now().UnixNano() / 1e6
 }
