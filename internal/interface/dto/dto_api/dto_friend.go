@@ -8,10 +8,9 @@ type AddFriendReq struct {
 }
 
 type FriendRequestListReq struct {
-	UserId   string `json:"user_id"`
-	Role     int    `form:"role" json:"role" binding:"required,oneof=0 1 2"`
-	Page     int    `form:"page" json:"page" binding:"required,min=1"`
-	PageSize int    `form:"page_size" json:"page_size" binding:"required,min=10,max=20"`
+	PageReq
+	UserId string `json:"user_id"`
+	Role   int    `form:"role" json:"role" binding:"required,oneof=0 1 2"`
 }
 
 type FriendRequestListResp struct {
@@ -36,4 +35,22 @@ type HandleFriendRequestReq struct {
 	HandleUserId string `json:"handle_user_id" binding:"max=40"`              // 处理人ID
 	HandleMsg    string `json:"handle_msg" binding:"max=255"`                 // 处理消息
 	HandleResult int32  `json:"handle_result" binding:"required,min=1,max=2"` // 结果
+}
+
+type FriendListReq struct {
+	PageReq
+	UserId string `json:"user_id"`
+}
+
+type FriendMemberInfo struct {
+	UserId    string `json:"user_id"`    // 用户ID
+	SzkId     string `json:"szk_id"`     // 账户ID
+	Nickname  string `json:"nickname"`   // 昵称
+	Gender    string `json:"gender"`     // 性别
+	AvatarUrl string `json:"avatar_url"` // 头像
+}
+
+type FriendListResp struct {
+	TotalRows  int                 `json:"total_rows"`
+	MemberList []*FriendMemberInfo `json:"member_list"`
 }

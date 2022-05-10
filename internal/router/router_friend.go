@@ -10,4 +10,5 @@ func friend(group *gin.RouterGroup) {
 	router.POST("add_friend", api_friend.AddFriend)
 	router.GET("friend_request_list", api_friend.FriendRequestList)
 	router.POST("handle_friend_request", api_friend.HandleFriendRequest)
+	router.GET("friend_list", api_friend.FriendList)
 }

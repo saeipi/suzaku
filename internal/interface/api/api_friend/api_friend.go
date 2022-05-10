@@ -131,3 +131,43 @@ func HandleFriendRequest(c *gin.Context) {
 	}
 	http.Success(c)
 }
+
+func FriendList(c *gin.Context) {
+	var (
+		userId     string
+		ok         bool
+		params     dto_api.FriendListReq
+		req        *pb_friend.FriendListReq
+		clientConn *grpc.ClientConn
+		client     pb_friend.FriendClient
+		reply      *pb_friend.FriendListResp
+		resp       *dto_api.FriendListResp
+		err        error
+	)
+	userId, _, ok = utils.RequestIdentity(c)
+	if ok == false {
+		return
+	}
+	if err = c.ShouldBindQuery(&params); err != nil {
+		http.Error(c, err, http.ErrorCodeHttpReqDeserializeFailed)
+		return
+	}
+	req = new(pb_friend.FriendListReq)
+	copier.Copy(&req, params)
+	req.UserId = userId
+
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.FriendName)
+	client = pb_friend.NewFriendClient(clientConn)
+	reply, _ = client.GetFriendList(context.Background(), req)
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if reply.Common.Code > 0 {
+		http.Err(c, reply.Common.Msg, reply.Common.Code)
+		return
+	}
+	resp = &dto_api.FriendListResp{}
+	copier.Copy(&resp, &reply)
+	http.Success(c, resp)
+}

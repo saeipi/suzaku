@@ -16,6 +16,8 @@ type FriendRepository interface {
 
 	UpdateFriendRequest(req *pb_friend.HandleFriendRequestReq) (err error)
 	ApproveFriendRequest(req *pb_friend.HandleFriendRequestReq) (err error)
+
+	FriendList(req *pb_friend.FriendListReq) (friends []*po_mysql.User, totalRows int64, err error)
 }
 
 var FriendRepo FriendRepository
@@ -106,7 +108,7 @@ func (r *friendRepository) ApproveFriendRequest(req *pb_friend.HandleFriendReque
 		}
 		friend = po_mysql.Friend{
 			OwnerUserId:    req.FromUserId,
-			FriendUserId:   "",
+			FriendUserId:   req.UserId,
 			OperatorUserId: "",
 			Source:         0, // 暂时全部为0
 			Remark:         "",
@@ -120,5 +122,24 @@ func (r *friendRepository) ApproveFriendRequest(req *pb_friend.HandleFriendReque
 		terr = tx.Create(&friend).Error
 		return
 	})
+	return
+}
+
+func (r *friendRepository) FriendList(req *pb_friend.FriendListReq) (friends []*po_mysql.User, totalRows int64, err error) {
+	var (
+		db *gorm.DB
+	)
+	friends = make([]*po_mysql.User, 0)
+	if db, err = mysql.GormDB(); err != nil {
+		return
+	}
+	err = db.Table("(? UNION ALL ?) tb",
+		db.Table("friends").Select("users.*").Joins("LEFT JOIN users ON users.user_id=friends.owner_user_id").Where("owner_user_id=?", req.UserId),
+		db.Table("friends").Select("users.*").Joins("LEFT JOIN users ON users.user_id=friends.friend_user_id").Where("friend_user_id=?", req.UserId)).
+		Select("*").
+		Count(&totalRows).
+		Limit(int(req.PageSize)).
+		Offset(int((req.Page - 1) * req.PageSize)).
+		Find(&friends).Error
 	return
 }

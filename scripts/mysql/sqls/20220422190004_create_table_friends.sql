@@ -32,7 +32,9 @@ CREATE TABLE `friends` (
   `updated_ts` bigint DEFAULT '0',
   `deleted_ts` bigint DEFAULT '0',
   PRIMARY KEY (`owner_user_id`,`friend_user_id`),
-  KEY `idx_deletedTs` (`deleted_ts`)
+  KEY `idx_deletedTs` (`deleted_ts`),
+  KEY `idx_ownerUserId` (`owner_user_id`),
+  KEY `idx_friendUserId` (`friend_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
