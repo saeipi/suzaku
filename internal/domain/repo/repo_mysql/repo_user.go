@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
+	pb_user "suzaku/pkg/proto/user"
 )
 
 type UserRepository interface {
@@ -13,6 +14,7 @@ type UserRepository interface {
 	TxGetAvatarByUserID(userID string, tx *gorm.DB) (avatar *po_mysql.UserAvatar, err error)
 	GetUserBySzkID(szkID string) (user *po_mysql.User, err error)
 	GetFromToUserNickname(fromUserID, toUserID string) (fromUserNickname string, toUserNickname string, err error)
+	EditUserInfo(req *pb_user.EditUserInfoReq) (err error)
 }
 
 var UserRepo UserRepository
@@ -85,5 +87,27 @@ func (r *userRepository) GetFromToUserNickname(fromUserID, toUserID string) (fro
 	}
 	fromUserNickname = fromUser.Nickname
 	toUserNickname = toUser.Nickname
+	return
+}
+
+func (r *userRepository) EditUserInfo(req *pb_user.EditUserInfoReq) (err error) {
+	var (
+		updates map[string]interface{}
+		db      *gorm.DB
+	)
+	db, err = mysql.GormDB()
+	if err != nil {
+		return
+	}
+	updates = make(map[string]interface{})
+	updates["szk_id"] = req.SzkId
+	updates["nickname"] = req.Nickname
+	updates["gender"] = req.Gender
+	updates["birth_ts"] = req.BirthTs
+	updates["email"] = req.Email
+	updates["mobile"] = req.Mobile
+	updates["avatar_url"] = req.AvatarUrl
+	updates["city_id"] = req.CityId
+	err = db.Model(po_mysql.User{}).Where("user_id=?", req.UserId).Updates(updates).Error
 	return
 }

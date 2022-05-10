@@ -56,3 +56,17 @@ func (rpc *userRpcServer) UserInfo(ctx context.Context, req *pb_user.UserInfoReq
 	copier.Copy(resp, user)
 	return
 }
+
+func (rpc *userRpcServer) EditUserInfo(_ context.Context, req *pb_user.EditUserInfoReq) (resp *pb_com.CommonResp, _ error) {
+	var (
+		err error
+	)
+	resp = &pb_com.CommonResp{}
+	err = repo_mysql.UserRepo.EditUserInfo(req)
+	if err != nil {
+		resp.Code = 777
+		resp.Msg = err.Error()
+		return
+	}
+	return
+}

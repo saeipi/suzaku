@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	pb_com "suzaku/pkg/proto/pb_com"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
 	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
+	EditUserInfo(ctx context.Context, in *EditUserInfoReq, opts ...grpc.CallOption) (*pb_com.CommonResp, error)
 }
 
 type userClient struct {
@@ -38,11 +40,21 @@ func (c *userClient) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc
 	return out, nil
 }
 
+func (c *userClient) EditUserInfo(ctx context.Context, in *EditUserInfoReq, opts ...grpc.CallOption) (*pb_com.CommonResp, error) {
+	out := new(pb_com.CommonResp)
+	err := c.cc.Invoke(ctx, "/pb_user.User/EditUserInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
+	EditUserInfo(context.Context, *EditUserInfoReq) (*pb_com.CommonResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -52,6 +64,9 @@ type UnimplementedUserServer struct {
 
 func (UnimplementedUserServer) UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfo not implemented")
+}
+func (UnimplementedUserServer) EditUserInfo(context.Context, *EditUserInfoReq) (*pb_com.CommonResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditUserInfo not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -84,6 +99,24 @@ func _User_UserInfo_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_EditUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditUserInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).EditUserInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb_user.User/EditUserInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).EditUserInfo(ctx, req.(*EditUserInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +127,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserInfo",
 			Handler:    _User_UserInfo_Handler,
+		},
+		{
+			MethodName: "EditUserInfo",
+			Handler:    _User_EditUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
