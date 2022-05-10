@@ -48,14 +48,6 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		err    error
 	)
 	ts = time.Now().Unix()
-	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
-	/*
-		q = u.Query()
-		q.Set("user_id", userID)
-		q.Set("platform_id", "1")
-		u.RawQuery = q.Encode()
-	*/
-	token, _ = jwt_auth.CreateJwtToken(userID, 1)
 	client = &Client{
 		mgr:        mgr,
 		conn:       nil,
@@ -69,6 +61,15 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		curCount:   0,
 		endCount:   10000, // rand.Intn(100-10) + 10
 	}
+
+	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
+	/*
+		q = u.Query()
+		q.Set("user_id", userID)
+		q.Set("platform_id", "1")
+		u.RawQuery = q.Encode()
+	*/
+	token, _ = jwt_auth.CreateJwtToken(userID, 1)
 	header = make(map[string][]string)
 	header[constant.KeyUserID] = []string{userID}
 	header[constant.KeyUserPlatformID] = []string{"1"}

@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"suzaku/internal/msg_gateway/protocol"
 	"suzaku/internal/msg_gateway/ws_server"
-	"suzaku/pkg/common/jwt_auth"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/proto/pb_ws"
 	"suzaku/pkg/utils"
@@ -19,7 +18,6 @@ import (
 
 type Client struct {
 	rwLock sync.RWMutex
-	mgr    *Manager
 	conn   *websocket.Conn
 	// 用户ID
 	userID string
@@ -33,23 +31,24 @@ type Client struct {
 	close    chan []byte
 	closed   bool
 	nickname string
-	curCount int
-	endCount int
 }
 
-func NewClient(userID string, mgr *Manager) (client *Client) {
+func NewClient(userID string, token string) (client *Client) {
 	var (
 		u      url.URL
-		token  string
 		header map[string][]string
-		//q    url.Values
-		ts   int64
-		conn *websocket.Conn
-		err  error
+		ts     int64
+		conn   *websocket.Conn
+		err    error
 	)
 	ts = time.Now().Unix()
+	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
+	header = make(map[string][]string)
+	header[constant.KeyUserID] = []string{userID}
+	header[constant.KeyUserPlatformID] = []string{"1"}
+	header[constant.HttpKeyCookie] = []string{token}
+
 	client = &Client{
-		mgr:        mgr,
 		conn:       nil,
 		userID:     userID,
 		platformID: 1,
@@ -58,22 +57,7 @@ func NewClient(userID string, mgr *Manager) (client *Client) {
 		close:      make(chan []byte),
 		closed:     false,
 		nickname:   userID,
-		curCount:   0,
-		endCount:   10000, // rand.Intn(100-10) + 10
 	}
-
-	u = url.URL{Scheme: "ws", Host: "10.0.115.108:17778", Path: "/"}
-	/*
-		q = u.Query()
-		q.Set("user_id", userID)
-		q.Set("platform_id", "1")
-		u.RawQuery = q.Encode()
-	*/
-	token, _ = jwt_auth.CreateJwtToken(userID, 1)
-	header = make(map[string][]string)
-	header[constant.KeyUserID] = []string{userID}
-	header[constant.KeyUserPlatformID] = []string{"1"}
-	header[constant.HttpKeyCookie] = []string{token}
 
 	conn, _, err = websocket.DefaultDialer.Dial(u.String(), header)
 	if err != nil {
@@ -99,7 +83,6 @@ func (c *Client) closeConn() {
 	c.rwLock.Unlock()
 
 	c.conn.Close()
-	c.mgr.unregister <- c
 }
 
 func (c *Client) read() {
@@ -169,11 +152,6 @@ func (c *Client) write() {
 }
 
 func (c *Client) messageHandler(message []byte) {
-	if c.curCount > c.endCount {
-		c.Close()
-		return
-	}
-	c.curCount++
 	var (
 		req     protocol.MessageReq
 		msgData pb_ws.MsgData
@@ -203,8 +181,8 @@ func (c *Client) messageHandler(message []byte) {
 	if msgData.MsgFrom%2 == 0 {
 		time.Sleep(time.Second * 1)
 	}
-	fmt.Println("收到消息:", c.userID, req.ReqIdentifier, req.OperationID, req.SendID, req.Token)
-	c.SendUser(req.SendID)
+	fmt.Println("|--------------| 收到消息时间:",time.Now(),"|--------------|")
+	fmt.Println("收到消息:", c.userID, req.SendID, req.Token,msgData.String())
 }
 
 func (c *Client) SendUser(recvId string) (err error) {
@@ -257,8 +235,8 @@ func (c *Client) SendUser(recvId string) (err error) {
 		ReqIdentifier: constant.WSSendMsg,
 		Token:         strconv.Itoa(int(ts)) + ":" + c.userID,
 		SendID:        c.userID,
-		OperationID:   strconv.Itoa(int(ts)) + ":" + c.userID,
-		MsgIncr:       strconv.Itoa(int(ts)) + ":" + c.userID,
+		OperationID:   c.userID,
+		MsgIncr:       utils.GenMsgIncr(c.userID),
 		Data:          bodyBytes,
 	}
 	reqBytes, err = utils.ObjEncode(req)

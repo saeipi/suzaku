@@ -50,7 +50,6 @@ func JoinGroup(userIDs []string, groupId string) {
 		CreatorUserId: "",
 		GroupType:     1,
 		Status:        1,
-		CreatedTs:     time.Now().Unix(),
 		Ex:            "",
 	}
 
