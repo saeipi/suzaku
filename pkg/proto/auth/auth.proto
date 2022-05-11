@@ -35,7 +35,19 @@ message UserTokenResp {
   int64  expire = 3; // token过期时间戳（秒）
 }
 
+message UserLoginReq {
+  int32  platform_id = 1; // 平台
+  string user_id = 2; // 用户ID
+  string password = 3; // 密码
+  string verification_code = 4; // 验证码
+}
+
+message UserLoginResp {
+  pb_com.CommonResp common = 1;
+}
+
 service Auth {
   rpc UserRegister(UserRegisterReq) returns(UserRegisterResp);
   rpc UserToken(UserTokenReq) returns(UserTokenResp);
+  rpc UserLogin(UserLoginReq) returns(UserLoginResp);
 }
