@@ -46,14 +46,14 @@ func (rpc *userRpcServer) UserInfo(ctx context.Context, req *pb_user.UserInfoReq
 		common = &pb_com.CommonResp{}
 		user   *po_mysql.User
 	)
-	resp = &pb_user.UserInfoResp{Common: common}
+	resp = &pb_user.UserInfoResp{Common: common,UserInfo:&pb_user.UserInfo{}}
 	user, err = repo_mysql.UserRepo.GetUserByUserID(req.UserId)
 	if err != nil {
 		common.Code = ErrorCodeUserIdNotExist
 		common.Msg = ErrorUserIdNotExist
 		return
 	}
-	copier.Copy(resp, user)
+	copier.Copy(resp.UserInfo, user)
 	return
 }
 

@@ -3,6 +3,7 @@ package api_user
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"google.golang.org/grpc"
 	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
@@ -40,7 +41,8 @@ func SelfInfo(c *gin.Context) {
 		return
 	}
 	resp = &dto_api.UserInfoResp{}
-	utils.CopyStructFields(resp, reply)
+	//utils.CopyStructFields(resp, reply.UserInfo)
+	copier.Copy(resp,reply.UserInfo)
 	http.Success(c, resp)
 }
 
