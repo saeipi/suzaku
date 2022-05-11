@@ -17,3 +17,10 @@ func int64ToString(i int64) string {
 func GenMsgIncr(userID string) string {
 	return userID + "_" + int64ToString(GetCurrentTimestampByNano())
 }
+
+func GetSessionId(userId1 string, userId2 string) string {
+	if userId1 > userId2 {
+		return MD5(userId1 + "_" + userId2)
+	}
+	return MD5(userId2 + "_" + userId1)
+}

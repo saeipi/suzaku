@@ -22,6 +22,7 @@ type ChatClient interface {
 	GetMinMaxSeq(ctx context.Context, in *GetMinMaxSeqReq, opts ...grpc.CallOption) (*GetMinMaxSeqResp, error)
 	PullMessageBySeqList(ctx context.Context, in *pb_ws.PullMessageBySeqListReq, opts ...grpc.CallOption) (*pb_ws.PullMessageBySeqListResp, error)
 	SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.CallOption) (*SendMsgResp, error)
+	GetHistoryMessages(ctx context.Context, in *GetHistoryMessagesReq, opts ...grpc.CallOption) (*GetHistoryMessagesResp, error)
 }
 
 type chatClient struct {
@@ -59,6 +60,15 @@ func (c *chatClient) SendMsg(ctx context.Context, in *SendMsgReq, opts ...grpc.C
 	return out, nil
 }
 
+func (c *chatClient) GetHistoryMessages(ctx context.Context, in *GetHistoryMessagesReq, opts ...grpc.CallOption) (*GetHistoryMessagesResp, error) {
+	out := new(GetHistoryMessagesResp)
+	err := c.cc.Invoke(ctx, "/pb_auth.Chat/GetHistoryMessages", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServer is the server API for Chat service.
 // All implementations must embed UnimplementedChatServer
 // for forward compatibility
@@ -66,6 +76,7 @@ type ChatServer interface {
 	GetMinMaxSeq(context.Context, *GetMinMaxSeqReq) (*GetMinMaxSeqResp, error)
 	PullMessageBySeqList(context.Context, *pb_ws.PullMessageBySeqListReq) (*pb_ws.PullMessageBySeqListResp, error)
 	SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error)
+	GetHistoryMessages(context.Context, *GetHistoryMessagesReq) (*GetHistoryMessagesResp, error)
 	mustEmbedUnimplementedChatServer()
 }
 
@@ -81,6 +92,9 @@ func (UnimplementedChatServer) PullMessageBySeqList(context.Context, *pb_ws.Pull
 }
 func (UnimplementedChatServer) SendMsg(context.Context, *SendMsgReq) (*SendMsgResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
+}
+func (UnimplementedChatServer) GetHistoryMessages(context.Context, *GetHistoryMessagesReq) (*GetHistoryMessagesResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryMessages not implemented")
 }
 func (UnimplementedChatServer) mustEmbedUnimplementedChatServer() {}
 
@@ -149,6 +163,24 @@ func _Chat_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Chat_GetHistoryMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHistoryMessagesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServer).GetHistoryMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb_auth.Chat/GetHistoryMessages",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServer).GetHistoryMessages(ctx, req.(*GetHistoryMessagesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Chat_ServiceDesc is the grpc.ServiceDesc for Chat service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +199,10 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMsg",
 			Handler:    _Chat_SendMsg_Handler,
+		},
+		{
+			MethodName: "GetHistoryMessages",
+			Handler:    _Chat_GetHistoryMessages_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

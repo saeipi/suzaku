@@ -52,8 +52,23 @@ message SendMsgResp {
   int64  send_ts = 5;
 }
 
+message GetHistoryMessagesReq {
+  int32 page_size = 1;
+  string user_id = 2;
+  int64 created_ts = 3;
+  string session_id = 4;
+  int32 session_type = 5;
+  bool back = 6;
+}
+
+message GetHistoryMessagesResp {
+  pb_com.CommonResp common = 1;
+  repeated pb_ws.MsgData msg_list = 2;
+}
+
 service Chat {
   rpc GetMinMaxSeq(GetMinMaxSeqReq) returns(GetMinMaxSeqResp);
   rpc PullMessageBySeqList(pb_ws.PullMessageBySeqListReq) returns(pb_ws.PullMessageBySeqListResp);
   rpc SendMsg(SendMsgReq) returns(SendMsgResp);
+  rpc GetHistoryMessages(GetHistoryMessagesReq) returns(GetHistoryMessagesResp);
 }

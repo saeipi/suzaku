@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"suzaku/examples/send_message/client"
+	"suzaku/examples/send_msg/client"
 	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/utils"
 	"time"
 )
 
 func main() {
-	recvID := "1523642429746450432"
-	recvToken := "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ2OTE2MzcsImlzcyI6InRLaDNmTXdXZXBDZHM5amJUdUo5SUdZSlliUElabmoiLCJvcmlnX2lhdCI6MTY1MjA5OTYzNywicGxhdGZvcm1faWQiOjEsInVzZXJfaWQiOiIxNTIzNjQyNDI5NzQ2NDUwNDMyIn0.ScIDGYiEBXqTNuVfAc_HjIBRB_hn34bILxOzGTpD9aY"
-	userId := "1523642393075650560"
+	recvID := "1524257293623889920"
+	recvToken := "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ4MzgyMzksImlzcyI6InRLaDNmTXdXZXBDZHM5amJUdUo5SUdZSlliUElabmoiLCJvcmlnX2lhdCI6MTY1MjI0NjIzOSwicGxhdGZvcm1faWQiOjEsInVzZXJfaWQiOiIxNTI0MjU3MjkzNjIzODg5OTIwIn0.xF1_6TY88pGh-zC8qc6-AJ0KpGChfQ-kayzdGxW9SXY"
+	userId := "1524255191468085248"
 	ts := utils.GetCurrentTimestampByMill()
 
 	client.NewClient(recvID, recvToken)
@@ -32,6 +32,7 @@ func main() {
 			SessionType: 1,      // 单聊为1，群聊为2
 			MsgFrom:     100,    // 100:用户消息 200:系统消息
 			ContentType: 101,    // 消息类型，101表示文本，102表示图片
+			SessionId:        utils.GetSessionId(userId, recvID),
 			RecvID:      recvID, // 接收者ID
 			GroupID:     "",
 			ForceList:   nil,

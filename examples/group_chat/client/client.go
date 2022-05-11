@@ -229,7 +229,8 @@ func (c *Client) SendGroup(groupId string) (err error) {
 		SenderPlatformId: 1,
 		SenderNickname:   c.nickname,
 		SenderAvatarUrl:  "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
-		SessionType:      2,   // 单聊为1，群聊为2
+		SessionType:      2, // 单聊为1，群聊为2
+		SessionId:        groupId,
 		MsgFrom:          100, // 100:用户消息 200:系统消息
 		ContentType:      101, // 消息类型，101表示文本，102表示图片
 		Content:          nil, // 内部是json 对象

@@ -132,9 +132,10 @@ message MsgData {
   string sender_nickname = 7;
   string sender_avatar_url = 8;
   int32 session_type = 9;
-  int32 msg_from = 10;
-  int32 content_type = 11;
-  bytes content = 12;
+  string session_id = 10;
+  int32 msg_from = 11;
+  int32 content_type = 12;
+  bytes content = 13;
   uint32 seq = 14;
   int64 send_ts = 15;
   int64 created_ts = 16;

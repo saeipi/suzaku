@@ -65,6 +65,7 @@ func NewClient(userID string, token string) (client *Client) {
 		return
 	}
 	client.conn = conn
+	fmt.Println(userID, "上线")
 	go client.write()
 	go client.read()
 	return
@@ -181,8 +182,8 @@ func (c *Client) messageHandler(message []byte) {
 	if msgData.MsgFrom%2 == 0 {
 		time.Sleep(time.Second * 1)
 	}
-	fmt.Println("|--------------| 收到消息时间:",time.Now(),"|--------------|")
-	fmt.Println("收到消息:", c.userID, req.SendID, req.Token,msgData.String())
+	fmt.Println("|--------------| 收到消息时间:", time.Now(), "|--------------|")
+	fmt.Println("收到消息:", c.userID, req.SendID, req.Token, msgData.String())
 }
 
 func (c *Client) SendUser(recvId string) (err error) {
@@ -214,7 +215,8 @@ func (c *Client) SendUser(recvId string) (err error) {
 		SenderPlatformId: 1,
 		SenderNickname:   c.nickname,
 		SenderAvatarUrl:  "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
-		SessionType:      1,   // 单聊为1，群聊为2
+		SessionType:      1, // 单聊为1，群聊为2
+		SessionId:        utils.GetSessionId(c.userID, recvId),
 		MsgFrom:          100, // 100:用户消息 200:系统消息
 		ContentType:      101, // 消息类型，101表示文本，102表示图片
 		Content:          nil, // 内部是json 对象
