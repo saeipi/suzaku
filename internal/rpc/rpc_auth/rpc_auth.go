@@ -43,15 +43,37 @@ func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserReg
 		user   *po_mysql.User
 		err    error
 	)
-	resp = &pb_auth.UserRegisterResp{Common: common}
+	resp = &pb_auth.UserRegisterResp{
+		Common:   common,
+		UserInfo: &pb_user.UserInfo{},
+		Token:    &pb_auth.UserToken{},
+	}
+	user, err = repo_mysql.UserRepo.GetUserBySzkID(req.SzkId)
+	if err != nil {
+		//TODO: Error
+		common.Msg = err.Error()
+		common.Code = 777
+		return
+	}
+	if user.UserId != "" {
+		//TODO: szk_id 已经存在
+		common.Code = 777
+		return
+	}
 	user, err = repo_mysql.UserRepo.UserRegister(req)
 	if err != nil {
 		common.Msg = err.Error()
 		common.Code = ErrCodeRpcRegisterFailed
 		return
 	}
-	resp.PlatformId = int32(user.PlatformId)
-	resp.UserId = user.UserId
+	copier.Copy(resp.UserInfo, user)
+
+	resp.Token.Token, resp.Token.Expire = jwt_auth.CreateJwtToken(user.UserId, req.PlatformId)
+
+	// TODO:调试用
+	if resp.Token.Expire > 0 {
+		err = redis.Set(fmt.Sprintf(redis.RedisKeyJwtUserToken, user.UserId, req.PlatformId), resp.Token.Token, int(resp.Token.Expire)*1000)
+	}
 	return
 }
 

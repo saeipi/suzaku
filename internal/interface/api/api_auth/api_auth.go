@@ -61,12 +61,8 @@ func UserRegister(c *gin.Context) {
 		return
 	}
 
-	resp = &dto_api.UserRegisterResp{
-		PlatformId: reply.PlatformId,
-		UserId:     reply.UserId,
-		Token:      replyToken.Token,
-		Expire:     replyToken.Expire,
-	}
+	resp = new(dto_api.UserRegisterResp)
+	copier.Copy(resp, reply)
 	http.Success(c, resp)
 }
 

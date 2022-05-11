@@ -34,15 +34,23 @@ func (r *userRepository) UserRegister(req *pb_auth.UserRegisterReq) (user *po_my
 			avatar   *po_mysql.UserAvatar
 			register *po_mysql.Register
 		)
-
-		avatar = new(po_mysql.UserAvatar)
 		//1
 		user = &po_mysql.User{
 			UserId:     snowflake.SnowflakeID(),
+			SzkId:      req.SzkId,
+			Udid:       req.Udid,
+			Status:     1,
+			Nickname:   req.Nickname,
+			Gender:     0,
+			BirthTs:    0,
+			Email:      "",
 			Mobile:     req.Mobile,
 			PlatformId: int(req.PlatformId),
+			AvatarUrl:  req.AvatarUrl,
+			CityId:     0,
+			Ex:         "",
 		}
-		terr = tx.Save(user).Error
+		terr = tx.Create(user).Error
 		if terr != nil {
 			return
 		}
@@ -51,13 +59,17 @@ func (r *userRepository) UserRegister(req *pb_auth.UserRegisterReq) (user *po_my
 			UserId:   user.UserId,
 			Password: req.Password,
 		}
-		terr = tx.Save(register).Error
+		terr = tx.Create(register).Error
 		if terr != nil {
 			return
 		}
 		//3
+		avatar = &po_mysql.UserAvatar{
+			UserId:    user.UserId,
+			AvatarUrl: user.AvatarUrl,
+		}
 		avatar.UserId = user.UserId
-		terr = tx.Save(avatar).Error
+		terr = tx.Create(avatar).Error
 		return
 	})
 	return
@@ -67,20 +79,24 @@ func (r *userRepository) GetUserByUserID(userID string) (user *po_mysql.User, er
 	var (
 		db *gorm.DB
 	)
+	user = new(po_mysql.User)
 	db, err = mysql.GormDB()
 	if err != nil {
 		return
 	}
-	err = db.Where("user_id=?", userID).Find(&user).Error
+	err = db.Where("user_id=?", userID).Find(user).Error
 	return
 }
+
 func (r *userRepository) TxGetUserByUserID(userID string, tx *gorm.DB) (user *po_mysql.User, err error) {
-	err = tx.Where("user_id=?", userID).Find(&user).Error
+	user = new(po_mysql.User)
+	err = tx.Where("user_id=?", userID).Find(user).Error
 	return
 }
 
 func (r *userRepository) TxGetAvatarByUserID(userID string, tx *gorm.DB) (avatar *po_mysql.UserAvatar, err error) {
-	err = tx.Where("user_id=?", userID).Find(&avatar).Error
+	avatar = new(po_mysql.UserAvatar)
+	err = tx.Where("user_id=?", userID).Find(avatar).Error
 	return
 }
 
@@ -94,6 +110,9 @@ func (r *userRepository) GetUserBySzkID(szkID string) (user *po_mysql.User, err 
 		return
 	}
 	err = db.Where("szk_id=?", szkID).Find(user).Error
+	if err == gorm.ErrRecordNotFound {
+		err = nil
+	}
 	return
 }
 

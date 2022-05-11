@@ -10,19 +10,21 @@ option go_package = "./auth;pb_auth";
 //}
 
 message UserRegisterReq {
-  string secret = 1; // 秘钥
-  int32 platform_id = 2; // 平台
-  string mobile = 3; // 手机号
-  string udid = 4; // 设备唯一标识
-  string verification_code = 5; // 验证码
-  string password = 6; // 密码
+  string szk_id = 1; // 账户ID
+  string nickname = 2; // 昵称
+  string avatar_url = 3; // 头像
+  string mobile = 4; // 手机号
+  int32  platform_id = 5; // 平台
+  string  udid = 6; // 设备唯一编号
+  string verification_code = 7; // 验证码
+  string password = 8; // 密码
+
 }
 
 message UserRegisterResp {
   pb_com.CommonResp common = 1;
-  int32  platform_id = 2; // 平台
-  int64  id = 3; // 主键ID
-  string user_id = 4; // 用户ID
+  pb_user.UserInfo user_info = 2;
+  UserToken  token = 3;
 }
 
 message UserTokenReq {

@@ -31,7 +31,8 @@ func init() {
 
 /*
 存:传指针对象，Create时不需要&，同时会Out表中的数据
-读:返回指针对象，Find时需要&
+读:返回指针对象，Find时不需要&
+需要不为nil
 */
 func (r *groupRepository) Create(group *po_mysql.Group, avatar *po_mysql.GroupAvatar) (err error) {
 	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
@@ -40,7 +41,7 @@ func (r *groupRepository) Create(group *po_mysql.Group, avatar *po_mysql.GroupAv
 			return
 		}
 		avatar.GroupId = group.GroupId
-		terr = tx.Save(avatar).Error
+		terr = tx.Create(avatar).Error
 		return
 	})
 	return
@@ -50,10 +51,11 @@ func (r *groupRepository) GroupExist(groupID string) (group *po_mysql.Group, err
 	var (
 		db *gorm.DB
 	)
+	group = new(po_mysql.Group)
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Where("group_id = ?", groupID).Find(&group).Error
+	err = db.Where("group_id = ?", groupID).Find(group).Error
 	if err == gorm.ErrRecordNotFound {
 		err = nil
 	}
@@ -145,10 +147,11 @@ func (r *groupRepository) IsJoined(groupID string, userID string) (member *po_my
 	var (
 		db *gorm.DB
 	)
+	member = new(po_mysql.GroupMember)
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Model(po_mysql.GroupMember{}).Where("group_id=? AND user_id=?", groupID, userID).Find(&member).Error
+	err = db.Model(po_mysql.GroupMember{}).Where("group_id=? AND user_id=?", groupID, userID).Find(member).Error
 	if err == gorm.ErrRecordNotFound {
 		err = nil
 	}
@@ -161,12 +164,14 @@ func (r *groupRepository) TxCreateGroupMember(member *po_mysql.GroupMember, tx *
 }
 
 func (r *groupRepository) TxGetGroupRequest(groupId, userId string, tx *gorm.DB) (groupRequest *po_mysql.GroupRequest, err error) {
-	err = tx.Where("group_id = ? AND user_id = ?", groupId, userId).Find(&groupRequest).Error
+	groupRequest = new(po_mysql.GroupRequest)
+	err = tx.Where("group_id = ? AND user_id = ?", groupId, userId).Find(groupRequest).Error
 	return
 }
 
 func (r *groupRepository) TxGetGroup(groupId string, tx *gorm.DB) (group *po_mysql.Group, err error) {
-	err = tx.Where("group_id=?", groupId).Find(&group).Error
+	group = new(po_mysql.Group)
+	err = tx.Where("group_id=?", groupId).Find(group).Error
 	return
 }
 

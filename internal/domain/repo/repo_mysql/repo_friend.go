@@ -60,10 +60,11 @@ func (r *friendRepository) IsFriend(userId1, userId2 string) (friend *po_mysql.F
 	var (
 		db *gorm.DB
 	)
+	friend = new(po_mysql.Friend)
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Where("owner_user_id=? AND friend_user_id=?", userId1, userId2).Find(&friend).Error
+	err = db.Where("owner_user_id=? AND friend_user_id=?", userId1, userId2).Find(friend).Error
 	if err == gorm.ErrRecordNotFound {
 		err = nil
 	}
