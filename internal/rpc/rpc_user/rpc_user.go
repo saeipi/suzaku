@@ -10,7 +10,7 @@ import (
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/factory"
 	pb_com "suzaku/pkg/proto/pb_com"
-	pb_user "suzaku/pkg/proto/user"
+	pb_user "suzaku/pkg/proto/pb_user"
 )
 
 const (

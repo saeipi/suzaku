@@ -27,7 +27,8 @@ CREATE TABLE `registers` (
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_ts` bigint DEFAULT '0',
   `updated_ts` bigint DEFAULT '0',
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`user_id`),
+  KEY `idx_userId_password` (`user_id`,`password`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

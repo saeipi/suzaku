@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthClient interface {
 	UserRegister(ctx context.Context, in *UserRegisterReq, opts ...grpc.CallOption) (*UserRegisterResp, error)
 	UserToken(ctx context.Context, in *UserTokenReq, opts ...grpc.CallOption) (*UserTokenResp, error)
+	UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error)
 }
 
 type authClient struct {
@@ -48,12 +49,22 @@ func (c *authClient) UserToken(ctx context.Context, in *UserTokenReq, opts ...gr
 	return out, nil
 }
 
+func (c *authClient) UserLogin(ctx context.Context, in *UserLoginReq, opts ...grpc.CallOption) (*UserLoginResp, error) {
+	out := new(UserLoginResp)
+	err := c.cc.Invoke(ctx, "/pb_auth.Auth/UserLogin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
 	UserRegister(context.Context, *UserRegisterReq) (*UserRegisterResp, error)
 	UserToken(context.Context, *UserTokenReq) (*UserTokenResp, error)
+	UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -66,6 +77,9 @@ func (UnimplementedAuthServer) UserRegister(context.Context, *UserRegisterReq) (
 }
 func (UnimplementedAuthServer) UserToken(context.Context, *UserTokenReq) (*UserTokenResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserToken not implemented")
+}
+func (UnimplementedAuthServer) UserLogin(context.Context, *UserLoginReq) (*UserLoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -116,6 +130,24 @@ func _Auth_UserToken_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserLoginReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).UserLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb_auth.Auth/UserLogin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).UserLogin(ctx, req.(*UserLoginReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -130,6 +162,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserToken",
 			Handler:    _Auth_UserToken_Handler,
+		},
+		{
+			MethodName: "UserLogin",
+			Handler:    _Auth_UserLogin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -10,7 +10,7 @@ import (
 	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
 	"suzaku/pkg/proto/pb_com"
-	pb_user "suzaku/pkg/proto/user"
+	pb_user "suzaku/pkg/proto/pb_user"
 	"suzaku/pkg/utils"
 )
 

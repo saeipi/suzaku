@@ -2,7 +2,7 @@ syntax ="proto3";
 import  "pb_com/common.proto";
 import public "google/protobuf/timestamp.proto";
 package pb_user;
-option go_package = "./user;pb_user";
+option go_package = "suzaku/pkg/proto/pb_user;pb_user";
 
 message UserInfo {
   string user_id = 1; // 用户ID

@@ -8,4 +8,5 @@ import (
 func auth(group *gin.RouterGroup) {
 	router := group.Group("auth")
 	router.POST("register", api_auth.UserRegister)
+	router.POST("login", api_auth.Login)
 }

@@ -4,11 +4,13 @@ import (
 	"gorm.io/gorm"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
-	pb_user "suzaku/pkg/proto/user"
+	"suzaku/pkg/common/snowflake"
+	pb_auth "suzaku/pkg/proto/auth"
+	pb_user "suzaku/pkg/proto/pb_user"
 )
 
 type UserRepository interface {
-	UserRegister(user *po_mysql.User, avatar *po_mysql.UserAvatar) (err error)
+	UserRegister(req *pb_auth.UserRegisterReq) (user *po_mysql.User, err error)
 	GetUserByUserID(userID string) (user *po_mysql.User, err error)
 	TxGetUserByUserID(userID string, tx *gorm.DB) (user *po_mysql.User, err error)
 	TxGetAvatarByUserID(userID string, tx *gorm.DB) (avatar *po_mysql.UserAvatar, err error)
@@ -26,12 +28,34 @@ func init() {
 	UserRepo = new(userRepository)
 }
 
-func (r *userRepository) UserRegister(user *po_mysql.User, avatar *po_mysql.UserAvatar) (err error) {
+func (r *userRepository) UserRegister(req *pb_auth.UserRegisterReq) (user *po_mysql.User, err error) {
 	err = mysql.Transaction(func(tx *gorm.DB) (terr error) {
+		var (
+			avatar   *po_mysql.UserAvatar
+			register *po_mysql.Register
+		)
+
+		avatar = new(po_mysql.UserAvatar)
+		//1
+		user = &po_mysql.User{
+			UserId:     snowflake.SnowflakeID(),
+			Mobile:     req.Mobile,
+			PlatformId: int(req.PlatformId),
+		}
 		terr = tx.Save(user).Error
 		if terr != nil {
 			return
 		}
+		//2
+		register = &po_mysql.Register{
+			UserId:   user.UserId,
+			Password: req.Password,
+		}
+		terr = tx.Save(register).Error
+		if terr != nil {
+			return
+		}
+		//3
 		avatar.UserId = user.UserId
 		terr = tx.Save(avatar).Error
 		return
@@ -64,11 +88,12 @@ func (r *userRepository) GetUserBySzkID(szkID string) (user *po_mysql.User, err 
 	var (
 		db *gorm.DB
 	)
+	user = new(po_mysql.User)
 	db, err = mysql.GormDB()
 	if err != nil {
 		return
 	}
-	err = db.Where("szk_id=?", szkID).Find(&user).Error
+	err = db.Where("szk_id=?", szkID).Find(user).Error
 	return
 }
 

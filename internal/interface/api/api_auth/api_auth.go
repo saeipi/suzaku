@@ -3,6 +3,7 @@ package api_auth
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"google.golang.org/grpc"
 	"suzaku/internal/interface/dto/dto_api"
 	"suzaku/pkg/common/config"
@@ -71,4 +72,37 @@ func UserRegister(c *gin.Context) {
 
 func UserToken(c *gin.Context) {
 
+}
+
+func Login(c *gin.Context) {
+	var (
+		params     dto_api.UserLoginReq
+		err        error
+		req        *pb_auth.UserLoginReq
+		clientConn *grpc.ClientConn
+		client     pb_auth.AuthClient
+		reply      *pb_auth.UserLoginResp
+		resp       *dto_api.UserLoginResp
+	)
+	if err = c.BindJSON(&params); err != nil {
+		http.Error(c, err, http.ErrorCodeHttpReqDeserializeFailed)
+		return
+	}
+	req = &pb_auth.UserLoginReq{}
+	copier.Copy(req, params)
+
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.AuthName)
+	client = pb_auth.NewAuthClient(clientConn)
+	reply, _ = client.UserLogin(context.Background(), req)
+	if reply == nil {
+		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+		return
+	}
+	if reply.Common.Code > 0 {
+		http.Err(c, reply.Common.Msg, reply.Common.Code)
+		return
+	}
+	resp = new(dto_api.UserLoginResp)
+	copier.Copy(resp, reply)
+	http.Success(c, resp)
 }
