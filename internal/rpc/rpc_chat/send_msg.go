@@ -86,6 +86,7 @@ func (rpc *chatRpcServer) encapsulateMsgData(msg *pb_ws.MsgData) {
 
 func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (resp *pb_chat.SendMsgResp, err error) {
 	var (
+		seq       uint64
 		msgToMQ   pb_chat.MsgDataToMQ
 		isHistory bool
 		req       MsgCallBackReq
@@ -100,6 +101,14 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		reply             *pb_group.GetGroupAllMemberBasicResp
 		memberUserIdList  []string
 	)
+	if pb.MsgData != nil {
+		// 设置消息唯一ID
+		seq, err = redis.IncrSeqID(pb.MsgData.SessionId)
+		if err != nil {
+			return
+		}
+		pb.MsgData.Seq = uint32(seq)
+	}
 	replay = pb_chat.SendMsgResp{}
 	rpc.encapsulateMsgData(pb.MsgData)
 	msgToMQ = pb_chat.MsgDataToMQ{

@@ -4,7 +4,6 @@ import (
 	"gorm.io/gorm"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
-	"suzaku/pkg/common/redis"
 	pb_chat "suzaku/pkg/proto/chart"
 )
 
@@ -24,27 +23,20 @@ func init() {
 
 func (r *chatRepository) SaveMessage(msg *po_mysql.Message) (err error) {
 	var (
-		db  *gorm.DB
-		seq uint64
+		db *gorm.DB
 	)
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	seq, err = redis.IncrSeqID(msg.SessionId)
-	if err != nil {
-		return
-	}
-	msg.Seq = int64(seq)
 	err = db.Create(msg).Error
 	return
 }
 
 func (r *chatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (messages []*po_mysql.Message, err error) {
 	var (
-		db         *gorm.DB
-		query      string
-		orderValue string
-		args       []interface{}
+		db    *gorm.DB
+		query string
+		args  []interface{}
 	)
 	messages = make([]*po_mysql.Message, 0)
 	if db, err = mysql.GormDB(); err != nil {
@@ -61,12 +53,9 @@ func (r *chatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (me
 			query += " AND seq_id>?"
 		}
 		args = append(args, req.Seq)
-		orderValue = "seq_id ASC"
-	} else {
-		orderValue = "seq_id DESC"
 	}
 	err = db.Where(query, args...).
-		Order(orderValue).
+		Order("seq DESC").
 		Limit(int(req.PageSize)).
 		Find(&messages).Error
 	return
