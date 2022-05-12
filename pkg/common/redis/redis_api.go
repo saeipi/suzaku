@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ansel1/merry"
 	"github.com/go-redis/redis"
+	"strconv"
 	"strings"
 	"suzaku/pkg/utils"
 	"time"
@@ -255,6 +256,42 @@ func ZAdd(key, member, score string) error {
 		//Client.logger.Error("RedisZAdd Error!", key, "member:", member, "score:", score, "Details:", err.Error())
 	}
 	return err
+}
+
+func ZAddObj(key string, score int64, member interface{}) (err error) {
+	var (
+		buf []byte
+		str string
+	)
+	buf, err = json.Marshal(member)
+	if err != nil {
+		return
+	}
+	str = string(buf)
+	err = RedisClient.client.Do("ZADD", RealKey(key), score, str).Err()
+	if err != nil {
+		//Client.logger.Error("RedisZAdd Error!", key, "member:", member, "score:", score, "Details:", err.Error())
+	}
+	return
+}
+
+func ZRevRangeByScore(key string, maxScore int64, offset int64, count int64) (jsStr string) {
+	list := RedisClient.client.ZRevRangeByScore(RealKey(key), redis.ZRangeBy{
+		Min:    "0",
+		Max:    strconv.FormatInt(maxScore, 10),
+		Offset: offset,
+		Count:  count,
+	}).Val()
+	return utils.MergeJsonList(list)
+}
+
+func ZRangeByScore(key string, minScore int64, maxScore int64, offset int64, count int64) (jsStr string) {
+	list := RedisClient.client.ZRangeByScore(RealKey(key), redis.ZRangeBy{
+		Min:    strconv.FormatInt(minScore, 10),
+		Max:    strconv.FormatInt(maxScore, 10),
+		Offset: offset,
+		Count:  count}).Val()
+	return utils.MergeJsonList(list)
 }
 
 func ZRank(key, member string) (int, error) {

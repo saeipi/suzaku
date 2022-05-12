@@ -2,6 +2,7 @@ package utils
 
 import (
 	jsoniter "github.com/json-iterator/go"
+	"strings"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -33,5 +34,18 @@ func TryJsonToObj(str string, obj interface{}) {
 
 func JsonToMap(str string) (maps map[string]interface{}) {
 	json.Unmarshal([]byte(str), &maps)
+	return
+}
+
+func MergeJsonList(list []string) (jsStr string) {
+	if len(list) == 0 {
+		return
+	}
+	builder := strings.Builder{}
+	jsStr = strings.Join(list, ",")
+	builder.WriteString("[")
+	builder.WriteString(jsStr)
+	builder.WriteString("]")
+	jsStr = builder.String()
 	return
 }
