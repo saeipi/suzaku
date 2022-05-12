@@ -179,9 +179,6 @@ func (c *Client) messageHandler(message []byte) {
 	if msgData.MsgFrom == 0 {
 		return
 	}
-	if msgData.MsgFrom%2 == 0 {
-		time.Sleep(time.Second * 1)
-	}
 	fmt.Println("|--------------| 收到消息时间:", time.Now(), "|--------------|")
 	fmt.Println("收到消息:", c.userID, req.SendID, req.Token, msgData.String())
 }

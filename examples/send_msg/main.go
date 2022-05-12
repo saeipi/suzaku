@@ -29,10 +29,10 @@ func main() {
 		SenderAvatarUrl:  "https://github.com/saeipi/suzaku/blob/main/assets/images/suzaku.jpg",
 		OperationID:      userId,
 		Data: dto_api.SendMsgData{
-			SessionType: 1,      // 单聊为1，群聊为2
-			MsgFrom:     100,    // 100:用户消息 200:系统消息
-			ContentType: 101,    // 消息类型，101表示文本，102表示图片
-			SessionId:        utils.GetSessionId(userId, recvID),
+			SessionType: 1,   // 单聊为1，群聊为2
+			MsgFrom:     100, // 100:用户消息 200:系统消息
+			ContentType: 101, // 消息类型，101表示文本，102表示图片
+			SessionId:   utils.GetSessionId(userId, recvID),
 			RecvID:      recvID, // 接收者ID
 			GroupID:     "",
 			ForceList:   nil,
@@ -43,7 +43,7 @@ func main() {
 			OffLineInfo: nil,
 		},
 	}
-	fmt.Println("|--------------| 发送消息时间:",time.Now(),"|--------------|")
+	fmt.Println("|--------------| 发送消息时间:", time.Now(), "|--------------|")
 	msg.Data.Content = utils.Str2Bytes("文本聊天消息 1523642393075650560")
 	buf, err := Post("http://127.0.0.1:10000/api/chat/send_msg", msg, 10)
 	if err != nil {

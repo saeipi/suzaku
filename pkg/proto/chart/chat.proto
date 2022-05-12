@@ -56,9 +56,10 @@ message GetHistoryMessagesReq {
   int32 page_size = 1;
   string user_id = 2;
   int64 seq = 3;
-  string session_id = 4;
-  int32 session_type = 5;
-  bool back = 6;
+  int64 created_ts = 4;
+  string session_id = 5;
+  int32 session_type = 6;
+  bool back = 7;
 }
 
 message GetHistoryMessagesResp {

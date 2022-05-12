@@ -136,6 +136,11 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 	if err != nil {
 		//return
 	}
+	// TODO: 调试强制发送
+	func() {
+		canSend= true
+	}()
+
 	if canSend == false {
 		return returnMsg(&replay, pb, 201, "callbackWordFilter result stop rpc and return", "", 0)
 	}

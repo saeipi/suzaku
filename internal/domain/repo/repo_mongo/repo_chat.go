@@ -2,23 +2,22 @@ package repo_mongo
 
 import (
 	"context"
-	"github.com/golang/protobuf/proto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"strconv"
 	"suzaku/internal/domain/po_mongo"
 	"suzaku/pkg/common/mongodb"
 	pb_chat "suzaku/pkg/proto/chart"
 	"suzaku/pkg/proto/pb_ws"
-	"suzaku/pkg/utils"
 	"time"
 )
 
 const singleGocMsgNum = 5000
 
 type MgChatRepository interface {
-	SaveUserChatMongo2(uid string, sendTime int64, msg *pb_chat.MsgDataToDB) (err error)
-	GetMsgBySeqListMongo2(uid string, seqList []uint32, operationID string) (seqMsg []*pb_ws.MsgData, err error)
+	SaveMessage(msg *po_mongo.Message) (err error)
+	HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (messages []*po_mongo.Message, err error)
 }
 
 var MgChatRepo MgChatRepository
@@ -30,122 +29,70 @@ func init() {
 	MgChatRepo = new(mgChatRepository)
 }
 
-func (r *mgChatRepository) SaveUserChatMongo2(uid string, sendTime int64, msg *pb_chat.MsgDataToDB) (err error) {
+func (r *mgChatRepository) SaveMessage(msg *po_mongo.Message) (err error) {
 	var (
-		db   *mongo.Database
-		coll *mongo.Collection
-		ctx  context.Context
-
-		//newTime int64
-		seqUid  string
-		filter  bson.M
-		msgInfo po_mongo.MessageInfo
-
-		chat po_mongo.UserChat
+		db         *mongo.Database
+		coll       *mongo.Collection
+		ctx        context.Context
+		cancelFunc context.CancelFunc
 	)
-	ctx, _ = NewContext()
-	db, err = mongodb.MgDB()
-	if err != nil {
+	ctx, cancelFunc = NewContext()
+	defer cancelFunc()
+
+	if db, err = mongodb.MgDB(); err != nil {
 		//TODO:错误
 		return
 	}
 	coll = db.Collection(po_mongo.MongoCollectionMsg)
-
-	//newTime = getCurrentTimestampByMill()
-	seqUid = getSeqUid(uid, msg.MsgData.Seq)
-	filter = bson.M{"uid": seqUid}
-
-	msgInfo = po_mongo.MessageInfo{}
-	msgInfo.SendTime = sendTime
-	if msgInfo.Msg, err = proto.Marshal(msg.MsgData); err != nil {
+	if _, err = coll.InsertOne(ctx, msg); err != nil {
 		//TODO:错误
 		return
 	}
-
-	if err = coll.FindOneAndUpdate(ctx, filter, bson.M{"$push": bson.M{"msg": msgInfo}}).Err(); err != nil {
-		chat = po_mongo.UserChat{}
-		chat.UID = seqUid
-		chat.Msg = append(chat.Msg, msgInfo)
-
-		if _, err = coll.InsertOne(ctx, &chat); err != nil {
-			//TODO:错误
-			return
-		}
-	}
 	return
 }
 
-func (r *mgChatRepository) SaveUserChat(uid string, sendTime int64, msg pb_chat.MsgDataToDB) (err error) {
-	return
-}
-
-func (r *mgChatRepository) GetMsgBySeqListMongo2(uid string, seqList []uint32, operationID string) (seqMsg []*pb_ws.MsgData, err error) {
+func (r *mgChatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (messages []*po_mongo.Message, err error) {
 	var (
-		db   *mongo.Database
-		coll *mongo.Collection
-		ctx  context.Context
-
-		seqs        map[string][]uint32
-		chat        po_mongo.UserChat
-		reqUid      string
-		values      []uint32
-		singleCount int
-		i           int
-		msg         *pb_ws.MsgData
-		hasSeqList  []uint32
+		db          *mongo.Database
+		coll        *mongo.Collection
+		ctx         context.Context
+		cannel      context.CancelFunc
+		findoptions *options.FindOptions
+		cur         *mongo.Cursor
+		filter      map[string]interface{}
 	)
-	db, err = mongodb.MgDB()
-	if err != nil {
+	messages = make([]*po_mongo.Message, 0)
+	filter = make(map[string]interface{})
+	if db, err = mongodb.MgDB(); err != nil {
 		return
 	}
 	coll = db.Collection(po_mongo.MongoCollectionMsg)
-	ctx, _ = NewContext()
+	ctx, cannel = NewContext()
+	defer cannel()
 
-	seqMsg = make([]*pb_ws.MsgData, 0)
-	hasSeqList = make([]uint32, 0)
-	seqs = func(uid string, seqList []uint32) (seqs map[string][]uint32) {
-		seqs = make(map[string][]uint32)
-		for i := 0; i < len(seqList); i++ {
-			seqUid := getSeqUid(uid, seqList[i])
-			if value, ok := seqs[seqUid]; !ok {
-				var temp []uint32
-				seqs[seqUid] = append(temp, seqList[i])
-			} else {
-				seqs[seqUid] = append(value, seqList[i])
-			}
+	findoptions = &options.FindOptions{}
+	findoptions.SetLimit(int64(req.PageSize))
+	// findoptions.SetSkip(0)
+
+	filter["session_id"] = req.SessionId
+	filter["session_type"] = req.SessionType
+	if req.Seq > 0 {
+		if req.Back == true {
+			//小于($lt)
+			filter["seq"] = bson.M{"$lt": req.Seq}
+
+		} else {
+			//大于($gt)
+			filter["seq"] = bson.M{"$gt": req.Seq}
 		}
+	}
+
+	cur, err = coll.Find(ctx, filter, findoptions)
+	if err != nil {
 		return
-	}(uid, seqList)
-	chat = po_mongo.UserChat{}
-
-	for reqUid, values = range seqs {
-		if err = coll.FindOne(ctx, bson.M{"uid": reqUid}).Decode(&chat); err != nil {
-			//TODO:错误
-			continue
-		}
-		singleCount = 0
-		for i = 0; i < len(chat.Msg); i++ {
-			msg = new(pb_ws.MsgData)
-			if err = proto.Unmarshal(chat.Msg[i].Msg, msg); err != nil {
-				//TODO:错误
-				return
-			}
-			if isContainInt32(msg.Seq, values) {
-				seqMsg = append(seqMsg, msg)
-				hasSeqList = append(hasSeqList, msg.Seq)
-				singleCount++
-				if singleCount == len(values) {
-					break
-				}
-			}
-		}
 	}
-	if len(hasSeqList) != len(seqList) {
-		var diff []uint32
-		diff = utils.Difference(hasSeqList, seqList)
-		exceptionMSg := genExceptionMessageBySeqList(diff)
-		seqMsg = append(seqMsg, exceptionMSg...)
-	}
+	defer cur.Close(context.Background())
+	err = cur.All(context.Background(), &messages)
 	return
 }
 

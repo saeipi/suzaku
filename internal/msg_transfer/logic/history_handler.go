@@ -57,7 +57,7 @@ func (h *HistoryConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 	switch msgFromMQ.MsgData.SessionType {
 	case constant.SingleChatType:
 		if isHistory {
-			err = saveUserChat(msgKey, &msgFromMQ)
+			err = saveMessage(&msgFromMQ)
 			if err != nil {
 				//TODO:错误
 				return
@@ -70,7 +70,7 @@ func (h *HistoryConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 		}
 	case constant.GroupChatType:
 		if isHistory {
-			err := saveUserChat(msgFromMQ.MsgData.RecvId, &msgFromMQ)
+			err = saveMessage(&msgFromMQ)
 			if err != nil {
 				//TODO:错误
 				return

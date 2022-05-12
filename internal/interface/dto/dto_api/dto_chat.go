@@ -36,6 +36,7 @@ type SendMsgResp struct {
 type HistoryMessagesReq struct {
 	PageSize    int    `form:"page_size" json:"page_size" example:"10" binding:"required,min=10,max=100"`
 	Seq         int64  `form:"seq" json:"seq"`                                      // 最早/后一条消息的Sequence ID
+	CreatedTs   int64  `form:"created_ts" json:"created_ts"`                        // 创建消息的时间
 	SessionId   string `form:"session_id" json:"session_id" binding:"required"`     // 回话ID
 	SessionType int32  `form:"session_type" json:"session_type" binding:"required"` // 1:单聊 2:群聊
 	Back        bool   `form:"back" json:"back" binding:"required"`                 // true:往后查,false:向前查
@@ -57,7 +58,7 @@ type Message struct {
 	Content          string `gorm:"column:content" json:"content"`
 	Status           int    `gorm:"column:status;default:0" json:"status"`
 	SendTs           int64  `gorm:"column:send_ts;default:0" json:"send_ts"`       // 消息发送的具体时间(毫秒)
-	CreatedTs        int64  `gorm:"column:created_ts;default:0" json:"created_ts"` // 创建消息的时间，在send_ts之前
+	CreatedTs        int64  `gorm:"column:created_ts;default:0" json:"created_ts"` // 创建消息的时间
 	Ex               string `gorm:"column:ex" json:"ex"`
 }
 
