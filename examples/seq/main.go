@@ -15,12 +15,12 @@ func main() {
 	)
 	userID = "1001"
 	for i := 0; i < 10; i++ {
-		seq, err = redis.IncrUserSeq(userID)
+		seq, err = redis.IncrSeqID(userID)
 		if err != nil {
 			fmt.Println("err:", err)
 			continue
 		}
-		maxSeq, err = redis.GetUserMaxSeq(userID)
+		maxSeq, err = redis.GetMaxSeqID(userID)
 		minSeq, err = redis.GetUserMinSeq(userID)
 
 		fmt.Println(seq, minSeq, maxSeq)

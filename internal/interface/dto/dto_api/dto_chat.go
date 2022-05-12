@@ -35,7 +35,7 @@ type SendMsgResp struct {
 
 type HistoryMessagesReq struct {
 	PageSize    int    `form:"page_size" json:"page_size" example:"10" binding:"required,min=10,max=100"`
-	CreatedTs   int64  `form:"created_ts" json:"created_ts"`                        // 最早/后一条消息的时间戳
+	Seq         int64  `form:"seq" json:"seq"`                                      // 最早/后一条消息的Sequence ID
 	SessionId   string `form:"session_id" json:"session_id" binding:"required"`     // 回话ID
 	SessionType int32  `form:"session_type" json:"session_type" binding:"required"` // 1:单聊 2:群聊
 	Back        bool   `form:"back" json:"back" binding:"required"`                 // true:往后查,false:向前查

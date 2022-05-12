@@ -449,3 +449,14 @@ func GetIntMap(key string) (intMap map[string]int, err error) {
 	}
 	return
 }
+
+// Sequence ID
+func GetMaxSeqID(key string) (uint64, error) {
+	key = seqId + key
+	return GetUint64(key)
+}
+
+func IncrSeqID(key string) (uint64, error) {
+	key = seqId + key
+	return Incr(key)
+}

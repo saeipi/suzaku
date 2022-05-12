@@ -31,6 +31,7 @@ CREATE TABLE `messages` (
   `sender_avatar_url` varchar(255) CHARACTER SET utf8 DEFAULT '',
   `session_id` char(40) CHARACTER SET utf8 DEFAULT '' COMMENT '单例:会话ID,群聊:群ID',
   `session_type` tinyint DEFAULT '0' COMMENT '1:单聊 2:群聊',
+  `seq` bigint DEFAULT '0' COMMENT '会话消息唯一ID',
   `msg_from` int DEFAULT '0' COMMENT '100:用户消息 200:系统消息',
   `content_type` int DEFAULT '0',
   `content` varchar(3000) CHARACTER SET utf8 DEFAULT '',
@@ -39,7 +40,7 @@ CREATE TABLE `messages` (
   `created_ts` bigint DEFAULT '0' COMMENT '创建消息的时间，在send_ts之前',
   `ex` varchar(255) CHARACTER SET utf8 DEFAULT '',
   PRIMARY KEY (`server_msg_id`),
-  KEY `idx_sessionType_sessionId_createdTs` (`session_type`,`session_id`,`created_ts`)
+  KEY `idx_sessionType_sessionId_seq` (`session_type`,`session_id`,`seq`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

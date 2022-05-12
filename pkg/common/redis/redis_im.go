@@ -13,6 +13,7 @@ const (
 	userMinSeq                    = "REDIS_USER_MIN_SEQ:"
 	uidPidToken                   = "UID_PID_TOKEN_STATUS:"
 	conversationReceiveMessageOpt = "CON_RECV_MSG_OPT:"
+	seqId                         = "SEQ_ID:"
 )
 
 func JudgeAccountEXISTS(account string) (bool, error) {
