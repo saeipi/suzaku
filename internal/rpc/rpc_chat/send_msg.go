@@ -136,10 +136,6 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 	if err != nil {
 		//return
 	}
-	// TODO: 调试强制发送
-	func() {
-		canSend = true
-	}()
 	if canSend == false {
 		return returnMsg(&replay, pb, 201, "callbackWordFilter result stop rpc and return", "", 0)
 	}
@@ -147,10 +143,6 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 	switch pb.MsgData.SessionType {
 	case constant.SingleChatType:
 		canSend, err = callbackBeforeSendSingleMsg(pb)
-		// TODO: 调试强制发送
-		func() {
-			canSend = true
-		}()
 		if err != nil {
 			//return
 		}
@@ -190,10 +182,6 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 		if err != nil {
 			// TODO:ERROR
 		}
-		// TODO: 调试强制发送
-		func() {
-			canSend = true
-		}()
 		if canSend == false {
 			return returnMsg(&replay, pb, 201, "callbackBeforeSendGroupMsg result stop rpc and return", "", 0)
 		}
