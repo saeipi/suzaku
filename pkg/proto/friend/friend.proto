@@ -88,6 +88,7 @@ message MemberInfo {
   string nickname = 3; // 昵称
   string gender = 4; // 性别
   string avatar_url = 5; // 头像
+  string session_id = 6; // 会话ID
 }
 
 message FriendListResp {

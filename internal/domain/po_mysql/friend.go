@@ -17,6 +17,7 @@ type Friend struct {
 	OwnerUserId    string `gorm:"column:owner_user_id;primary_key" json:"owner_user_id"` // 添加好友发起者ID
 	FriendUserId   string `gorm:"column:friend_user_id" json:"friend_user_id"`           // 好友ID
 	OperatorUserId string `gorm:"column:operator_user_id" json:"operator_user_id"`       // 处理人ID
+	SessionId      string `gorm:"column:session_id" json:"session_id"`                   // 会话ID
 	Source         int    `gorm:"column:source;default:0" json:"source"`                 // 添加源
 	Remark         string `gorm:"column:remark" json:"remark"`                           // 备注
 	Ex             string `gorm:"column:ex" json:"ex"`                                   // 扩展字段

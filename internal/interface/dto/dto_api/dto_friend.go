@@ -43,6 +43,7 @@ type FriendListReq struct {
 }
 
 type FriendMemberInfo struct {
+	SessionId string `json:"session_id"` // 会话ID
 	UserId    string `json:"user_id"`    // 用户ID
 	SzkId     string `json:"szk_id"`     // 账户ID
 	Nickname  string `json:"nickname"`   // 昵称

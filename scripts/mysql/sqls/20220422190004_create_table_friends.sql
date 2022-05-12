@@ -25,6 +25,7 @@ CREATE TABLE `friends` (
   `owner_user_id` varchar(40) DEFAULT '' COMMENT '添加好友发起者ID',
   `friend_user_id` varchar(40) DEFAULT '' COMMENT '好友ID',
   `operator_user_id` varchar(40) DEFAULT '' COMMENT '处理人ID',
+  `session_id` char(40) CHARACTER SET utf8 DEFAULT '' COMMENT '会话ID',
   `source` tinyint(1) DEFAULT '0' COMMENT '添加源',
   `remark` varchar(255) DEFAULT '' COMMENT '备注',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
