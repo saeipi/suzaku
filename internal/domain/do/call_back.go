@@ -18,8 +18,8 @@ type CommonCallbackReq struct {
 
 type CommonCallbackResp struct {
 	ActionCode  int    `json:"action_code"`
-	ErrCode     int    `json:"err_code"`
-	ErrMsg      string `json:"err_msg"`
+	Code        int    `json:"code"`
+	Msg         string `json:"msg"`
 	OperationId string `json:"operation_id"`
 }
 

@@ -32,8 +32,8 @@ message GetMinMaxSeqReq {
 }
 
 message GetMinMaxSeqResp {
-  int32 err_code = 1;
-  string err_msg = 2;
+  int32 code = 1;
+  string msg = 2;
   uint32 max_seq = 3;
   uint32 min_seq = 4;
 }
@@ -45,8 +45,8 @@ message SendMsgReq {
 }
 
 message SendMsgResp {
-  int32 err_code = 1;
-  string err_msg = 2;
+  int32 code = 1;
+  string msg = 2;
   string server_msg_id = 3;
   string client_msg_id = 4;
   int64  send_ts = 5;

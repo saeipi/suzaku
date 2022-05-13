@@ -13,8 +13,8 @@ type MessageResp struct {
 	ReqIdentifier int32  `json:"req_identifier"`
 	MsgIncr       string `json:"msg_incr"`
 	OperationID   string `json:"operation_id"`
-	ErrCode       int32  `json:"err_code"`
-	ErrMsg        string `json:"err_msg"`
+	Code          int32  `json:"code"`
+	Msg           string `json:"msg"`
 	Data          []byte `json:"data"`
 }
 

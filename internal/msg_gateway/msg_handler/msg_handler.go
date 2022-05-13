@@ -76,8 +76,8 @@ func (h *MsgHandler) getNewestSeq(client *ws.Client, req *protocol.MessageReq) {
 	rpcReply, err = chatClient.GetMinMaxSeq(context.Background(), &rpcReq)
 	if err == nil {
 		//TODO: error
-		reply.ErrCode = 500
-		reply.ErrMsg = ""
+		reply.Code = 500
+		reply.Msg = ""
 		h.getSeqResp(client, req, reply)
 	} else {
 		h.getSeqResp(client, req, rpcReply)
@@ -101,8 +101,8 @@ func (h *MsgHandler) getSeqResp(client *ws.Client, req *protocol.MessageReq, pb 
 	reply = &protocol.MessageResp{
 		ReqIdentifier: req.ReqIdentifier,
 		MsgIncr:       req.MsgIncr,
-		ErrCode:       pb.GetErrCode(),
-		ErrMsg:        pb.GetErrMsg(),
+		Code:          pb.GetCode(),
+		Msg:           pb.GetMsg(),
 		OperationID:   req.OperationID,
 		Data:          buffer,
 	}
@@ -129,8 +129,8 @@ func (h *MsgHandler) sendErrMsg(client *ws.Client, errCode int32, errMsg string,
 	reply = &protocol.MessageResp{
 		ReqIdentifier: reqIdentifier,
 		MsgIncr:       msgIncr,
-		ErrCode:       errCode,
-		ErrMsg:        errMsg,
+		Code:          errCode,
+		Msg:           errMsg,
 		OperationID:   operationID,
 	}
 	h.sendMessage(client, reply)
@@ -168,16 +168,16 @@ func (h *MsgHandler) sendMsgReq(client *ws.Client, req *protocol.MessageReq) {
 			return
 		}
 		if err != nil {
-			reply.ErrCode = 200
-			reply.ErrMsg = err.Error()
+			reply.Code = 200
+			reply.Msg = err.Error()
 			h.sendMsgResp(client, req, reply)
 		} else {
 			h.sendMsgResp(client, req, reply)
 		}
 		return
 	}
-	reply.ErrCode = errCode
-	reply.ErrMsg = errMsg
+	reply.Code = errCode
+	reply.Msg = errMsg
 	h.sendMsgResp(client, req, reply)
 }
 
@@ -199,8 +199,8 @@ func (h *MsgHandler) sendMsgResp(client *ws.Client, req *protocol.MessageReq, re
 	resp = protocol.MessageResp{
 		ReqIdentifier: req.ReqIdentifier,
 		MsgIncr:       req.MsgIncr,
-		ErrCode:       reply.GetErrCode(),
-		ErrMsg:        reply.GetErrMsg(),
+		Code:          reply.GetCode(),
+		Msg:           reply.GetMsg(),
 		OperationID:   req.OperationID,
 		Data:          buf,
 	}
@@ -235,16 +235,16 @@ func (h *MsgHandler) pullMsgBySeqListReq(client *ws.Client, req *protocol.Messag
 			return
 		}
 		if err != nil {
-			reply.ErrCode = 200
-			reply.ErrMsg = err.Error()
+			reply.Code = 200
+			reply.Msg = err.Error()
 			h.pullMsgBySeqListResp(client, req, reply)
 		} else {
 			h.pullMsgBySeqListResp(client, req, reply)
 		}
 		return
 	}
-	reply.ErrCode = errCode
-	reply.ErrMsg = errMsg
+	reply.Code = errCode
+	reply.Msg = errMsg
 	h.pullMsgBySeqListResp(client, req, reply)
 }
 
@@ -263,8 +263,8 @@ func (h *MsgHandler) pullMsgBySeqListResp(client *ws.Client, req *protocol.Messa
 	resp = protocol.MessageResp{
 		ReqIdentifier: req.ReqIdentifier,
 		MsgIncr:       req.MsgIncr,
-		ErrCode:       reply.GetErrCode(),
-		ErrMsg:        reply.GetErrMsg(),
+		Code:          reply.GetCode(),
+		Msg:           reply.GetMsg(),
 		OperationID:   req.OperationID,
 		Data:          buf,
 	}

@@ -23,8 +23,8 @@ func (rpc *chatRpcServer) GetMinMaxSeq(_ context.Context, req *pb_chat.GetMinMax
 		resp.MaxSeq = 0
 	} else {
 		//TODO:error
-		resp.ErrCode = 200
-		resp.ErrMsg = "redis get err"
+		resp.Code = 200
+		resp.Msg = "redis get err"
 	}
 	if err2 == nil {
 		resp.MinSeq = uint32(minSeq)
@@ -32,8 +32,8 @@ func (rpc *chatRpcServer) GetMinMaxSeq(_ context.Context, req *pb_chat.GetMinMax
 		resp.MinSeq = 0
 	} else {
 		//TODO:error
-		resp.ErrCode = 201
-		resp.ErrMsg = "redis get err"
+		resp.Code = 201
+		resp.Msg = "redis get err"
 	}
 	return
 }
@@ -51,8 +51,8 @@ func (rpc *chatRpcServer) PullMessageBySeqList(_ context.Context, req *pb_ws.Pul
 	//	resp.ErrMsg = err.Error()
 	//	return
 	//}
-	resp.ErrCode = 0
-	resp.ErrMsg = ""
+	resp.Code = 0
+	resp.Msg = ""
 	resp.List = seqMsg
 	return
 }

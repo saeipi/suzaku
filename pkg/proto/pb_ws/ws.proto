@@ -100,8 +100,8 @@ message FriendRequest{
 // base end
 
 message PullMessageBySeqListResp {
-  int32 err_code = 1;
-  string err_msg = 2;
+  int32 code = 1;
+  string msg = 2;
   repeated MsgData list = 3;
 }
 message PullMessageBySeqListReq{

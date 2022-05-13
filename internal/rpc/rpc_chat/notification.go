@@ -57,7 +57,7 @@ func Notification(n *do.NotificationMsg) {
 		//TODO:错误处理
 		return
 	}
-	if reply.ErrCode != 0 {
+	if reply.Code != 0 {
 		//TODO:错误处理
 		return
 	}

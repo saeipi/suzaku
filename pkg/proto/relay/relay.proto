@@ -27,16 +27,16 @@ message UsersOnlineStatusReq{
 }
 
 message UsersOnlineStatusResp{
-  int32  err_code = 1;
-  string err_msg = 2;
+  int32  code = 1;
+  string msg = 2;
   repeated SuccessResult success_result = 3;
   repeated FailedDetail failed_result = 4;
 }
 
 message FailedDetail{
    string user_id = 1;
-   int32  err_code = 2;
-   string err_msg = 3;
+   int32  code = 2;
+   string msg = 3;
 }
 
 message SuccessDetail{

@@ -68,8 +68,8 @@ func SendMessage(c *gin.Context) {
 	client = pb_chat.NewChatClient(clientConn)
 
 	reply, err = client.SendMsg(context.Background(), sendMsg)
-	if reply != nil && reply.ErrCode > 0 {
-		http.Err(c, reply.ErrMsg, reply.ErrCode)
+	if reply != nil && reply.Code > 0 {
+		http.Err(c, reply.Msg, reply.Code)
 		return
 	}
 

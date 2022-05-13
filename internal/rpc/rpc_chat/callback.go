@@ -50,11 +50,11 @@ func callbackWordFilter(msg *pb_chat.SendMsgReq) (canSend bool, err error) {
 		canSend = true
 		return
 	} else {
-		if resp.ActionCode == constant.ActionForbidden && resp.ErrCode == constant.CallbackHandleSuccess {
+		if resp.ActionCode == constant.ActionForbidden && resp.Code == constant.CallbackHandleSuccess {
 			canSend = true
 			return
 		}
-		if resp.ErrCode == constant.CallbackHandleSuccess {
+		if resp.Code == constant.CallbackHandleSuccess {
 			msg.MsgData.Content = []byte(resp.Content)
 		}
 	}
@@ -96,7 +96,7 @@ func callbackBeforeSendSingleMsg(msg *pb_chat.SendMsgReq) (canSend bool, err err
 		canSend = true
 		return
 	} else {
-		if resp.ActionCode == constant.ActionForbidden && resp.ErrCode == constant.CallbackHandleSuccess {
+		if resp.ActionCode == constant.ActionForbidden && resp.Code == constant.CallbackHandleSuccess {
 			canSend = true
 			return
 		}
@@ -130,7 +130,7 @@ func callbackBeforeSendGroupMsg(msg *pb_chat.SendMsgReq) (canSend bool, err erro
 			return
 		}
 	} else {
-		if resp.ActionCode == constant.ActionForbidden && resp.ErrCode == constant.CallbackHandleSuccess {
+		if resp.ActionCode == constant.ActionForbidden && resp.Code == constant.CallbackHandleSuccess {
 			canSend = false
 			return
 		}

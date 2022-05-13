@@ -28,9 +28,8 @@ type MsgCallBackReq struct {
 }
 
 type MsgCallBackResp struct {
-	ErrCode         int32  `json:"err_code"`
-	ErrMsg          string `json:"err_msg"`
-	ResponseErrCode int32  `json:"response_err_code"`
+	Code         int32  `json:"code"`
+	Msg          string `json:"msg"`
 	ResponseResult  struct {
 		ModifiedMsg string `json:"modified_msg"`
 		Ext         string `json:"ext"`
@@ -238,8 +237,8 @@ func (rpc *chatRpcServer) SendMsg(_ context.Context, pb *pb_chat.SendMsgReq) (re
 }
 
 func returnMsg(replay *pb_chat.SendMsgResp, pb *pb_chat.SendMsgReq, errCode int32, errMsg, serverMsgID string, sendTs int64) (*pb_chat.SendMsgResp, error) {
-	replay.ErrCode = errCode
-	replay.ErrMsg = errMsg
+	replay.Code = errCode
+	replay.Msg = errMsg
 	replay.ServerMsgId = serverMsgID
 	replay.ClientMsgId = pb.MsgData.ClientMsgId
 	replay.SendTs = sendTs
