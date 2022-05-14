@@ -1,5 +1,9 @@
 package dto_api
 
+type UserInfoReq struct {
+	UserId string `form:"user_id" json:"user_id"` // 用户ID
+}
+
 type UserInfo struct {
 	UserId    string `json:"user_id"`    // 用户ID
 	SzkId     string `json:"szk_id"`     // 账户ID 用户设置 (一年只允许修改一次)
@@ -16,7 +20,7 @@ type UserInfoResp struct {
 	UserInfo
 	//TODO:尚未开发
 	Country string `json:"country"`
-	City string `json:"city"`
+	City    string `json:"city"`
 }
 
 type EditUserInfoReq struct {

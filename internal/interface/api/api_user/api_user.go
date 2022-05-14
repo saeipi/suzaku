@@ -15,19 +15,28 @@ import (
 	"suzaku/pkg/utils"
 )
 
-func SelfInfo(c *gin.Context) {
+func UserInfo(c *gin.Context) {
 	var (
 		userId     string
 		ok         bool
+		params     dto_api.UserInfoReq
 		req        *pb_user.UserInfoReq
 		clientConn *grpc.ClientConn
 		client     pb_cache.CacheClient
 		reply      *pb_user.UserInfoResp
 		resp       *dto_api.UserInfoResp
+		err        error
 	)
 	userId, _, ok = utils.RequestIdentity(c)
 	if ok == false {
 		return
+	}
+	if err = c.ShouldBindQuery(&params); err != nil {
+		http.Error(c, err, http.ErrorCodeHttpReqDeserializeFailed)
+		return
+	}
+	if params.UserId != "" {
+		userId = params.UserId
 	}
 	req = &pb_user.UserInfoReq{UserId: userId}
 	clientConn = factory.ClientConn(config.Config.RPCRegisterName.CacheName)
