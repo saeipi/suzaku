@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/golang/protobuf/proto"
+	"github.com/jinzhu/copier"
 	"google.golang.org/grpc"
+	"suzaku/internal/domain/po_mongo"
+	"suzaku/internal/domain/repo/repo_mongo"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/kafka"
 	"suzaku/pkg/constant"
@@ -79,6 +82,16 @@ func (h *HistoryConsumerHandler) MessageHandler(msg []byte, msgKey string) {
 		}
 		go sendMessageToPush(&msgFromMQ, msgFromMQ.MsgData.RecvId)
 	}
+	return
+}
+
+func saveMessage(msg *pb_chat.MsgDataToMQ) (err error) {
+	var (
+		message *po_mongo.Message
+	)
+	message = new(po_mongo.Message)
+	copier.Copy(message, msg.MsgData)
+	repo_mongo.MgChatRepo.SaveMessage(message)
 	return
 }
 
