@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	rpcPort := flag.Int("port", 10600, "RpcToken default listen port 10800")
+	rpcPort := flag.Int("port", 10600, "RpcAuthPort default listen port 10600")
 	flag.Parse()
 	rpcServer := rpc_auth.NewAuthRpcServer(*rpcPort)
 	rpcServer.Run()

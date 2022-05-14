@@ -14,7 +14,7 @@ import (
 // 附带上前缀的key
 func RealKey(key string) string {
 	if RedisClient != nil {
-		return fmt.Sprintf("%s%s", RedisClient.Prefix, key)
+		return RedisClient.Prefix + key
 	}
 	return key
 }
@@ -186,11 +186,11 @@ func HSet(key, field string, value interface{}) error {
 }
 
 func HMSet(key string, fields map[string]interface{}) error {
-	return RedisClient.client.HMSet(key, fields).Err()
+	return RedisClient.client.HMSet(RealKey(key), fields).Err()
 }
 
 func HMGet(key string, fields ...string) ([]interface{}, error) {
-	return RedisClient.client.HMGet(key, fields...).Result()
+	return RedisClient.client.HMGet(RealKey(key), fields...).Result()
 }
 
 func HKeys(key string) (fields []string, err error) {

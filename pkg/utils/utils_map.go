@@ -1,5 +1,7 @@
 package utils
 
+import jsoniter "github.com/json-iterator/go"
+
 func MergeStringMaps(maps ...map[string]interface{}) (result map[string]interface{}) {
 	result = make(map[string]interface{})
 	for _, m := range maps {
@@ -47,5 +49,18 @@ func StringMapToIntMap(strMap map[string]string) (result map[string]int) {
 	for k, v := range strMap {
 		result[k] = TryToInt(v)
 	}
+	return
+}
+
+func MapToStruct(in map[string]string, out interface{}) (err error) {
+	//err = mapstructure.Decode(in, out)
+	var (
+		buf []byte
+	)
+	buf, err = jsoniter.Marshal(in)
+	if err != nil {
+		return
+	}
+	err = jsoniter.Unmarshal(buf, out)
 	return
 }

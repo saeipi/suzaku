@@ -60,6 +60,7 @@ func (r *mgChatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (
 		findoptions *options.FindOptions
 		cur         *mongo.Cursor
 		filter      map[string]interface{}
+		sort        bson.D
 	)
 	messages = make([]*po_mongo.Message, 0)
 	filter = make(map[string]interface{})
@@ -72,6 +73,10 @@ func (r *mgChatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (
 
 	findoptions = &options.FindOptions{}
 	findoptions.SetLimit(int64(req.PageSize))
+	sort = bson.D{
+		bson.E{"seq", -1},
+	}
+	findoptions.SetSort(sort)
 	// findoptions.SetSkip(0)
 
 	filter["session_id"] = req.SessionId

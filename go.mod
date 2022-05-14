@@ -7,14 +7,13 @@ require (
 	github.com/Shopify/sarama v1.32.0
 	github.com/ansel1/merry v1.6.2
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
-	github.com/bilibili/discovery v1.2.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/golang/lint v0.0.0-20180702182130-06c8688daad7 // indirect
 	github.com/golang/protobuf v1.5.2
+	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/gorhill/cronexpr v0.0.0-20180427100037-88b0669f7d75
 	github.com/gorilla/websocket v1.5.0
 	github.com/jinzhu/copier v0.3.5
@@ -24,12 +23,12 @@ require (
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/mattermost/go-i18n v1.11.0
 	github.com/minio/minio-go/v7 v7.0.24
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.19.0 // indirect
 	github.com/pelletier/go-toml v1.9.5
-	github.com/pelletier/go-toml/v2 v2.0.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/satori/go.uuid v1.2.0
@@ -45,7 +44,6 @@ require (
 	golang.org/x/text v0.3.7
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
-	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.4

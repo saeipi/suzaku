@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	rpcPort := flag.Int("port", 10300, "rpc listening port")
+	rpcPort := flag.Int("port", 10300, "RpcChatPort default listen port 10300")
 	flag.Parse()
 	rpcServer := rpc_chat.NewChatRpcServer(*rpcPort)
 	rpcServer.Run()

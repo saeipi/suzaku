@@ -103,6 +103,7 @@ type RPCRegisterName struct {
 	OnlineMessageRelayName string `yaml:"online_message_relay_name"`
 	GroupName              string `yaml:"group_name"`
 	AuthName               string `yaml:"auth_name"`
+	CacheName              string `yaml:"cache_name"`
 	StatisticsName         string `yaml:"statistics_name"`
 	MessageCmsName         string `yaml:"message_cms_name"`
 	AdminCmsName           string `yaml:"admin_cms_name"`

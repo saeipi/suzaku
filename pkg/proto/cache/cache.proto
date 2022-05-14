@@ -1,0 +1,159 @@
+syntax ="proto3";
+import  "pb_ws/ws.proto";
+import  "pb_com/common.proto";
+import  "pb_user/user.proto";
+package cache;
+option go_package = "./cache;pb_cache";
+
+// 获取单个用户信息
+//message GetUserInfoReq{
+//  string user_id = 2;
+//}
+//
+//message GetUserInfoResp{
+//  pb_com.CommonResp common = 1;
+//  pb_user.UserInfo user_info = 2;
+//}
+
+// 更新单个用户信息
+message UpdateUserInfoReq{
+  pb_user.UserInfo user_info = 1;
+}
+
+message UpdateUserInfoResp{
+  pb_com.CommonResp common = 1;
+}
+
+message GetUserInfoFromCacheReq{
+  repeated string user_id_list = 1;
+  string user_id = 2;
+}
+
+message GetUserInfoFromCacheResp{
+  pb_com.CommonResp common = 1;
+  repeated pb_user.UserInfo user_info_list = 2;
+}
+
+message UpdateUserInfoToCacheReq{
+  repeated pb_user.UserInfo user_info_list = 1;
+  string operation_id = 2;
+}
+
+message UpdateUserInfoToCacheResp{
+  pb_com.CommonResp common = 1;
+}
+
+message GetFriendIDListFromCacheReq {
+  string user_id = 1;
+  string operation_id = 2;
+}
+
+message GetFriendIDListFromCacheResp {
+  repeated string user_id_list = 1;
+  pb_com.CommonResp common = 2;
+}
+
+message AddFriendToCacheReq {
+  string user_id = 1;
+  string friend_id = 2;
+  string operation_id = 3;
+}
+
+message AddFriendToCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+message ReduceFriendFromCacheReq {
+  string user_id = 1;
+  string friend_id = 2;
+  string operation_id = 3;
+}
+
+message ReduceFriendFromCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+message GetBlackIDListFromCacheReq {
+  string user_id = 1;
+  string operation_id = 2;
+}
+
+message GetBlackIDListFromCacheResp {
+  repeated string user_id_list = 1;
+  pb_com.CommonResp common = 2;
+}
+
+message AddBlackUserToCacheReq {
+  string user_id = 1;
+  string black_user_id = 2;
+  string operation_id = 3;
+}
+
+message AddBlackUserToCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+message ReduceBlackUserFromCacheReq {
+  string user_id = 1;
+  string black_user_id = 2;
+  string operation_id = 3;
+}
+
+message ReduceBlackUserFromCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+message GetGroupMemberIDListFromCacheReq {
+  string operation_id = 1;
+  string group_id  = 2;
+}
+
+message GetGroupMemberIDListFromCacheResp {
+  pb_com.CommonResp common = 1;
+  repeated string user_id_list = 2;
+}
+
+message AddGroupMemberToCacheReq {
+  repeated string user_id_list = 1;
+  string group_id = 2;
+  string operation_id = 3;
+}
+
+message AddGroupMemberToCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+message ReduceGroupMemberFromCacheReq {
+  repeated string user_id_list = 1;
+  string group_id = 2;
+  string operation_id = 3;
+}
+
+message ReduceGroupMemberFromCacheResp {
+  pb_com.CommonResp common = 1;
+}
+
+service cache{
+  // userInfo
+  rpc GetUserInfo(pb_user.UserInfoReq) returns(pb_user.UserInfoResp);
+  //rpc GetUserInfo(GetUserInfoReq) returns(GetUserInfoResp);
+  rpc UpdateUserInfo(UpdateUserInfoReq) returns(UpdateUserInfoResp);
+
+  rpc GetUserInfoFromCache(GetUserInfoFromCacheReq) returns(GetUserInfoFromCacheResp);
+  rpc UpdateUserInfoToCache(UpdateUserInfoToCacheReq) returns(UpdateUserInfoToCacheResp);
+
+  // friendInfo
+  rpc GetFriendIDListFromCache(GetFriendIDListFromCacheReq) returns(GetFriendIDListFromCacheResp);
+  rpc AddFriendToCache(AddFriendToCacheReq) returns(AddFriendToCacheResp);
+  rpc ReduceFriendFromCache(ReduceFriendFromCacheReq) returns(ReduceFriendFromCacheResp);
+
+  // blackList
+  rpc GetBlackIDListFromCache(GetBlackIDListFromCacheReq) returns(GetBlackIDListFromCacheResp);
+  rpc AddBlackUserToCache(AddBlackUserToCacheReq) returns(AddBlackUserToCacheResp);
+  rpc ReduceBlackUserFromCache(ReduceBlackUserFromCacheReq) returns(ReduceBlackUserFromCacheResp);
+
+  // group
+  rpc GetGroupMemberIDListFromCache(GetGroupMemberIDListFromCacheReq) returns(GetGroupMemberIDListFromCacheResp);
+  rpc AddGroupMemberToCache(AddGroupMemberToCacheReq) returns(AddGroupMemberToCacheResp);
+  rpc ReduceGroupMemberFromCache(ReduceGroupMemberFromCacheReq) returns(ReduceGroupMemberFromCacheResp);
+}

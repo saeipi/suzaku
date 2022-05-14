@@ -55,6 +55,7 @@ rpc_register_name: #rpc注册服务名，默认即可
   online_message_relay_name: OnlineMessageRelay
   group_name: Group
   auth_name: Auth
+  cache_name: Cache
   statistics_name: Statistics
   message_cms_name: MessageCMS
   admin_cms_name: AdminCMS

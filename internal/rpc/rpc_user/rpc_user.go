@@ -8,6 +8,7 @@ import (
 	"suzaku/internal/domain/repo/repo_mysql"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
+	"suzaku/pkg/common/redis"
 	"suzaku/pkg/factory"
 	pb_com "suzaku/pkg/proto/pb_com"
 	pb_user "suzaku/pkg/proto/pb_user"
@@ -46,7 +47,7 @@ func (rpc *userRpcServer) UserInfo(ctx context.Context, req *pb_user.UserInfoReq
 		common = &pb_com.CommonResp{}
 		user   *po_mysql.User
 	)
-	resp = &pb_user.UserInfoResp{Common: common,UserInfo:&pb_user.UserInfo{}}
+	resp = &pb_user.UserInfoResp{Common: common, UserInfo: &pb_user.UserInfo{}}
 	user, err = repo_mysql.UserRepo.GetUserByUserID(req.UserId)
 	if err != nil {
 		common.Code = ErrorCodeUserIdNotExist
@@ -68,5 +69,10 @@ func (rpc *userRpcServer) EditUserInfo(_ context.Context, req *pb_user.EditUserI
 		resp.Msg = err.Error()
 		return
 	}
+	deleteUserCache(req.UserId)
 	return
+}
+
+func deleteUserCache(userId string) {
+	redis.DelUserInfoFromCache(userId)
 }

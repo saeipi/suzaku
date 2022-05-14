@@ -47,10 +47,10 @@ func (r *chatRepository) HistoryMessages(req *pb_chat.GetHistoryMessagesReq) (me
 
 	if req.Seq > 0 {
 		if req.Back == true {
-			query += " AND seq_id<?"
+			query += " AND seq<?"
 
 		} else {
-			query += " AND seq_id>?"
+			query += " AND seq>?"
 		}
 		args = append(args, req.Seq)
 	}

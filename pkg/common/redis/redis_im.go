@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/constant"
 	"suzaku/pkg/utils"
 )
@@ -14,6 +15,7 @@ const (
 	uidPidToken                   = "UID_PID_TOKEN_STATUS:"
 	conversationReceiveMessageOpt = "CON_RECV_MSG_OPT:"
 	seqId                         = "SEQ_ID:"
+	userInfoCache                 = "USER_INFO_CACHE:"
 )
 
 func JudgeAccountEXISTS(account string) (bool, error) {
@@ -129,5 +131,36 @@ func GetMultiConversationMsgOpt(userID string, conversationIDs []string) (m map[
 	for k, v := range conversationIDs {
 		m[v] = utils.TryToInt(list[k])
 	}
+	return
+}
+
+func DelUserInfoFromCache(userId string) (err error) {
+	return Del(userInfoCache + userId)
+}
+
+func SetUserInfoToCache(user *po_mysql.User) (err error) {
+	var (
+		jsStr string
+	)
+	jsStr, err = utils.ObjToJson(user)
+	if jsStr == "" {
+		return
+	}
+	return Set(userInfoCache+user.UserId, jsStr, 0)
+}
+
+func GetUserInfoFromCache(userId string) (userInfo *po_mysql.User, err error) {
+	var (
+		jsStr string
+	)
+	jsStr, err = Get(userInfoCache + userId)
+	if err != nil {
+		return
+	}
+	if jsStr == "" {
+		return
+	}
+	userInfo = new(po_mysql.User)
+	err = utils.JsonToObj(jsStr, userInfo)
 	return
 }

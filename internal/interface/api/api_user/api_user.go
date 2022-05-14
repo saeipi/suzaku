@@ -9,6 +9,7 @@ import (
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/factory"
 	"suzaku/pkg/http"
+	pb_cache "suzaku/pkg/proto/cache"
 	"suzaku/pkg/proto/pb_com"
 	pb_user "suzaku/pkg/proto/pb_user"
 	"suzaku/pkg/utils"
@@ -20,7 +21,7 @@ func SelfInfo(c *gin.Context) {
 		ok         bool
 		req        *pb_user.UserInfoReq
 		clientConn *grpc.ClientConn
-		client     pb_user.UserClient
+		client     pb_cache.CacheClient
 		reply      *pb_user.UserInfoResp
 		resp       *dto_api.UserInfoResp
 	)
@@ -29,9 +30,9 @@ func SelfInfo(c *gin.Context) {
 		return
 	}
 	req = &pb_user.UserInfoReq{UserId: userId}
-	clientConn = factory.ClientConn(config.Config.RPCRegisterName.UserName)
-	client = pb_user.NewUserClient(clientConn)
-	reply, _ = client.UserInfo(context.Background(), req)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.CacheName)
+	client = pb_cache.NewCacheClient(clientConn)
+	reply, _ = client.GetUserInfo(context.Background(), req)
 	if reply == nil {
 		http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
 		return
@@ -41,9 +42,38 @@ func SelfInfo(c *gin.Context) {
 		return
 	}
 	resp = &dto_api.UserInfoResp{}
-	//utils.CopyStructFields(resp, reply.UserInfo)
-	copier.Copy(resp,reply.UserInfo)
+	copier.Copy(resp, reply.UserInfo)
 	http.Success(c, resp)
+	/*
+		var (
+			userId     string
+			ok         bool
+			req        *pb_user.UserInfoReq
+			clientConn *grpc.ClientConn
+			client     pb_user.UserClient
+			reply      *pb_user.UserInfoResp
+			resp       *dto_api.UserInfoResp
+		)
+		userId, _, ok = utils.RequestIdentity(c)
+		if ok == false {
+			return
+		}
+		req = &pb_user.UserInfoReq{UserId: userId}
+		clientConn = factory.ClientConn(config.Config.RPCRegisterName.UserName)
+		client = pb_user.NewUserClient(clientConn)
+		reply, _ = client.UserInfo(context.Background(), req)
+		if reply == nil {
+			http.Error(c, http.ErrorHttpServiceFailure, http.ErrorCodeHttpServiceFailure)
+			return
+		}
+		if reply.Common.Code > 0 {
+			http.Err(c, reply.Common.Msg, reply.Common.Code)
+			return
+		}
+		resp = &dto_api.UserInfoResp{}
+		copier.Copy(resp,reply.UserInfo)
+		http.Success(c, resp)
+	*/
 }
 
 func EditInfo(c *gin.Context) {
