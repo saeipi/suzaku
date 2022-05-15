@@ -22,13 +22,13 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `registers`;
 CREATE TABLE `registers` (
-  `user_id` varchar(40) DEFAULT '' COMMENT '用户ID 系统生成',
+  `user_id` varchar(40) NOT NULL DEFAULT '' COMMENT '用户ID 系统生成',
   `password` varchar(32) DEFAULT '' COMMENT '密码',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
   `created_ts` bigint DEFAULT '0',
   `updated_ts` bigint DEFAULT '0',
   PRIMARY KEY (`user_id`),
-  KEY `idx_userId_password` (`user_id`,`password`),
+  KEY `idx_userId_password` (`user_id`,`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

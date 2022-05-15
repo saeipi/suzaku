@@ -22,6 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `friend_requests`;
 CREATE TABLE `friend_requests` (
+  `req_id` varchar(40) NOT NULL DEFAULT '' COMMENT '主键ID',
   `from_user_id` varchar(40) DEFAULT '' COMMENT '发起人ID',
   `to_user_id` varchar(40) DEFAULT '' COMMENT '目标人ID',
   `handle_user_id` varchar(40) DEFAULT '' COMMENT '处理人ID',
@@ -31,7 +32,9 @@ CREATE TABLE `friend_requests` (
   `handled_ts` bigint DEFAULT '0',
   `req_ts` bigint DEFAULT '0' COMMENT '请求时间',
   `ex` varchar(255) DEFAULT '' COMMENT '扩展字段',
-  PRIMARY KEY (`from_user_id`,`to_user_id`)
+  PRIMARY KEY (`req_id`),
+  KEY `idx_fromUserId` (`from_user_id`),
+  KEY `idx_toUserId` (`to_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;

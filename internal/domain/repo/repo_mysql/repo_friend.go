@@ -5,6 +5,7 @@ import (
 	"suzaku/internal/domain/do"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/pkg/common/mysql"
+	"suzaku/pkg/common/snowflake"
 	pb_friend "suzaku/pkg/proto/friend"
 	"suzaku/pkg/utils"
 )
@@ -36,6 +37,7 @@ func (r *friendRepository) SaveFriendRequest(req *po_mysql.FriendRequest) (err e
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
+	req.ReqId = snowflake.SnowflakeID()
 	err = db.Create(req).Error
 	return
 }
@@ -77,7 +79,6 @@ func (r *friendRepository) TxUpdateFriendRequest(req *pb_friend.HandleFriendRequ
 		updates       map[string]interface{}
 	)
 	updates = make(map[string]interface{})
-	updates["handle_user_id"] = req.UserId
 	updates["handle_result"] = req.HandleResult
 	updates["handle_msg"] = req.HandleMsg
 	updates["handled_ts"] = utils.GetCurrentTimestampByMill()
@@ -86,7 +87,7 @@ func (r *friendRepository) TxUpdateFriendRequest(req *pb_friend.HandleFriendRequ
 	} else {
 		updates["handle_user_id"] = req.UserId
 	}
-	err = tx.Where("from_user_id=? AND to_user_id=?", req.FromUserId, req.UserId).Find(&friendRequest).Updates(updates).Error
+	err = tx.Where("req_id=?", req.ReqId).Find(&friendRequest).Updates(updates).Error
 	return
 }
 
@@ -108,8 +109,8 @@ func (r *friendRepository) ApproveFriendRequest(req *pb_friend.HandleFriendReque
 			return
 		}
 		friend = po_mysql.Friend{
-			OwnerUserId:    req.FromUserId,
-			FriendUserId:   req.UserId,
+			OwnerUserId:    req.UserId,
+			FriendUserId:   req.FromUserId,
 			OperatorUserId: "",
 			SessionId:      utils.GetSessionId(req.FromUserId, req.UserId),
 			Source:         0, // 暂时全部为0
@@ -121,6 +122,12 @@ func (r *friendRepository) ApproveFriendRequest(req *pb_friend.HandleFriendReque
 		} else {
 			friend.OperatorUserId = req.UserId
 		}
+		terr = tx.Create(&friend).Error
+		if terr != nil {
+			return
+		}
+		friend.OwnerUserId = req.FromUserId
+		friend.FriendUserId = req.UserId
 		terr = tx.Create(&friend).Error
 		return
 	})
@@ -135,13 +142,24 @@ func (r *friendRepository) FriendList(req *pb_friend.FriendListReq) (friends []*
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Table("(? UNION ALL ?) tb",
-		db.Table("friends").Select("friends.session_id,users.*").Joins("LEFT JOIN users ON users.user_id=friends.owner_user_id").Where("owner_user_id=?", req.UserId),
-		db.Table("friends").Select("friends.session_id,users.*").Joins("LEFT JOIN users ON users.user_id=friends.friend_user_id").Where("friend_user_id=?", req.UserId)).
-		Select("*").
+	err = db.Table("friends").
+		Select("friends.session_id,users.*").
+		Joins("LEFT JOIN users ON users.user_id=friends.owner_user_id").
+		Where("owner_user_id=?", req.UserId).
 		Count(&totalRows).
 		Limit(int(req.PageSize)).
 		Offset(int((req.Page - 1) * req.PageSize)).
 		Find(&friends).Error
+
+	/*
+		err = db.Table("(? UNION ALL ?) tb",
+			db.Table("friends").Select("friends.session_id,users.*").Joins("LEFT JOIN users ON users.user_id=friends.owner_user_id").Where("owner_user_id=?", req.UserId),
+			db.Table("friends").Select("friends.session_id,users.*").Joins("LEFT JOIN users ON users.user_id=friends.friend_user_id").Where("friend_user_id=?", req.UserId)).
+			Select("*").
+			Count(&totalRows).
+			Limit(int(req.PageSize)).
+			Offset(int((req.Page - 1) * req.PageSize)).
+			Find(&friends).Error
+	*/
 	return
 }

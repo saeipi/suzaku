@@ -50,25 +50,27 @@ message GetFriendRequestListResp {
 }
 
 message FriendRequestItem {
-  string from_user_id = 1; // 发起人ID
-  string to_user_id = 2; // 目标人ID
-  string req_msg = 3; // 添加好友消息
-  int32 handle_result = 4; // 结果
-  string handle_msg = 5; // 处理消息
-  int64 req_ts = 6; // 发起时间
-  int64 handled_ts = 7; // 处理时间
-  string handle_user_id = 8; // 处理人ID
+  string req_id = 1; // 唯一标识
+  string from_user_id = 2; // 发起人ID
+  string to_user_id = 3; // 目标人ID
+  string req_msg = 4; // 添加好友消息
+  int32 handle_result = 5; // 结果
+  string handle_msg = 6; // 处理消息
+  int64 req_ts = 7; // 发起时间
+  int64 handled_ts = 8; // 处理时间
+  string handle_user_id = 9; // 处理人ID
 //  google.protobuf.Timestamp req_ts = 7; // 发起时间
 //  google.protobuf.Timestamp handle_at = 8; // 处理时间
 }
 
 // 处理添加好友申请
 message HandleFriendRequestReq {
-  string user_id = 1;
-  string from_user_id = 2;
-  string handle_user_id = 3;
-  string handle_msg = 4;
-  int32 handle_result = 5;
+  string req_id = 1; // 处理请求ID
+  string user_id = 2;
+  string from_user_id = 3;
+  string handle_user_id = 4;
+  string handle_msg = 5;
+  int32 handle_result = 6;
 }
 
 message HandleFriendRequestResp {

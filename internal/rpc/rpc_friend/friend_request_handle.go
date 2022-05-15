@@ -21,22 +21,9 @@ func (rpc *friendRpcServer) HandleFriendRequest(_ context.Context, req *pb_frien
 func (rpc *friendRpcServer) approve(req *pb_friend.HandleFriendRequestReq) (resp *pb_friend.HandleFriendRequestResp, _ error) {
 	var (
 		err    error
-		user   *po_mysql.User
 		friend *po_mysql.Friend
 	)
 	resp = &pb_friend.HandleFriendRequestResp{Common: &pb_com.CommonResp{}}
-	user, err = repo_mysql.UserRepo.GetUserByUserID(req.UserId)
-	if err != nil {
-		//TODO:Error
-		resp.Common.Code = 777
-		resp.Common.Msg = err.Error()
-		return
-	}
-	if user.UserId == "" {
-		//TODO:用户不存在
-		resp.Common.Code = 777
-		return
-	}
 	friend, err = repo_mysql.FriendRepo.IsFriend(req.UserId, req.FromUserId)
 	if err != nil {
 		//TODO:Error

@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `user_id` varchar(40) DEFAULT '' COMMENT '用户ID 系统生成',
+  `user_id` varchar(40) NOT NULL DEFAULT '' COMMENT '用户ID 系统生成',
   `szk_id` varchar(40) DEFAULT '' COMMENT '账户ID 用户设置',
   `udid` varchar(40) DEFAULT '' COMMENT '设备唯一标识',
   `status` tinyint(1) DEFAULT '0' COMMENT '用户状态',
