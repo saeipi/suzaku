@@ -6,9 +6,9 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
+	"suzaku/internal/rpc/rpc_cache"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
-	"suzaku/pkg/common/redis"
 	"suzaku/pkg/factory"
 	pb_com "suzaku/pkg/proto/pb_com"
 	pb_user "suzaku/pkg/proto/pb_user"
@@ -69,10 +69,6 @@ func (rpc *userRpcServer) EditUserInfo(_ context.Context, req *pb_user.EditUserI
 		resp.Msg = err.Error()
 		return
 	}
-	deleteUserCache(req.UserId)
+	go rpc_cache.UpdateUserInfoToCacheOnUserId(req.UserId)
 	return
-}
-
-func deleteUserCache(userId string) {
-	redis.DelUserInfoFromCache(userId)
 }

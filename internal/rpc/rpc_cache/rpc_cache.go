@@ -31,3 +31,12 @@ func (rpc *cacheRpcServer) Run() {
 	pb_cache.RegisterCacheServer(server, rpc)
 	rpc.Rpc.RunServer(server)
 }
+
+func NewCacheClient() (client pb_cache.CacheClient) {
+	var (
+		clientConn *grpc.ClientConn
+	)
+	clientConn = factory.ClientConn(config.Config.RPCRegisterName.CacheName)
+	client = pb_cache.NewCacheClient(clientConn)
+	return
+}

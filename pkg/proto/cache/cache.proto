@@ -15,9 +15,18 @@ option go_package = "./cache;pb_cache";
 //  pb_user.UserInfo user_info = 2;
 //}
 
+enum UPDATE_CACHE_TYPE
+{
+  UPDATE_CACHE_TYPE_NONE = 0;
+  QUERY = 1; // 查询更新
+  VALUE = 2; // 传值更新
+}
+
 // 更新单个用户信息
 message UpdateUserInfoReq{
-  pb_user.UserInfo user_info = 1;
+  UPDATE_CACHE_TYPE update_type = 1;
+  string user_id = 2;
+  pb_user.UserInfo user_info = 3;
 }
 
 message UpdateUserInfoResp{

@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"suzaku/internal/domain/po_mysql"
 	"suzaku/internal/domain/repo/repo_mysql"
+	"suzaku/internal/rpc/rpc_cache"
 	"suzaku/internal/rpc/rpc_category"
 	"suzaku/pkg/common/config"
 	"suzaku/pkg/common/jwt_auth"
@@ -74,7 +75,16 @@ func (rpc *authRpcServer) UserRegister(ctx context.Context, req *pb_auth.UserReg
 	if resp.Token.Expire > 0 {
 		err = redis.Set(fmt.Sprintf(redis.RedisKeyJwtUserToken, user.UserId, req.PlatformId), resp.Token.Token, int(resp.Token.Expire)*1000)
 	}
+	go updateUserInfoToCache(user)
 	return
+}
+
+func updateUserInfoToCache(user *po_mysql.User) {
+	var (
+		userInfo = new(pb_user.UserInfo)
+	)
+	copier.Copy(userInfo, user)
+	rpc_cache.UpdateUserInfoToCache(userInfo)
 }
 
 func (rpc *authRpcServer) UserToken(ctx context.Context, req *pb_auth.UserTokenReq) (resp *pb_auth.UserTokenResp, err error) {
