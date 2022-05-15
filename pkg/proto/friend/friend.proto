@@ -78,7 +78,7 @@ message HandleFriendRequestResp {
 }
 
 // 获取好友列表
-message FriendListReq {
+message FriendsListReq {
   string user_id = 1;
   int32 page = 3;
   int32 page_size = 4;
@@ -93,15 +93,26 @@ message MemberInfo {
   string session_id = 6; // 会话ID
 }
 
-message FriendListResp {
+message FriendsListResp {
   pb_com.CommonResp common = 1;
   int64 total_rows = 2;
   repeated MemberInfo member_list = 3;
+}
+
+// 获取好友列表
+message FriendsIdListReq {
+  string user_id = 1;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message FriendsIdListResp {
+  repeated string fid = 1;
 }
 
 service Friend {
   rpc AddFriend(AddFriendReq) returns(AddFriendResp);
   rpc GetFriendRequestList(GetFriendRequestListReq) returns(GetFriendRequestListResp);
   rpc HandleFriendRequest(HandleFriendRequestReq) returns(HandleFriendRequestResp);
-  rpc GetFriendList(FriendListReq) returns(FriendListResp);
+  rpc GetFriendsList(FriendsListReq) returns(FriendsListResp);
 }

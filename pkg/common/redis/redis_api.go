@@ -497,3 +497,17 @@ func IncrSeqID(key string) (uint64, error) {
 	key = seqId + key
 	return Incr(key)
 }
+
+func SAdd(key string, members ...interface{}) (err error) {
+	err = RedisClient.client.SAdd(RealKey(key), members).Err()
+	return
+}
+
+func Srem(key string, members ...interface{}) (err error) {
+	err = RedisClient.client.SRem(RealKey(key), members).Err()
+	return
+}
+
+func Smembers(key string) []string{
+	return RedisClient.client.SMembers(RealKey(key)).Val()
+}

@@ -22,7 +22,7 @@ enum UPDATE_CACHE_TYPE
   VALUE = 2; // 传值更新
 }
 
-// 更新单个用户信息
+// 1、更新单个用户信息
 message UpdateUserInfoReq{
   UPDATE_CACHE_TYPE update_type = 1;
   string user_id = 2;
@@ -31,6 +31,26 @@ message UpdateUserInfoReq{
 
 message UpdateUserInfoResp{
   pb_com.CommonResp common = 1;
+}
+
+// 2、更新好友ID
+message UpdateFriendsIdReq{
+  pb_com.RPC_ACTION_TYPE action_type = 1;
+  string user_id = 2;
+  string from_user_id = 3;
+}
+
+message UpdateFriendsIdResp{
+  pb_com.CommonResp common = 1;
+}
+
+// 3、好友ID列表
+message GetFriendsIdListReq{
+  string user_id = 1;
+}
+
+message GetFriendsIdListResp{
+  repeated string fid_list = 1;
 }
 
 message GetUserInfoFromCacheReq{
@@ -152,6 +172,8 @@ service cache{
   rpc UpdateUserInfoToCache(UpdateUserInfoToCacheReq) returns(UpdateUserInfoToCacheResp);
 
   // friendInfo
+  rpc UpdateFriendsId(UpdateFriendsIdReq) returns(UpdateFriendsIdResp);
+
   rpc GetFriendIDListFromCache(GetFriendIDListFromCacheReq) returns(GetFriendIDListFromCacheResp);
   rpc AddFriendToCache(AddFriendToCacheReq) returns(AddFriendToCacheResp);
   rpc ReduceFriendFromCache(ReduceFriendFromCacheReq) returns(ReduceFriendFromCacheResp);

@@ -9,14 +9,14 @@ import (
 	"suzaku/pkg/proto/pb_com"
 )
 
-func (rpc *friendRpcServer) GetFriendList(_ context.Context, req *pb_friend.FriendListReq) (resp *pb_friend.FriendListResp, _ error) {
+func (rpc *friendRpcServer) GetFriendsList(_ context.Context, req *pb_friend.FriendsListReq) (resp *pb_friend.FriendsListResp, _ error) {
 	var (
 		friends   []*do.FriendInfo
 		totalRows int64
 		err       error
 	)
-	resp = &pb_friend.FriendListResp{Common: &pb_com.CommonResp{}}
-	friends, totalRows, err = repo_mysql.FriendRepo.FriendList(req)
+	resp = &pb_friend.FriendsListResp{Common: &pb_com.CommonResp{}}
+	friends, totalRows, err = repo_mysql.FriendRepo.FriendsList(req)
 	if err != nil {
 		resp.Common.Code = 777
 		resp.Common.Msg = err.Error()

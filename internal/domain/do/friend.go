@@ -8,3 +8,8 @@ type FriendInfo struct {
 	Gender    string `json:"gender"`     // 性别
 	AvatarUrl string `json:"avatar_url"` // 头像
 }
+
+type FriendId struct {
+	OwnerUserId  string `json:"owner_user_id"`  // 添加好友发起者ID
+	FriendUserId string `json:"friend_user_id"` // 好友ID
+}

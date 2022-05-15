@@ -37,7 +37,7 @@ type HandleFriendRequestReq struct {
 	HandleResult int32  `json:"handle_result" binding:"required,min=1,max=2"` // 结果
 }
 
-type FriendListReq struct {
+type FriendsListReq struct {
 	PageReq
 	UserId string `json:"user_id"`
 }
@@ -51,7 +51,7 @@ type FriendMemberInfo struct {
 	AvatarUrl string `json:"avatar_url"` // 头像
 }
 
-type FriendListResp struct {
+type FriendsListResp struct {
 	TotalRows  int                 `json:"total_rows"`
 	MemberList []*FriendMemberInfo `json:"member_list"`
 }

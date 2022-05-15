@@ -40,3 +40,7 @@ func NewCacheClient() (client pb_cache.CacheClient) {
 	client = pb_cache.NewCacheClient(clientConn)
 	return
 }
+
+func syncFriendsList() {
+
+}

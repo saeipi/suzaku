@@ -1,15 +1,15 @@
 package do
 
-type MysqlQuery struct {
-	Condition string
-	Params    []interface{}
-	Page      int
-	PageSize  int
+type MysqlSelect struct {
+	Query  string
+	Args   []interface{}
+	Limit  int
+	Offset int
 }
 
-func NewMysqlQuery() *MysqlQuery {
-	return &MysqlQuery{
-		Condition: "1=1",
-		Params:    make([]interface{}, 0),
+func NewMysqlSelect() *MysqlSelect {
+	return &MysqlSelect{
+		Query: "1=1",
+		Args:  make([]interface{}, 0),
 	}
 }

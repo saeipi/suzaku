@@ -12,25 +12,25 @@ import (
 
 func (rpc *friendRpcServer) GetFriendRequestList(_ context.Context, req *pb_friend.GetFriendRequestListReq) (resp *pb_friend.GetFriendRequestListResp, _ error) {
 	var (
-		query     *do.MysqlQuery
+		sel       *do.MysqlSelect
 		list      []*po_mysql.FriendRequest
 		totalRows int64
 		err       error
 	)
 	resp = &pb_friend.GetFriendRequestListResp{Common: &pb_com.CommonResp{}}
-	query = do.NewMysqlQuery()
+	sel = do.NewMysqlSelect()
 
 	switch req.Role {
 	case pb_friend.FRIEND_REQUEST_ROLE_SPONSOR: // 自己是发起者
-		query.Condition += " AND from_user_id=?"
-		query.Params = append(query.Params, req.UserId)
+		sel.Query += " AND from_user_id=?"
+		sel.Args = append(sel.Args, req.UserId)
 	case pb_friend.FRIEND_REQUEST_ROLE_INVITED:
-		query.Condition += " AND to_user_id=?"
-		query.Params = append(query.Params, req.UserId)
+		sel.Query += " AND to_user_id=?"
+		sel.Args = append(sel.Args, req.UserId)
 	default:
 		return
 	}
-	list, totalRows, err = repo_mysql.FriendRepo.GetFriendRequestList(query)
+	list, totalRows, err = repo_mysql.FriendRepo.GetFriendRequestList(sel)
 	if err != nil {
 		//TODO: error
 		return

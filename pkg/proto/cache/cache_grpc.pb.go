@@ -26,6 +26,7 @@ type CacheClient interface {
 	GetUserInfoFromCache(ctx context.Context, in *GetUserInfoFromCacheReq, opts ...grpc.CallOption) (*GetUserInfoFromCacheResp, error)
 	UpdateUserInfoToCache(ctx context.Context, in *UpdateUserInfoToCacheReq, opts ...grpc.CallOption) (*UpdateUserInfoToCacheResp, error)
 	// friendInfo
+	UpdateFriendsId(ctx context.Context, in *UpdateFriendsIdReq, opts ...grpc.CallOption) (*UpdateFriendsIdResp, error)
 	GetFriendIDListFromCache(ctx context.Context, in *GetFriendIDListFromCacheReq, opts ...grpc.CallOption) (*GetFriendIDListFromCacheResp, error)
 	AddFriendToCache(ctx context.Context, in *AddFriendToCacheReq, opts ...grpc.CallOption) (*AddFriendToCacheResp, error)
 	ReduceFriendFromCache(ctx context.Context, in *ReduceFriendFromCacheReq, opts ...grpc.CallOption) (*ReduceFriendFromCacheResp, error)
@@ -77,6 +78,15 @@ func (c *cacheClient) GetUserInfoFromCache(ctx context.Context, in *GetUserInfoF
 func (c *cacheClient) UpdateUserInfoToCache(ctx context.Context, in *UpdateUserInfoToCacheReq, opts ...grpc.CallOption) (*UpdateUserInfoToCacheResp, error) {
 	out := new(UpdateUserInfoToCacheResp)
 	err := c.cc.Invoke(ctx, "/cache.cache/UpdateUserInfoToCache", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheClient) UpdateFriendsId(ctx context.Context, in *UpdateFriendsIdReq, opts ...grpc.CallOption) (*UpdateFriendsIdResp, error) {
+	out := new(UpdateFriendsIdResp)
+	err := c.cc.Invoke(ctx, "/cache.cache/UpdateFriendsId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -175,6 +185,7 @@ type CacheServer interface {
 	GetUserInfoFromCache(context.Context, *GetUserInfoFromCacheReq) (*GetUserInfoFromCacheResp, error)
 	UpdateUserInfoToCache(context.Context, *UpdateUserInfoToCacheReq) (*UpdateUserInfoToCacheResp, error)
 	// friendInfo
+	UpdateFriendsId(context.Context, *UpdateFriendsIdReq) (*UpdateFriendsIdResp, error)
 	GetFriendIDListFromCache(context.Context, *GetFriendIDListFromCacheReq) (*GetFriendIDListFromCacheResp, error)
 	AddFriendToCache(context.Context, *AddFriendToCacheReq) (*AddFriendToCacheResp, error)
 	ReduceFriendFromCache(context.Context, *ReduceFriendFromCacheReq) (*ReduceFriendFromCacheResp, error)
@@ -204,6 +215,9 @@ func (UnimplementedCacheServer) GetUserInfoFromCache(context.Context, *GetUserIn
 }
 func (UnimplementedCacheServer) UpdateUserInfoToCache(context.Context, *UpdateUserInfoToCacheReq) (*UpdateUserInfoToCacheResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserInfoToCache not implemented")
+}
+func (UnimplementedCacheServer) UpdateFriendsId(context.Context, *UpdateFriendsIdReq) (*UpdateFriendsIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFriendsId not implemented")
 }
 func (UnimplementedCacheServer) GetFriendIDListFromCache(context.Context, *GetFriendIDListFromCacheReq) (*GetFriendIDListFromCacheResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFriendIDListFromCache not implemented")
@@ -313,6 +327,24 @@ func _Cache_UpdateUserInfoToCache_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CacheServer).UpdateUserInfoToCache(ctx, req.(*UpdateUserInfoToCacheReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Cache_UpdateFriendsId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateFriendsIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheServer).UpdateFriendsId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cache.cache/UpdateFriendsId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheServer).UpdateFriendsId(ctx, req.(*UpdateFriendsIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -501,6 +533,10 @@ var Cache_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserInfoToCache",
 			Handler:    _Cache_UpdateUserInfoToCache_Handler,
+		},
+		{
+			MethodName: "UpdateFriendsId",
+			Handler:    _Cache_UpdateFriendsId_Handler,
 		},
 		{
 			MethodName: "GetFriendIDListFromCache",

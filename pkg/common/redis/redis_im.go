@@ -16,6 +16,7 @@ const (
 	conversationReceiveMessageOpt = "CON_RECV_MSG_OPT:"
 	seqId                         = "SEQ_ID:"
 	userInfoCache                 = "USER_INFO_CACHE:"
+	friendsIdCache                = "FRIENDS_ID_CACHE:"
 )
 
 func JudgeAccountEXISTS(account string) (bool, error) {
@@ -163,4 +164,16 @@ func GetUserInfoFromCache(userId string) (userInfo *po_mysql.User, err error) {
 	userInfo = new(po_mysql.User)
 	err = utils.JsonToObj(jsStr, userInfo)
 	return
+}
+
+func AddFriendsId(userId string, fids ...string) (err error) {
+	return SAdd(friendsIdCache+userId, fids)
+}
+
+func DeleteFriendsId(userId string, fids ...string) (err error) {
+	return Srem(friendsIdCache+userId, fids)
+}
+
+func GetFriendsIdList(userId string) (list []string) {
+	return Smembers(friendsIdCache + userId)
 }

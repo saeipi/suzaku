@@ -12,13 +12,15 @@ import (
 
 type FriendRepository interface {
 	SaveFriendRequest(req *po_mysql.FriendRequest) (err error)
-	GetFriendRequestList(query *do.MysqlQuery) (list []*po_mysql.FriendRequest, totalRows int64, err error)
+	GetFriendRequestList(sel *do.MysqlSelect) (list []*po_mysql.FriendRequest, totalRows int64, err error)
 	IsFriend(userId1, userId2 string) (friend *po_mysql.Friend, err error)
 
 	UpdateFriendRequest(req *pb_friend.HandleFriendRequestReq) (err error)
 	ApproveFriendRequest(req *pb_friend.HandleFriendRequestReq) (err error)
 
-	FriendList(req *pb_friend.FriendListReq) (friends []*do.FriendInfo, totalRows int64, err error)
+	FriendsList(req *pb_friend.FriendsListReq) (friends []*do.FriendInfo, totalRows int64, err error)
+
+	FriendsIdList(sel *do.MysqlSelect) (fidList []*do.FriendId, err error)
 }
 
 var FriendRepo FriendRepository
@@ -42,7 +44,7 @@ func (r *friendRepository) SaveFriendRequest(req *po_mysql.FriendRequest) (err e
 	return
 }
 
-func (r *friendRepository) GetFriendRequestList(query *do.MysqlQuery) (list []*po_mysql.FriendRequest, totalRows int64, err error) {
+func (r *friendRepository) GetFriendRequestList(sel *do.MysqlSelect) (list []*po_mysql.FriendRequest, totalRows int64, err error) {
 	var (
 		db *gorm.DB
 	)
@@ -50,11 +52,11 @@ func (r *friendRepository) GetFriendRequestList(query *do.MysqlQuery) (list []*p
 	if db, err = mysql.GormDB(); err != nil {
 		return
 	}
-	err = db.Where(query.Condition, query.Params...).
+	err = db.Where(sel.Query, sel.Args...).
 		Find(&list).
 		Count(&totalRows).
-		Offset(query.Page).
-		Limit((query.Page - 1) * query.PageSize).Error
+		Offset(sel.Limit).
+		Limit((sel.Offset - 1) * sel.Limit).Error
 	return
 }
 
@@ -134,7 +136,7 @@ func (r *friendRepository) ApproveFriendRequest(req *pb_friend.HandleFriendReque
 	return
 }
 
-func (r *friendRepository) FriendList(req *pb_friend.FriendListReq) (friends []*do.FriendInfo, totalRows int64, err error) {
+func (r *friendRepository) FriendsList(req *pb_friend.FriendsListReq) (friends []*do.FriendInfo, totalRows int64, err error) {
 	var (
 		db *gorm.DB
 	)
@@ -161,5 +163,22 @@ func (r *friendRepository) FriendList(req *pb_friend.FriendListReq) (friends []*
 			Offset(int((req.Page - 1) * req.PageSize)).
 			Find(&friends).Error
 	*/
+	return
+}
+
+func (r *friendRepository) FriendsIdList(sel *do.MysqlSelect) (fidList []*do.FriendId, err error) {
+	var (
+		db *gorm.DB
+	)
+	fidList = make([]*do.FriendId, 0)
+	if db, err = mysql.GormDB(); err != nil {
+		return
+	}
+	err = db.Table("friends").
+		Select("owner_user_id,friend_user_id").
+		Where(sel.Query, sel.Args...).
+		Limit(sel.Limit).
+		Offset((sel.Offset - 1) * sel.Limit).
+		Find(&fidList).Error
 	return
 }

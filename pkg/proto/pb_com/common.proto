@@ -7,3 +7,11 @@ message CommonResp {
   int32 code = 1;
   string msg = 2;
 }
+
+enum RPC_ACTION_TYPE
+{
+  RPC_ACTION_TYPE_NONE = 0;
+  ADD = 1; // 添加
+  UPDATE = 2; // 更新
+  DELETE = 3; // 删除
+}
