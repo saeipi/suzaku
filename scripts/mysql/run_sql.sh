@@ -15,7 +15,7 @@ done
 
 mysql -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USERNAME} -p${MYSQL_PASSWORD} -D${MYSQL_DB} < ${file}
 
-mysql -h127.0.0.1 -P3306 -uroot -pxxx -Dtest
+mysql -h127.0.0.1 -P3306 -uroot -p123456 -Dsdb
 #参数
 -h:host主机
 -P:port端口
