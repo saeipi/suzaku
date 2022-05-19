@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 cp -Rp ../configs ../build/bin
+cp -Rp run/*.* ../build/bin
 
 PWD=`pwd`
 SUZAKUAPP=${PWD}"/../cmd"
