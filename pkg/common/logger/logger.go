@@ -24,10 +24,6 @@ var (
 )
 
 func InitLogger(cfg *config.Zap) {
-	//if _, err := os.Stat(directory); err != nil {
-	//	_ = os.Mkdir(directory, os.ModePerm)
-	//}
-
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
 	// 根据不同的级别输出到不同的日志文件
 
@@ -66,14 +62,13 @@ func InitLogger(cfg *config.Zap) {
 
 	log := zap.New(zapcore.NewTee(cores[:]...))
 	//用文件名、行号和zap调用者的函数名注释每条消息
-	if cfg.ShowLine {
+	if cfg.ShowLine == true {
 		log = log.WithOptions(zap.AddCaller())
 	}
 	logger = log.Sugar()
 	logger.Sync()
 }
 
-// getEncoderCore 获取Encoder的zapcore.Core
 func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *config.Zap) (core zapcore.Core) {
 	// 使用lumberjack进行日志分割
 	writer := getWriteSyncer(filename, cfg)
@@ -94,9 +89,7 @@ func getWriteSyncer(filename string, cfg *config.Zap) zapcore.WriteSyncer {
 	return zapcore.AddSync(hook)
 }
 
-// getEncoder 获取zapcore.Encoder
 func getEncoder(cfg *config.Zap) zapcore.Encoder {
-	// 获取配置文件的输出格式 json or console
 	switch cfg.Encoder {
 	case "json":
 		return zapcore.NewJSONEncoder(getEncoderConfig(cfg))
@@ -106,31 +99,32 @@ func getEncoder(cfg *config.Zap) zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(getEncoderConfig(cfg))
 }
 
-// getEncoderConfig 获取zapcore.EncoderConfig
 func getEncoderConfig(cfg *config.Zap) (config zapcore.EncoderConfig) {
 	config = zapcore.EncoderConfig{
-		MessageKey:    "message",
-		LevelKey:      "level",
-		TimeKey:       "time",
-		NameKey:       "logger",
-		CallerKey:     "caller",
-		StacktraceKey: cfg.StacktraceKey,         // 栈名
-		LineEnding:    zapcore.DefaultLineEnding, // 默认的结尾\n
-		//EncodeLevel:    zapcore.LowercaseLevelEncoder,  // 小写字母输出 zapcore.LowercaseLevelEncoder
+		MessageKey:     "message",
+		LevelKey:       "level",
+		TimeKey:        "time",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		StacktraceKey:  cfg.StacktraceKey,              // 栈名
+		LineEnding:     zapcore.DefaultLineEnding,      // 默认的结尾\n
 		EncodeTime:     customTimeEncoder,              // 时间格式 zapcore.ISO8601TimeEncoder
 		EncodeDuration: zapcore.SecondsDurationEncoder, // 编码间隔
 		EncodeCaller:   zapcore.ShortCallerEncoder,     // 绝对路径:zapcore.FullCallerEncoder,相对路径:zapcore.ShortCallerEncoder
 		EncodeName:     zapcore.FullNameEncoder,
 	}
-	// 根据配置文件重新配置编码颜色和字体
 	switch cfg.EncodeLevel {
-	case LowercaseLevelEncoder: // 小写编码器(默认)
+	case LowercaseLevelEncoder:
+		// 小写编码器(默认)
 		config.EncodeLevel = zapcore.LowercaseLevelEncoder
-	case LowercaseColorLevelEncoder: // 小写编码器带颜色
+	case LowercaseColorLevelEncoder:
+		// 小写编码器带颜色
 		config.EncodeLevel = zapcore.LowercaseColorLevelEncoder
-	case CapitalLevelEncoder: // 大写编码器
+	case CapitalLevelEncoder:
+		// 大写编码器
 		config.EncodeLevel = zapcore.CapitalLevelEncoder
-	case CapitalColorLevelEncoder: // 大写编码器带颜色
+	case CapitalColorLevelEncoder:
+		// 大写编码器带颜色
 		config.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	default:
 		config.EncodeLevel = zapcore.LowercaseLevelEncoder
