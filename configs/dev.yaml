@@ -166,7 +166,7 @@ zap:
   encoder: console
   directory: suzaku
   show_line: true
-  encode_level: CapitalColorLevelEncoder
+  encode_level: CapitalColor
   stacktrace_key: stacktrace
   log_stdout: true
   segment:

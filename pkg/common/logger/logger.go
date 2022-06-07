@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	LowercaseLevelEncoder      = "LowercaseLevelEncoder"
-	LowercaseColorLevelEncoder = "LowercaseColorLevelEncoder"
-	CapitalLevelEncoder        = "CapitalLevelEncoder"
-	CapitalColorLevelEncoder   = "CapitalColorLevelEncoder"
+	LowercaseLevelEncoder      = "Lowercase"
+	LowercaseColorLevelEncoder = "LowercaseColor"
+	CapitalLevelEncoder        = "Capital"
+	CapitalColorLevelEncoder   = "CapitalColor"
 )
 
 var (
