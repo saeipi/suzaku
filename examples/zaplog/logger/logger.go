@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"suzaku/pkg/utils"
 	"time"
 )
 
@@ -57,16 +56,12 @@ func init() {
 			Compress:   true,
 		},
 	}
-	str,_ := utils.ObjToJson(cfg)
-	if str == "" {
-
-	}
 
 	// 判断是否有Director文件夹
 	directory := "./logs/" + cfg.Directory
-	if _, err := os.Stat(directory); err != nil {
-		_ = os.Mkdir(directory, os.ModePerm)
-	}
+	//if _, err := os.Stat(directory); err != nil {
+	//	_ = os.Mkdir(directory, os.ModePerm)
+	//}
 
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
 	// 根据不同的级别输出到不同的日志文件
