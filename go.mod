@@ -38,11 +38,12 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.2
 	go.etcd.io/etcd/client/v3 v3.5.2
 	go.mongodb.org/mongo-driver v1.9.0
-	go.uber.org/zap v1.21.0 // indirect
+	go.uber.org/zap v1.21.0
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 	golang.org/x/text v0.3.7
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.28.0
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.4

@@ -14,8 +14,6 @@ var Config config
 type config struct {
 	ServerIP        string          `yaml:"server_ip"`
 	Tsl             Tsl             `yaml:"tsl"`
-	Alarm           Alarm           `yaml:"alarm"`
-	Abnormal        Abnormal        `yaml:"abnormal"`
 	Etcd            Etcd            `yaml:"etcd"`
 	RPCKeepalive    RPCKeepalive    `yaml:"rpc_keepalive"`
 	RPCPort         RPCPort         `yaml:"rpc_port"`
@@ -34,6 +32,8 @@ type config struct {
 	Websocket       Websocket       `yaml:"websocket"`
 	Credential      Credential      `yaml:"credential"`
 	Log             Log             `yaml:"log"`
+	Abnormal        Abnormal        `yaml:"abnormal"`
+	Zap             Zap             `yaml:"zap"`
 	Secret          string          `yaml:"secret"`
 	Callback        Callback        `yaml:"callback"`
 	IosPush         IosPush         `yaml:"ios_push"`
@@ -41,14 +41,6 @@ type config struct {
 type Tsl struct {
 	CertFile string `yaml:"cert_file"`
 	KeyFile  string `yaml:"key_file"`
-}
-type Alarm struct {
-	File  string `yaml:"file"`
-	Level int    `yaml:"level"`
-}
-type Abnormal struct {
-	File  string `yaml:"file"`
-	Level int    `yaml:"level"`
 }
 type Etcd struct {
 	Address      []string `yaml:"address"`
@@ -215,6 +207,26 @@ type Log struct {
 	EsUsername      string   `yaml:"es_username"`
 	EsPassword      string   `yaml:"es_password"`
 	EsSwitch        bool     `yaml:"es_switch"`
+}
+type Abnormal struct {
+	File  string `yaml:"file"`
+	Level int    `yaml:"level"`
+}
+type Zap struct {
+	Encoder       string  `json:"encoder" yaml:"encoder"`               // 编码器 console Or json
+	Directory     string  `json:"directory"  yaml:"directory"`          // 日志文件夹
+	ShowLine      bool    `json:"show_line" yaml:"show_line"`           // 显示行
+	EncodeLevel   string  `json:"encode_level" yaml:"encode_level"`     // 编码级
+	StacktraceKey string  `json:"stacktrace_key" yaml:"stacktrace_key"` // 栈名
+	LogStdout     bool    `json:"log_stdout" yaml:"log_stdout"`         // 输出控制台
+	Segment       Segment `json:"segment" yaml:"segment"`               // 日志分割
+}
+type Segment struct {
+	MaxSize    int  `json:"maxsize" yaml:"maxsize"`
+	MaxAge     int  `json:"maxage" yaml:"maxage"`
+	MaxBackups int  `json:"maxbackups" yaml:"maxbackups"`
+	LocalTime  bool `json:"localtime" yaml:"localtime"`
+	Compress   bool `json:"compress" yaml:"compress"`
 }
 type CallbackBeforeSendSingleMsg struct {
 	Enable                 bool `yaml:"enable"`

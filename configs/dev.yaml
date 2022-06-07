@@ -4,14 +4,6 @@ tsl:
   cert_file: configs/tls/ca.pem
   key_file: configs/tls/ca.key
 
-alarm:
-  file: /var/log/suzaku/alarm
-  level: 6
-
-abnormal:
-  file: /var/log/suzaku/abnormal.log
-  level: 0
-
 etcd:
   address: [ 127.0.0.1:2379 ]
   schema: suzaku
@@ -165,6 +157,24 @@ log:
   es_username: ""
   es_password: ""
   es_switch: false
+
+abnormal:
+  file: /var/log/suzaku/abnormal.log
+  level: 0
+
+zap:
+  encoder: console
+  directory: suzaku
+  show_line: true
+  encode_level: CapitalColorLevelEncoder
+  stacktrace_key: stacktrace
+  log_stdout: true
+  segment:
+    maxsize: 500
+    maxage: 500
+    maxbackups: 500
+    localtime: true
+    compress: true
 
 secret: saeipi
 
