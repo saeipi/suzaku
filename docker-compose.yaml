@@ -1,0 +1,157 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - szk-network
+    network_mode: "host"
+    volumes:
+      - ./components/mysql/mysql-master/data:/var/lib/mysql
+      - ./components/mysql/mysql-master/conf:/etc/mysql
+      - ./components/mysql/mysql-master/mysql-files:/var/lib/mysql-files
+      - ./components/mysql/mysql-master/log:/var/log/mysql
+      - /etc/localtime:/etc/localtime
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: suzaku2022
+      MYSQL_USER: suzaku
+      MYSQL_PASSWORD: suzaku2022
+    command: [
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--default-time-zone=+8:00'
+    ]
+
+  mongo:
+    image: mongo:5.0.9
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - szk-network
+    network_mode: "host"
+    volumes:
+      - ./components/mongodb/data/db:/data/db
+      - ./components/mongodb/data/conf:/etc/mongo
+      - ./components/mongodb/data/logs:/data/logs
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: suzaku2022
+    command: --wiredTigerCacheSizeGB 2
+
+  redis:
+    image: redis:6.2.7
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - szk-network
+    network_mode: "host"
+    volumes:
+      - ./components/redis/data:/data
+      - ./components/redis/conf:/usr/local/etc/redis
+      #redis config file
+      - ./components/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+    environment:
+      TZ: Asia/Shanghai
+    sysctls:
+      net.core.somaxconn: 1024
+    command: redis-server --requirepass suzuku --appendonly yes
+
+  minio:
+    image: "bitnami/minio:latest"
+    container_name: minio
+    restart: always
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - szk-network
+    network_mode: "host"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: suzaku2022
+
+  zookeeper:
+    image: zookeeper:3.8.0
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    networks:
+      - szk-network
+    network_mode: "host"
+    volumes:
+      - /etc/localtime:/etc/localtime
+    environment:
+      TZ: Asia/Shanghai
+
+  kafka:
+    image: bitnami/kafka:3.2
+    container_name: kafka
+    restart: always
+    ports:
+     - 9092:9092
+     - 9093:9093
+    networks:
+     - szk-network
+    network_mode: "host"
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: 127.0.0.1:2181
+      KAFKA_CREATE_TOPICS: "ws2ms_chat:2:1,ms2ps_chat:2:1"
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://127.0.0.1:9092,OUTSIDE://103.116.45.174:9093
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    # network_mode: "host"
+    depends_on:
+      - zookeeper
+
+  etcd:
+    image: bitnami/etcd:3.5
+    container_name: etcd
+    restart: always
+    ports:
+      - 2379:2379
+      - 2380:2380
+    networks:
+      - szk-network
+    network_mode: "host"
+    volumes:
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+    environment:
+      ETCDCTL_API: 3
+    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 --initial-advertise-peer-urls http://0.0.0.0:2380 --initial-cluster etcd0=http://0.0.0.0:2380 --initial-cluster-token tkn --initial-cluster-state new
+
+  suzuku:
+    image: suzuku:1.0.1
+    container_name: suzuku
+    restart: always
+    volumes:
+      - ./logs:/suzuku/logs
+      - ./config/config.yaml:/suzuku/config/config.yaml
+      - ./script:/suzuku/script
+    networks:
+      - szk-network
+    network_mode: "host"
+    depends_on:
+      - mysql
+      - mongo
+      - redis
+      - minio
+      - kafka
+      - etcd
+
+networks:
+  szk-network
