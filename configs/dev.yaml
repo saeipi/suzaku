@@ -90,12 +90,6 @@ kafka:
     msgToMySql: mysql
     msgToPush: push
 
-mq:
-  host: 127.0.0.1
-  port: 5672
-  user: guest
-  password: guest
-
 jwt_auth:
   auth_method: cookie
   is_dev: true

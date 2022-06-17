@@ -22,7 +22,6 @@ type config struct {
 	Mongo           Mongo           `yaml:"mongo"`
 	Redis           Redis           `yaml:"redis"`
 	Kafka           Kafka           `yaml:"kafka"`
-	Mq              Mq              `yaml:"mq"`
 	JwtAuth         JwtAuth         `yaml:"jwt_auth"`
 	Casbin          Casbin          `yaml:"casbin"`
 	Environment     Environment     `yaml:"environment"`
@@ -144,12 +143,6 @@ type Kafka struct {
 	Ws2Mschat       Ws2Mschat       `yaml:"ws2mschat"`
 	Ms2Pschat       Ms2Pschat       `yaml:"ms2pschat"`
 	ConsumerGroupID ConsumerGroupID `yaml:"consumer_group_id"`
-}
-type Mq struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
 }
 type JwtAuth struct {
 	AuthMethod string `yaml:"auth_method"`
