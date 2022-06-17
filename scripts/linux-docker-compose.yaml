@@ -27,7 +27,7 @@ services:
       - 3306:3306
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - ./components/mysql/mysql-master/data:/var/lib/mysql
       - ./components/mysql/mysql-master/conf:/etc/mysql
@@ -53,7 +53,7 @@ services:
       - 27017:27017
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - ./components/mongodb/data/db:/data/db
       - ./components/mongodb/data/conf:/etc/mongo
@@ -72,7 +72,7 @@ services:
       - 6379:6379
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - ./components/redis/data:/data
       - ./components/redis/conf:/usr/local/etc/redis
@@ -93,7 +93,7 @@ services:
       - '9001:9001'
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     environment:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: suzaku2022
@@ -106,7 +106,7 @@ services:
       - 2181:2181
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime
     environment:
@@ -117,11 +117,11 @@ services:
     container_name: kafka
     restart: always
     ports:
-     - 9092:9092
-     - 9093:9093
+      - 9092:9092
+      - 9093:9093
     networks:
-     - szk-network
-#    network_mode: "host"
+      - szk-network
+    #    network_mode: "host"
     environment:
       TZ: Asia/Shanghai
       KAFKA_BROKER_ID: 0
@@ -143,7 +143,7 @@ services:
       - 2380:2380
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - /etc/timezone:/etc/timezone
       - /etc/localtime:/etc/localtime
@@ -157,7 +157,7 @@ services:
     restart: always
     networks:
       - szk-network
-#    network_mode: "host"
+    #    network_mode: "host"
     volumes:
       - ./components/configs:/suzuku/configs
       - ./components/scripts:/suzuku/scripts
