@@ -55,7 +55,7 @@ rpc_register_name: #rpc注册服务名，默认即可
 mysql:
   address: [ mysql:3306 ]
   username: root
-  password:
+  password: suzaku2022
   db: sdb
   max_open_conn: 20
   max_idle_conn: 10
@@ -65,7 +65,7 @@ mysql:
 mongo:
   address: [ mongo:27017 ]
   username: admin
-  password: 123456
+  password: suzaku2022
   db: suzaku
   direct: false
   timeout: 5000

@@ -17,6 +17,7 @@ version: "3"
 #  docker network inspect 1b7d65c22c41
 #  apt-get update
 #  apt -y install iputils-ping
+#  docker rmi -f 8b2b1febb358
 
 services:
   mysql:
@@ -157,10 +158,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./components/configs:/suzuku/configs
-      - ./components/scripts:/suzuku/scripts
-      - ./components/build:/suzuku/build
-      - ./components/logs:/suzuku/logs
+      - ./components/suzaku/configs:/suzuku/configs
+      - ./components/suzaku/scripts:/suzuku/scripts
+      - ./components/suzaku/build:/suzuku/build
+      - ./components/suzaku/logs:/suzuku/logs
     depends_on:
       - mysql
       - mongo
