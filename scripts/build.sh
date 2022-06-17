@@ -2,7 +2,7 @@
 
 mkdir -p ../build/logs
 mkdir -p ../build/bin/configs
-cp -Rp ../configs ../build/bin/configs
+cp -Rp ../configs ../build/configs
 cp -Rp run/*.* ../build/bin
 
 PWD=`pwd`

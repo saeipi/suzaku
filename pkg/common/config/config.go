@@ -258,12 +258,6 @@ type IosPush struct {
 	BadgeCount bool   `yaml:"badge_count"`
 }
 
-var (
-	_, file, _, _ = runtime.Caller(0)
-	// Root folder of this project
-	root = filepath.Join(filepath.Dir(file), "../../..")
-)
-
 func init() {
 	var (
 		runMode string
@@ -274,9 +268,12 @@ func init() {
 	if runMode == "" {
 		runMode = constant.EnvironmentDev
 	}
-	buf, err = ioutil.ReadFile("configs/" + runMode + ".yaml")
+	_, file, _, _ := runtime.Caller(0)
+	path := filepath.Join(filepath.Dir(file), "../../..")
+	path += "/configs/" + runMode + ".yaml"
+	buf, err = ioutil.ReadFile(path)
 	if err != nil {
-		buf = []byte(const_cfg)
+		panic(err)
 	}
 	yaml.Unmarshal(buf, &Config)
 }
