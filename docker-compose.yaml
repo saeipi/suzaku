@@ -99,7 +99,7 @@ services:
       MINIO_ROOT_PASSWORD: suzaku2022
 
   zookeeper:
-    image: 'wurstmeister/zookeeper:latest'
+    image: 'bitnami/zookeeper:latest'
     container_name: zookeeper
     restart: always
     ports:
@@ -111,7 +111,7 @@ services:
       TZ: Asia/Shanghai
 
   kafka:
-    image: 'wurstmeister/kafka:latest'
+    image: 'bitnami/kafka:latest'
     container_name: kafka
     restart: always
     ports:
