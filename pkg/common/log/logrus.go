@@ -31,6 +31,8 @@ func loggerInit(moduleName string, file string) *Logger {
 		hook   logrus.Hook
 		err    error
 	)
+	appPath, _ := os.Getwd()
+	file = appPath + file
 	var logger = logrus.New()
 	// All logs will be printed
 	logger.SetLevel(logrus.Level(config.Config.Log.Level))

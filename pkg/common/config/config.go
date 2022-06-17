@@ -4,8 +4,6 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"path/filepath"
-	"runtime"
 	"suzaku/pkg/constant"
 )
 
@@ -268,8 +266,7 @@ func init() {
 	if runMode == "" {
 		runMode = constant.EnvironmentDev
 	}
-	_, file, _, _ := runtime.Caller(0)
-	path := filepath.Join(filepath.Dir(file), "../../..")
+	path, _ := os.Getwd()
 	path += "/configs/" + runMode + ".yaml"
 	buf, err = ioutil.ReadFile(path)
 	if err != nil {

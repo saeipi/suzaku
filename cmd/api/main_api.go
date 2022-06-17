@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	log.NewLogger("suzaku", "../logs/api.log")
+	log.NewLogger("suzaku", "/logs/api.log")
 	//go minioc.NewMinioc()
 	api_server.NewApiServer().Run()
 }
