@@ -98,7 +98,7 @@ services:
       MINIO_ROOT_PASSWORD: suzaku2022
 
   zookeeper:
-    image: zookeeper:3.8.0
+    image: 'bitnami/zookeeper:latest'
     container_name: zookeeper
     restart: always
     ports:
@@ -110,7 +110,7 @@ services:
       TZ: Asia/Shanghai
 
   kafka:
-    image: bitnami/kafka:3.2
+    image: 'bitnami/kafka:latest'
     container_name: kafka
     restart: always
     ports:
@@ -142,13 +142,17 @@ services:
       - szk-network
 #    network_mode: "host"
     environment:
-      ETCDCTL_API: 3
-    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 --initial-advertise-peer-urls http://0.0.0.0:2380 --initial-cluster etcd0=http://0.0.0.0:2380 --initial-cluster-token tkn --initial-cluster-state new
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+#    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 --initial-advertise-peer-urls http://0.0.0.0:2380 --initial-cluster etcd0=http://0.0.0.0:2380 --initial-cluster-token tkn --initial-cluster-state new
 
   suzuku:
     image: suzuku:1.0.1
     container_name: suzuku
     restart: always
+    ports:
+      - 10000:10000
+      - 17778:17778
     networks:
       - szk-network
 #    network_mode: "host"
