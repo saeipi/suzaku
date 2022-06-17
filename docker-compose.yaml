@@ -12,6 +12,8 @@ version: "3"
 #  docker-compose restart    # 重启服务
 #  docker-compose start      # 启动服务
 #  docker-compose stop       # 停止服务
+#  docker exec -it f848ddd6aee0 /bin/bash
+#  docker inspect f848ddd6aee0|tail -n 20
 
 services:
   mysql:
@@ -154,9 +156,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./logs:/suzuku/logs
-      - ./config/config.yaml:/suzuku/config/config.yaml
-      - ./script:/suzuku/script
+      - ./components/configs:/suzuku/configs
+      - ./components/scripts:/suzuku/scripts
+      - ./components/build:/suzuku/build
+      - ./components/logs:/suzuku/logs
     depends_on:
       - mysql
       - mongo
