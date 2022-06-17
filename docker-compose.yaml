@@ -1,4 +1,17 @@
 version: "3"
+#  docker-compose -h                      # 查看帮助
+#  docker-compose up                      # 启动所有docker-compose服务
+#  docker-compose up -d                   # 启动所有docker-compose服务并后台运行
+#  docker-compose down                    # 停止并删除容器、网络、卷、镜像。
+#  docker-compose exec  yml里面的服务id     # 进入容器实例内部  docker-compose exec docker-compose.yml文件中写的服务id /bin/bash
+#  docker-compose ps                      # 展示当前docker-compose编排过的运行的所有容器
+#  docker-compose top                     # 展示当前docker-compose编排过的容器进程
+#  docker-compose logs  yml里面的服务id     # 查看容器输出日志
+#  docker-compose config     # 检查配置
+#  docker-compose config -q  # 检查配置，有问题才有输出
+#  docker-compose restart    # 重启服务
+#  docker-compose start      # 启动服务
+#  docker-compose stop       # 停止服务
 
 services:
   mysql:
@@ -9,7 +22,7 @@ services:
       - 3306:3306
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - ./components/mysql/mysql-master/data:/var/lib/mysql
       - ./components/mysql/mysql-master/conf:/etc/mysql
@@ -35,7 +48,7 @@ services:
       - 27017:27017
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - ./components/mongodb/data/db:/data/db
       - ./components/mongodb/data/conf:/etc/mongo
@@ -54,11 +67,11 @@ services:
       - 6379:6379
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - ./components/redis/data:/data
       - ./components/redis/conf:/usr/local/etc/redis
-      #redis config file
+      # redis config file
       - ./components/redis/config/redis.conf:/usr/local/redis/config/redis.conf
     environment:
       TZ: Asia/Shanghai
@@ -75,7 +88,7 @@ services:
       - '9001:9001'
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     environment:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: suzaku2022
@@ -88,7 +101,7 @@ services:
       - 2181:2181
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime
     environment:
@@ -103,7 +116,7 @@ services:
      - 9093:9093
     networks:
      - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     environment:
       TZ: Asia/Shanghai
       KAFKA_BROKER_ID: 0
@@ -113,7 +126,6 @@ services:
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-    # network_mode: "host"
     depends_on:
       - zookeeper
 
@@ -126,7 +138,7 @@ services:
       - 2380:2380
     networks:
       - szk-network
-    network_mode: "host"
+#    network_mode: "host"
     volumes:
       - /etc/timezone:/etc/timezone
       - /etc/localtime:/etc/localtime
@@ -138,13 +150,13 @@ services:
     image: suzuku:1.0.1
     container_name: suzuku
     restart: always
+    networks:
+      - szk-network
+#    network_mode: "host"
     volumes:
       - ./logs:/suzuku/logs
       - ./config/config.yaml:/suzuku/config/config.yaml
       - ./script:/suzuku/script
-    networks:
-      - szk-network
-    network_mode: "host"
     depends_on:
       - mysql
       - mongo
@@ -154,4 +166,10 @@ services:
       - etcd
 
 networks:
-  szk-network
+  szk-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.254.0/24
+          ip_range: 192.168.254.0/24
