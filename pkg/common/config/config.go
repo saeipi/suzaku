@@ -276,7 +276,7 @@ func init() {
 	}
 	buf, err = ioutil.ReadFile("configs/" + runMode + ".yaml")
 	if err != nil {
-		panic(err.Error())
+		buf = []byte(const_cfg)
 	}
 	yaml.Unmarshal(buf, &Config)
 }
