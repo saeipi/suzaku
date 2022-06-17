@@ -75,7 +75,7 @@ mongo:
 redis:
   address: [ redis:6379 ]
   db: 0
-  password: ""
+  password: suzaku2022
   prefix: "SZK:"
 
 kafka:

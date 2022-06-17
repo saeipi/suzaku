@@ -82,7 +82,7 @@ services:
       TZ: Asia/Shanghai
     sysctls:
       net.core.somaxconn: 1024
-    command: redis-server --requirepass suzuku --appendonly yes
+    command: redis-server --requirepass suzaku2022 --appendonly yes
 
   minio:
     image: "bitnami/minio:latest"
@@ -122,10 +122,14 @@ services:
 #    network_mode: "host"
     environment:
       TZ: Asia/Shanghai
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+      #KAFKA_LISTENERS: PLAINTEXT://:9092
+      #KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
       KAFKA_BROKER_ID: 0
       KAFKA_ZOOKEEPER_CONNECT: 127.0.0.1:2181
       KAFKA_CREATE_TOPICS: "ws2ms_chat:2:1,ms2ps_chat:2:1"
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://127.0.0.1:9092,OUTSIDE://103.116.45.174:9093
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://127.0.0.1:9092,OUTSIDE://127.0.0.1:9093
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
