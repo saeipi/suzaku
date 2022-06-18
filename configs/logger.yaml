@@ -1,0 +1,12 @@
+encoder: console
+directory: suzaku
+show_line: true
+encode_level: CapitalColor
+stacktrace_key: stacktrace
+log_stdout: true
+segment:
+  maxsize: 500
+  maxage: 500
+  maxbackups: 500
+  localtime: true
+  compress: true

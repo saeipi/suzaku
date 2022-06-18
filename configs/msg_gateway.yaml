@@ -1,0 +1,12 @@
+name: msg_gateway
+ws_server:
+  name: ws_server
+  port: 17778
+  write_wait: 10000
+  pong_wait: 60000
+  max_message_size: 4096
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+rpc_server:
+  name: online_message_relay
+  port: 10400
