@@ -2,7 +2,7 @@
 # docker run it d64194bce4e /bin/bash
 # docker rmi -f $(docker images -q -f dangling=true)
 # export -p
-# docker run -it -p 10000:10000 -p 17778:17778 --network suzaku_szk-network --name szk e7d27f1998f9
+# docker run -it -p 10000:10000 -p 17778:17778 --network suzaku_szk-network --name szk b1e396e11d21
 
 #======================== 1 golang ========================#
 ## 源镜像
@@ -13,13 +13,15 @@ ENV GO111MODULE=on \
     GOPROXY=https://goproxy.cn,direct \
     CGO_ENABLED=0 \
     GOOS=linux \
-    GOARCH=amd64
+    GOARCH=amd64 \
+    AppRunMode=prod
 
 ## 作者
 MAINTAINER saeipi "saeipi@163.com"
 ## 在docker的根目录下创立相应的应用目录
 RUN mkdir -p /suzaku
 ## 把宿主机上指定目录下的文件复制到/suzaku目录下
+WORKDIR /suzaku
 COPY . .
 ## 编译项目
 WORKDIR /suzaku/scripts
@@ -35,13 +37,13 @@ RUN apt-get update && apt-get install apt-transport-https && apt-get install pro
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV AppRunMode prod
-RUN apt-get install -y vim curl tzdata gawk
 
+RUN apt-get install -y vim curl tzdata gawk
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
 RUN mkdir -p /suzaku
-COPY --from=build /suzaku/script /suzaku/script
-COPY --from=build /suzaku/bin /suzaku/bin
+COPY --from=build /suzaku/build /suzaku/build
+COPY --from=build /suzaku/configs /suzaku/configs
 
 WORKDIR /suzaku/build/bin
 RUN chmod +x *.sh
