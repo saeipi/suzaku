@@ -30,10 +30,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./components/mysql/mysql-master/data:/var/lib/mysql
-      - ./components/mysql/mysql-master/conf:/etc/mysql
-      - ./components/mysql/mysql-master/mysql-files:/var/lib/mysql-files
-      - ./components/mysql/mysql-master/log:/var/log/mysql
+      - ./volumes/mysql/mysql-master/data:/var/lib/mysql
+      - ./volumes/mysql/mysql-master/conf:/etc/mysql
+      - ./volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
+      - ./volumes/mysql/mysql-master/log:/var/log/mysql
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: suzaku2022
@@ -55,9 +55,9 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./components/mongodb/data/db:/data/db
-      - ./components/mongodb/data/conf:/etc/mongo
-      - ./components/mongodb/data/logs:/data/logs
+      - ./volumes/mongodb/data/db:/data/db
+      - ./volumes/mongodb/data/conf:/etc/mongo
+      - ./volumes/mongodb/data/logs:/data/logs
     environment:
       TZ: Asia/Shanghai
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -74,10 +74,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./components/redis/data:/data
-      - ./components/redis/conf:/usr/local/etc/redis
+      - ./volumes/redis/data:/data
+      - ./volumes/redis/conf:/usr/local/etc/redis
       # redis config file
-      - ./components/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+      - ./volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
     environment:
       TZ: Asia/Shanghai
     sysctls:
@@ -99,7 +99,7 @@ services:
       MINIO_ROOT_PASSWORD: suzaku2022
 
   zookeeper:
-    image: 'wurstmeister/zookeeper:latest'
+    image: 'bitnami/zookeeper:latest'
     container_name: zookeeper
     restart: always
     ports:
@@ -111,7 +111,7 @@ services:
       TZ: Asia/Shanghai
 
   kafka:
-    image: 'wurstmeister/kafka:latest'
+    image: 'bitnami/kafka:latest'
     container_name: kafka
     restart: always
     ports:
@@ -159,10 +159,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./components/suzaku/configs:/suzuku/configs
-      - ./components/suzaku/scripts:/suzuku/scripts
-      - ./components/suzaku/build:/suzuku/build
-      - ./components/suzaku/logs:/suzuku/logs
+      - ./volumes/suzaku/configs:/suzaku/configs
+      - ./volumes/suzaku/scripts:/suzaku/scripts
+      - ./volumes/suzaku/build:/suzaku/build
+      - ./volumes/suzaku/logs:/suzaku/logs
     depends_on:
       - mysql
       - mongo
