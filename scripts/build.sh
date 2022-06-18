@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-mkdir -p ../build/logs
-mkdir -p ../build/bin/configs
-cp -Rp ../configs ../build/configs
+rm -f -r ../build/bin
+rm -f -r ../build/configs
+
+mkdir -p ../build/bin
+
 cp -Rp run/*.* ../build/bin
+cp -Rp ../configs ../build/configs
 
 PWD=`pwd`
 SUZAKUAPP=${PWD}"/../cmd"

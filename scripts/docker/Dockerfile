@@ -1,7 +1,4 @@
 # docker build -t suzuku:1.0.1 .
-# docker run it d64194bce4e /bin/bash
-# docker rmi $(docker images -q -f dangling=true)
-# export -p
 ## 源镜像
 FROM golang as build
 
@@ -13,14 +10,18 @@ ENV AppRunMode prod
 MAINTAINER saeipi "saeipi@163.com"
 ## 在docker的根目录下创立相应的应用目录
 RUN mkdir -p /suzaku
-## 把宿主机上指定目录下的文件复制到/suzaku目录下
-COPY /build /suzaku/build
-COPY /configs /suzaku/configs
+## 设置工作目录
+WORKDIR /suzaku
+## 把（宿主机上）目录下的文件全部复制到/suzaku目录下
+COPY . .
+## 编译项目
+WORKDIR /suzaku/scripts
+RUN chmod +x *.sh
+RUN /bin/sh -c ./build.sh
 
-## 运行项目
 WORKDIR /suzaku/build/bin
-## RUN chmod +x *.sh
-## ENTRYPOINT ["./run_all.sh"]
+RUN chmod +x *.sh
+ENTRYPOINT ["./run_all.sh"]
 ## 裸露端口
 EXPOSE 10000 17778
 
