@@ -6,8 +6,6 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
-	"path/filepath"
-	"strings"
 	"time"
 )
 
@@ -36,11 +34,12 @@ type Segment struct {
 	Compress   bool `json:"compress" yaml:"compress"`
 }
 
-var (
+type Logger struct {
 	logger *zap.SugaredLogger
-)
+	cfg    *Zap
+}
 
-func InitLogger(cfg *Zap) {
+func NewLogger(cfg *Zap) *Logger {
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
 	// 根据不同的级别输出到不同的日志文件
 
@@ -82,8 +81,10 @@ func InitLogger(cfg *Zap) {
 	if cfg.ShowLine == true {
 		log = log.WithOptions(zap.AddCaller())
 	}
-	logger = log.Sugar()
+	logger := log.Sugar()
 	logger.Sync()
+
+	return &Logger{logger, cfg}
 }
 
 func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *Zap) (core zapcore.Core) {
@@ -164,85 +165,62 @@ func customEncodeCaller(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEn
 	enc.AppendString("[" + caller.TrimmedPath() + "]")
 }
 
-func GetCurrentDirectory() string {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		logger.Info(err)
-	}
-	return dir
+func (l *Logger) Debug(args ...interface{}) {
+	l.logger.Debug(args...)
 }
 
-func GetFilePath() string {
-	logfile := GetCurrentDirectory() + "/" + GetAppname() + ".log"
-	return logfile
+func (l *Logger) Debugf(template string, args ...interface{}) {
+	l.logger.Debugf(template, args...)
 }
 
-func GetAppname() string {
-	full := os.Args[0]
-	splits := strings.Split(full, "/")
-	if len(splits) >= 1 {
-		name := splits[len(splits)-1]
-		return name
-	}
-	return ""
+func (l *Logger) Debugw(msg string, keysAndValues ...interface{}) {
+	l.logger.Debugw(msg, keysAndValues...)
 }
 
-func Debug(args ...interface{}) {
-	logger.Debug(args...)
+func (l *Logger) Info(args ...interface{}) {
+	l.logger.Info(args...)
 }
 
-func Debugf(template string, args ...interface{}) {
-	logger.Debugf(template, args...)
+func (l *Logger) Infof(template string, args ...interface{}) {
+	l.logger.Infof(template, args...)
 }
 
-func Debugw(msg string, keysAndValues ...interface{}) {
-	logger.Debugw(msg, keysAndValues...)
+func (l *Logger) Infow(msg string, keysAndValues ...interface{}) {
+	l.logger.Infow(msg, keysAndValues...)
 }
 
-func Info(args ...interface{}) {
-	logger.Info(args...)
+func (l *Logger) Warn(args ...interface{}) {
+	l.logger.Warn(args...)
 }
 
-func Infof(template string, args ...interface{}) {
-	logger.Infof(template, args...)
+func (l *Logger) Warnf(template string, args ...interface{}) {
+	l.logger.Warnf(template, args...)
 }
 
-func Infow(msg string, keysAndValues ...interface{}) {
-	logger.Infow(msg, keysAndValues...)
+func (l *Logger) Warnw(msg string, keysAndValues ...interface{}) {
+	l.logger.Warnw(msg, keysAndValues...)
 }
 
-func Warn(args ...interface{}) {
-	logger.Warn(args...)
+func (l *Logger) Error(args ...interface{}) {
+	l.logger.Error(args...)
 }
 
-func Warnf(template string, args ...interface{}) {
-	logger.Warnf(template, args...)
+func (l *Logger) Errorf(template string, args ...interface{}) {
+	l.logger.Errorf(template, args...)
 }
 
-func Warnw(msg string, keysAndValues ...interface{}) {
-	logger.Warnw(msg, keysAndValues...)
+func (l *Logger) Errorw(msg string, keysAndValues ...interface{}) {
+	l.logger.Errorw(msg, keysAndValues...)
 }
 
-func Error(args ...interface{}) {
-	logger.Error(args...)
+func (l *Logger) Panic(args ...interface{}) {
+	l.logger.Panic(args...)
 }
 
-func Errorf(template string, args ...interface{}) {
-	logger.Errorf(template, args...)
+func (l *Logger) Panicf(template string, args ...interface{}) {
+	l.logger.Panicf(template, args...)
 }
 
-func Errorw(msg string, keysAndValues ...interface{}) {
-	logger.Errorw(msg, keysAndValues...)
-}
-
-func Panic(args ...interface{}) {
-	logger.Panic(args...)
-}
-
-func Panicf(template string, args ...interface{}) {
-	logger.Panicf(template, args...)
-}
-
-func Panicw(msg string, keysAndValues ...interface{}) {
-	logger.Panicw(msg, keysAndValues...)
+func (l *Logger) Panicw(msg string, keysAndValues ...interface{}) {
+	l.logger.Panicw(msg, keysAndValues...)
 }
