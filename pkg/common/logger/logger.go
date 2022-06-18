@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"suzaku/pkg/common/config"
 	"time"
 )
 
@@ -19,11 +18,29 @@ const (
 	CapitalColorLevelEncoder   = "CapitalColor"
 )
 
+type Zap struct {
+	Encoder       string  `json:"encoder" yaml:"encoder"`               // 编码器 console Or json
+	Directory     string  `json:"directory"  yaml:"directory"`          // 日志文件夹
+	ShowLine      bool    `json:"show_line" yaml:"show_line"`           // 显示行
+	EncodeLevel   string  `json:"encode_level" yaml:"encode_level"`     // 编码级
+	StacktraceKey string  `json:"stacktrace_key" yaml:"stacktrace_key"` // 栈名
+	LogStdout     bool    `json:"log_stdout" yaml:"log_stdout"`         // 输出控制台
+	Segment       Segment `json:"segment" yaml:"segment"`               // 日志分割
+}
+
+type Segment struct {
+	MaxSize    int  `json:"maxsize" yaml:"maxsize"`
+	MaxAge     int  `json:"maxage" yaml:"maxage"`
+	MaxBackups int  `json:"maxbackups" yaml:"maxbackups"`
+	LocalTime  bool `json:"localtime" yaml:"localtime"`
+	Compress   bool `json:"compress" yaml:"compress"`
+}
+
 var (
 	logger *zap.SugaredLogger
 )
 
-func InitLogger(cfg *config.Zap) {
+func InitLogger(cfg *Zap) {
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
 	// 根据不同的级别输出到不同的日志文件
 
@@ -69,13 +86,13 @@ func InitLogger(cfg *config.Zap) {
 	logger.Sync()
 }
 
-func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *config.Zap) (core zapcore.Core) {
+func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *Zap) (core zapcore.Core) {
 	// 使用lumberjack进行日志分割
 	writer := getWriteSyncer(filename, cfg)
 	return zapcore.NewCore(getEncoder(cfg), writer, level)
 }
 
-func getWriteSyncer(filename string, cfg *config.Zap) zapcore.WriteSyncer {
+func getWriteSyncer(filename string, cfg *Zap) zapcore.WriteSyncer {
 	hook := &lumberjack.Logger{
 		Filename:   filename,               // 日志文件的位置
 		MaxSize:    cfg.Segment.MaxSize,    // 在进行切割之前，日志文件的最大大小（以MB为单位）
@@ -89,7 +106,7 @@ func getWriteSyncer(filename string, cfg *config.Zap) zapcore.WriteSyncer {
 	return zapcore.AddSync(hook)
 }
 
-func getEncoder(cfg *config.Zap) zapcore.Encoder {
+func getEncoder(cfg *Zap) zapcore.Encoder {
 	switch cfg.Encoder {
 	case "json":
 		return zapcore.NewJSONEncoder(getEncoderConfig(cfg))
@@ -99,7 +116,7 @@ func getEncoder(cfg *config.Zap) zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(getEncoderConfig(cfg))
 }
 
-func getEncoderConfig(cfg *config.Zap) (config zapcore.EncoderConfig) {
+func getEncoderConfig(cfg *Zap) (config zapcore.EncoderConfig) {
 	config = zapcore.EncoderConfig{
 		MessageKey:     "message",
 		LevelKey:       "level",
