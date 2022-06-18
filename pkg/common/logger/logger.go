@@ -34,12 +34,11 @@ type Segment struct {
 	Compress   bool `json:"compress" yaml:"compress"`
 }
 
-type Logger struct {
+var (
 	logger *zap.SugaredLogger
-	cfg    *Zap
-}
+)
 
-func NewLogger(cfg *Zap) *Logger {
+func InitLogger(cfg *Zap) {
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
 	// 根据不同的级别输出到不同的日志文件
 
@@ -81,10 +80,8 @@ func NewLogger(cfg *Zap) *Logger {
 	if cfg.ShowLine == true {
 		log = log.WithOptions(zap.AddCaller())
 	}
-	logger := log.Sugar()
+	logger = log.Sugar()
 	logger.Sync()
-
-	return &Logger{logger, cfg}
 }
 
 func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *Zap) (core zapcore.Core) {
@@ -165,62 +162,62 @@ func customEncodeCaller(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEn
 	enc.AppendString("[" + caller.TrimmedPath() + "]")
 }
 
-func (l *Logger) Debug(args ...interface{}) {
-	l.logger.Debug(args...)
+func Debug(args ...interface{}) {
+	logger.Debug(args...)
 }
 
-func (l *Logger) Debugf(template string, args ...interface{}) {
-	l.logger.Debugf(template, args...)
+func Debugf(template string, args ...interface{}) {
+	logger.Debugf(template, args...)
 }
 
-func (l *Logger) Debugw(msg string, keysAndValues ...interface{}) {
-	l.logger.Debugw(msg, keysAndValues...)
+func Debugw(msg string, keysAndValues ...interface{}) {
+	logger.Debugw(msg, keysAndValues...)
 }
 
-func (l *Logger) Info(args ...interface{}) {
-	l.logger.Info(args...)
+func Info(args ...interface{}) {
+	logger.Info(args...)
 }
 
-func (l *Logger) Infof(template string, args ...interface{}) {
-	l.logger.Infof(template, args...)
+func Infof(template string, args ...interface{}) {
+	logger.Infof(template, args...)
 }
 
-func (l *Logger) Infow(msg string, keysAndValues ...interface{}) {
-	l.logger.Infow(msg, keysAndValues...)
+func Infow(msg string, keysAndValues ...interface{}) {
+	logger.Infow(msg, keysAndValues...)
 }
 
-func (l *Logger) Warn(args ...interface{}) {
-	l.logger.Warn(args...)
+func Warn(args ...interface{}) {
+	logger.Warn(args...)
 }
 
-func (l *Logger) Warnf(template string, args ...interface{}) {
-	l.logger.Warnf(template, args...)
+func Warnf(template string, args ...interface{}) {
+	logger.Warnf(template, args...)
 }
 
-func (l *Logger) Warnw(msg string, keysAndValues ...interface{}) {
-	l.logger.Warnw(msg, keysAndValues...)
+func Warnw(msg string, keysAndValues ...interface{}) {
+	logger.Warnw(msg, keysAndValues...)
 }
 
-func (l *Logger) Error(args ...interface{}) {
-	l.logger.Error(args...)
+func Error(args ...interface{}) {
+	logger.Error(args...)
 }
 
-func (l *Logger) Errorf(template string, args ...interface{}) {
-	l.logger.Errorf(template, args...)
+func Errorf(template string, args ...interface{}) {
+	logger.Errorf(template, args...)
 }
 
-func (l *Logger) Errorw(msg string, keysAndValues ...interface{}) {
-	l.logger.Errorw(msg, keysAndValues...)
+func Errorw(msg string, keysAndValues ...interface{}) {
+	logger.Errorw(msg, keysAndValues...)
 }
 
-func (l *Logger) Panic(args ...interface{}) {
-	l.logger.Panic(args...)
+func Panic(args ...interface{}) {
+	logger.Panic(args...)
 }
 
-func (l *Logger) Panicf(template string, args ...interface{}) {
-	l.logger.Panicf(template, args...)
+func Panicf(template string, args ...interface{}) {
+	logger.Panicf(template, args...)
 }
 
-func (l *Logger) Panicw(msg string, keysAndValues ...interface{}) {
-	l.logger.Panicw(msg, keysAndValues...)
+func Panicw(msg string, keysAndValues ...interface{}) {
+	logger.Panicw(msg, keysAndValues...)
 }
