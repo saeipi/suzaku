@@ -1,8 +1,8 @@
 server_ip: 0.0.0.0
 
 tsl:
-  cert_file: configs/tls/ca.pem
-  key_file: configs/tls/ca.key
+  cert_file: ./configs/tls/ca.pem
+  key_file: ./configs/tls/ca.key
 
 etcd:
   address: [ etcd:2379 ]
@@ -95,7 +95,7 @@ jwt_auth:
   is_dev: true
 
 casbin:
-  model-path: configs/casbin/rbac_model.conf
+  model-path: ./configs/casbin/rbac_model.conf
 
 environment:
   run_model: dev
@@ -142,7 +142,7 @@ credential: #腾讯cos，发送图片、视频、文件时需要，请自行申�
     secret_key: 360001969
 
 log:
-  storage_location: ../logs/
+  storage_location: ./logs/
   rotation_time: 24
   rotation_count: 3 #日志数量
   #日志级别 6表示全都打印，测试阶段建议设置为6
