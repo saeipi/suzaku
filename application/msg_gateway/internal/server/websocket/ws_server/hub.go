@@ -10,6 +10,7 @@ import (
 type Hub struct {
 	rwLock   sync.RWMutex
 	upgrader websocket.Upgrader
+	cfg      *WsConfig
 	// Register requests from the clients.
 	register chan *Client
 	// Unregister requests from clients. 只在Client调用closeConn()函数时触发
@@ -23,18 +24,23 @@ type Hub struct {
 	// 访问间隔
 	access map[string]int64
 	// 在线连接数
-	onlineConnections int64
+	onlineConnections int
 }
 
-func NewHub(handler MessageHandler) *Hub {
+func NewHub(cfg *WsConfig, handler MessageHandler) *Hub {
+	cfg.WriteWaitTime = time.Duration(cfg.WriteWait) * time.Millisecond
+	cfg.PongWaitTime = time.Duration(cfg.PongWait) * time.Millisecond
+	cfg.PingPeriodTime = time.Duration(cfg.PingPeriod) * time.Millisecond
+
 	return &Hub{
 		upgrader: websocket.Upgrader{
-			ReadBufferSize:  WsReadBufferSize,
-			WriteBufferSize: WsWriteBufferSize,
+			ReadBufferSize:  cfg.ReadBufferSize,
+			WriteBufferSize: cfg.WriteBufferSize,
 		},
-		register:   make(chan *Client, WsChanServerRegister),
-		unregister: make(chan *Client, WsChanServerUnregister),
-		read:       make(chan *Message, WsChanServerReadMessage),
+		cfg:        cfg,
+		register:   make(chan *Client, cfg.ChanServerRegister),
+		unregister: make(chan *Client, cfg.ChanServerUnregister),
+		read:       make(chan *Message, cfg.ChanServerReadMessage),
 		handler:    handler,
 		clients:    make(map[string]map[int32]*Client),
 		access:     make(map[string]int64),
@@ -197,7 +203,7 @@ func (h *Hub) wsHandler(c *gin.Context) {
 		err        error
 	)
 
-	if h.onlineConnections >= WsMaxConnections {
+	if h.onlineConnections >= h.cfg.MaxConnections {
 		httpErr(c, ErrorWsExceedMaxConnections, ErrorCodeWsExceedMaxConnections)
 		return
 	}
@@ -219,7 +225,7 @@ func (h *Hub) wsHandler(c *gin.Context) {
 	lastTs, _ = h.access[userID]
 	h.access[userID] = nowTs
 	h.rwLock.Unlock()
-	if nowTs-lastTs < WsMinimumTimeInterval {
+	if nowTs-lastTs < h.cfg.MinimumTimeInterval {
 		httpErr(c, ErrorCodeRequestTooMundane, ErrorCodeHttpRequestTooMundane)
 		return
 	}

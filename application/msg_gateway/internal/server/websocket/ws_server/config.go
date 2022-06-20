@@ -1,9 +1,8 @@
 package ws_server
 
-import (
-	"time"
-)
+import "time"
 
+/*
 const (
 	// Time allowed to write a message to the peer.
 	WsWriteWait = 10 * time.Second
@@ -21,9 +20,27 @@ const (
 	WsChanServerRegister    = 1000
 	WsChanServerUnregister  = 1000
 	WsMaxConnections        = 20000
-	// TODO: 测试值
-	WsMinimumTimeInterval = -1 //5000
+	WsMinimumTimeInterval   = -1 //5000 TODO: 测试值
 )
+*/
+type WsConfig struct {
+	WriteWait             int           `json:"write_wait"`
+	WriteWaitTime         time.Duration `json:"write_wait_time"`
+	PongWait              int           `json:"pong_wait"`
+	PongWaitTime          time.Duration `json:"pong_wait_time"`
+	PingPeriod            int           `json:"ping_period"`
+	PingPeriodTime        time.Duration `json:"ping_period_time"`
+	MaxMessageSize        int64         `json:"max_message_size"`
+	ReadBufferSize        int           `json:"read_buffer_size"`
+	WriteBufferSize       int           `json:"write_buffer_size"`
+	HeaderLength          int           `json:"header_length"`
+	ChanClientSendMessage int           `json:"chan_client_send_message"`
+	ChanServerReadMessage int           `json:"chan_server_read_message"`
+	ChanServerRegister    int           `json:"chan_server_register"`
+	ChanServerUnregister  int           `json:"chan_server_unregister"`
+	MaxConnections        int           `json:"max_connections"`
+	MinimumTimeInterval   int64         `json:"minimum_time_interval"`
+}
 
 const (
 	WsMsgCodePing  = 10001

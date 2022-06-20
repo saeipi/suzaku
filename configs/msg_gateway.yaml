@@ -1,12 +1,21 @@
 name: msg_gateway
-ws_server:
+ws_server: # 时间单位为（毫秒）
   name: ws_server
   port: 17778
   write_wait: 10000
-  pong_wait: 60000
+  pong_wait: 600000
+  ping_period: 540000
   max_message_size: 4096
-  read_buffer_size: 1024
-  write_buffer_size: 1024
+  read_buffer_size: 4096
+  write_buffer_size: 4096
+  header_length: 4
+  chan_client_send_message: 100
+  chan_server_read_message: 1000
+  chan_server_register: 1000
+  chan_server_unregister: 1000
+  max_connections: 20000
+  minimum_time_interval: -1
+
 rpc_server:
   name: online_message_relay
   port: 10400

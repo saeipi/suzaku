@@ -33,7 +33,7 @@ func newClient(hub *Hub, conn *websocket.Conn, userID string, platformID int32) 
 		userID:     userID,
 		platformID: platformID,
 		onlineAt:   time.Now().UnixNano() / 1e6,
-		send:       make(chan []byte, WsChanClientSendMessage),
+		send:       make(chan []byte, hub.cfg.ChanClientSendMessage),
 		close:      make(chan []byte),
 	}
 }
@@ -67,9 +67,9 @@ func (c *Client) read() {
 		err     error
 	)
 
-	c.conn.SetReadLimit(WsMaxMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(WsPongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(WsPongWait)); return nil })
+	c.conn.SetReadLimit(c.hub.cfg.MaxMessageSize)
+	c.conn.SetReadDeadline(time.Now().Add(c.hub.cfg.PongWaitTime))
+	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(c.hub.cfg.PongWaitTime)); return nil })
 
 	for {
 		if msgType, bufMsg, err = c.conn.ReadMessage(); err != nil {
@@ -101,7 +101,7 @@ func (c *Client) read() {
 }
 
 func (c *Client) write() {
-	pingTicker := time.NewTicker(WsPingPeriod)
+	pingTicker := time.NewTicker(c.hub.cfg.PingPeriodTime)
 	defer func() {
 		pingTicker.Stop()
 		c.closeConn()
@@ -120,7 +120,7 @@ func (c *Client) write() {
 				// chan 已关闭
 				return
 			}
-			if err = c.conn.SetWriteDeadline(time.Now().Add(WsWriteWait)); err != nil {
+			if err = c.conn.SetWriteDeadline(time.Now().Add(c.hub.cfg.WriteWaitTime)); err != nil {
 				c.conn.WriteMessage(websocket.CloseMessage, WsMsgBufClose)
 				return
 			}
@@ -128,7 +128,7 @@ func (c *Client) write() {
 				return
 			}
 		case <-pingTicker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(WsWriteWait))
+			c.conn.SetWriteDeadline(time.Now().Add(c.hub.cfg.WriteWaitTime))
 			if err = c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}

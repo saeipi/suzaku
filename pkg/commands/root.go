@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"suzaku/examples/zaplog/logger"
+	"suzaku/pkg/common/logger"
 	"syscall"
 	"time"
 )
@@ -34,14 +34,12 @@ func Run(inst MainInstance) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	logger.Info("instance initialize...")
 	err := inst.Initialize()
-	logger.Info("inited")
 	if err != nil {
 		panic(err)
 		return
 	}
-
+	logger.Info("inited")
 	GMainInst = inst
 
 	logger.Info("instance run_loop...")

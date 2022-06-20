@@ -1,24 +1,26 @@
 package ws_server
 
 import (
+	"suzaku/application/msg_gateway/internal/config"
 	"suzaku/internal/server/gin_server"
 	"suzaku/pkg/common/middleware"
 )
 
 type WServer struct {
-	port int
-	hub  *Hub
-	gin  *gin_server.GinServer
+	cfg *config.WsServer
+	hub *Hub
+	gin *gin_server.GinServer
 }
 
-func NewServer(port int, handler MessageHandler) *WServer {
+func NewServer(cfg *config.WsServer, handler MessageHandler) *WServer {
 	var (
-		ws *WServer
+		ws    *WServer
+		wscfg *WsConfig
 	)
 	ws = &WServer{
-		port: port,
-		hub:  NewHub(handler),
-		gin:  gin_server.NewGinServer(),
+		cfg: cfg,
+		hub: NewHub(wscfg, handler),
+		gin: gin_server.NewGinServer(),
 	}
 	ws.gin.Engine.Use(middleware.JwtAuth())
 	ws.gin.Engine.GET("/", ws.hub.wsHandler)
@@ -27,7 +29,7 @@ func NewServer(port int, handler MessageHandler) *WServer {
 
 func (ws *WServer) Run() {
 	ws.hub.Run()
-	ws.gin.Run(ws.port)
+	go ws.gin.Run(ws.cfg.Port)
 }
 
 func (ws *WServer) Send(userID string, msg []byte) (resultCode int) {
