@@ -39,7 +39,7 @@ func (s *Server) Initialize() (err error) {
 	logCfg.Directory = svrCfg.Name
 	logger.InitLogger(logCfg)
 
-	s.wsSvr = ws_server.NewServer(svrCfg.WsServer.Port, msg_handler.NewMsgHandler(&svrCfg.RPCServer))
+	s.wsSvr = ws_server.NewServer(&svrCfg.WsServer, msg_handler.NewMsgHandler(&svrCfg.RPCServer))
 	s.rpcSvr = grpc.NewRPCServer(svrCfg.RPCServer, s.wsSvr)
 	return
 }

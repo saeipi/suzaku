@@ -3,6 +3,7 @@ package ws_server
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 )
 
 func bytes2Int(b []byte) int {
@@ -34,5 +35,16 @@ func encode(msgCode int, body []byte) (buf []byte) {
 		buffer.Write(body)
 	}
 	buf = buffer.Bytes()
+	return
+}
+
+func copy(src interface{}, dst ...interface{}) (err error) {
+	jsonStr, _ := json.Marshal(src)
+	for _, v := range dst {
+		err = json.Unmarshal(jsonStr, v)
+		if err != nil {
+			return
+		}
+	}
 	return
 }

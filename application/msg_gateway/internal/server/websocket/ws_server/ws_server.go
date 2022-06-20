@@ -15,11 +15,12 @@ type WServer struct {
 func NewServer(cfg *config.WsServer, handler MessageHandler) *WServer {
 	var (
 		ws    *WServer
-		wscfg *WsConfig
+		wsCfg WsConfig
 	)
+	copy(cfg, &wsCfg)
 	ws = &WServer{
 		cfg: cfg,
-		hub: NewHub(wscfg, handler),
+		hub: NewHub(&wsCfg, handler),
 		gin: gin_server.NewGinServer(),
 	}
 	ws.gin.Engine.Use(middleware.JwtAuth())

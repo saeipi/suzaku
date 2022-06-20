@@ -114,3 +114,14 @@ func TryToInt(value interface{}) int {
 	}
 	return 0
 }
+
+func Copy(src interface{}, dst ...interface{}) (err error) {
+	jsonStr, _ := json.Marshal(src)
+	for _, v := range dst {
+		err = json.Unmarshal(jsonStr, v)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
