@@ -183,7 +183,7 @@ callback:
   callback_after_send_single_msg:
     enable: false
     callback_time_out: 2
-  callbackBeforeSendGroupMsg:
+  callback_before_send_group_msg:
     enable: false
     callback_time_out: 2
     callback_failed_continue: true

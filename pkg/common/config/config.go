@@ -246,7 +246,7 @@ type Callback struct {
 	CallbackURL                 string                      `yaml:"callback_url"`
 	CallbackBeforeSendSingleMsg CallbackBeforeSendSingleMsg `yaml:"callback_before_send_single_msg"`
 	CallbackAfterSendSingleMsg  CallbackAfterSendSingleMsg  `yaml:"callback_after_send_single_msg"`
-	CallbackBeforeSendGroupMsg  CallbackBeforeSendGroupMsg  `yaml:"callbackBeforeSendGroupMsg"`
+	CallbackBeforeSendGroupMsg  CallbackBeforeSendGroupMsg  `yaml:"callback_before_send_group_msg"`
 	CallbackAfterSendGroupMsg   CallbackAfterSendGroupMsg   `yaml:"callback_after_send_group_msg"`
 	CallbackWordFilter          CallbackWordFilter          `yaml:"callback_word_filter"`
 }
