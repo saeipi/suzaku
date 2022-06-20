@@ -3,11 +3,11 @@ package commands
 import (
 	"errors"
 	"flag"
-	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
 	"runtime"
+	"suzaku/examples/zaplog/logger"
 	"syscall"
 	"time"
 )
@@ -34,9 +34,9 @@ func Run(inst MainInstance) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	fmt.Println("instance initialize...")
+	logger.Info("instance initialize...")
 	err := inst.Initialize()
-	fmt.Println("inited")
+	logger.Info("inited")
 	if err != nil {
 		panic(err)
 		return
@@ -44,17 +44,17 @@ func Run(inst MainInstance) {
 
 	GMainInst = inst
 
-	fmt.Println("instance run_loop...")
+	logger.Info("instance run_loop...")
 	go inst.RunLoop()
 
 	GSignal = make(chan os.Signal, 1)
 	signal.Notify(GSignal, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-GSignal
-		fmt.Println("get a signal %s", s.String())
+		logger.Info("get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			fmt.Println("instance exit...")
+			logger.Info("instance exit...")
 			inst.Destroy()
 			time.Sleep(time.Second)
 			return
