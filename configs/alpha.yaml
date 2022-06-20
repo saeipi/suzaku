@@ -4,14 +4,6 @@ tsl:
   cert_file: configs/tls/ca.pem
   key_file: configs/tls/ca.key
 
-alarm:
-  file: /var/log/suzaku/alarm
-  level: 6
-
-abnormal:
-  file: /var/log/suzaku/abnormal.log
-  level: 0
-
 etcd:
   address: [ 127.0.0.1:2379 ]
   schema: suzaku
@@ -55,6 +47,7 @@ rpc_register_name: #rpc注册服务名，默认即可
   online_message_relay_name: OnlineMessageRelay
   group_name: Group
   auth_name: Auth
+  cache_name: Cache
   statistics_name: Statistics
   message_cms_name: MessageCMS
   admin_cms_name: AdminCMS
@@ -63,7 +56,7 @@ mysql:
   address: [ 127.0.0.1:3306 ]
   username: root
   password:
-  db: szk
+  db: sdb
   max_open_conn: 20
   max_idle_conn: 10
   conn_lifetime: 120000
@@ -83,7 +76,7 @@ redis:
   address: [ 127.0.0.1:6379 ]
   db: 0
   password: ""
-  prefix: "szk:"
+  prefix: "SZK:"
 
 kafka:
   ws2mschat:
@@ -96,12 +89,6 @@ kafka:
     msgToMongo: mongo
     msgToMySql: mysql
     msgToPush: push
-
-mq:
-  host: 127.0.0.1
-  port: 5672
-  user: guest
-  password: guest
 
 jwt_auth:
   auth_method: cookie
@@ -165,6 +152,24 @@ log:
   es_password: ""
   es_switch: false
 
+abnormal:
+  file: /var/log/suzaku/abnormal.log
+  level: 0
+
+zap:
+  encoder: console
+  directory: suzaku
+  show_line: true
+  encode_level: CapitalColor
+  stacktrace_key: stacktrace
+  log_stdout: true
+  segment:
+    maxsize: 500
+    maxage: 500
+    maxbackups: 500
+    localtime: true
+    compress: true
+
 secret: saeipi
 
 callback:
@@ -189,3 +194,8 @@ callback:
     enable: false
     callback_time_out: 2
     callback_failed_continue: true
+
+#ios系统推送声音以及标记计数
+ios_push:
+  push_sound: "xxx"
+  badge_count: true
