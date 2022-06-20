@@ -85,7 +85,7 @@ services:
     command: redis-server --requirepass suzaku2022 --appendonly yes
 
   minio:
-    image: "wurstmeister/minio:latest"
+    image: "bitnami/minio:latest"
     container_name: minio
     restart: always
     ports:
@@ -111,7 +111,7 @@ services:
       TZ: Asia/Shanghai
 
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: 'wurstmeister/kafka:latest'
     container_name: kafka
     restart: always
     ports:
