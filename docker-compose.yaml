@@ -30,10 +30,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./volumes/mysql/mysql-master/data:/var/lib/mysql
-      - ./volumes/mysql/mysql-master/conf:/etc/mysql
-      - ./volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
-      - ./volumes/mysql/mysql-master/log:/var/log/mysql
+      - ./Volumes/data/docker/volumes/mysql/mysql-master/data:/var/lib/mysql
+      - ./Volumes/data/docker/volumes/mysql/mysql-master/conf:/etc/mysql
+      - ./Volumes/data/docker/volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
+      - ./Volumes/data/docker/volumes/mysql/mysql-master/log:/var/log/mysql
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: suzaku2022
@@ -55,9 +55,9 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./volumes/mongodb/data/db:/data/db
-      - ./volumes/mongodb/data/conf:/etc/mongo
-      - ./volumes/mongodb/data/logs:/data/logs
+      - ./Volumes/data/docker/volumes/mongodb/data/db:/data/db
+      - ./Volumes/data/docker/volumes/mongodb/data/conf:/etc/mongo
+      - ./Volumes/data/docker/volumes/mongodb/data/logs:/data/logs
     environment:
       TZ: Asia/Shanghai
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -74,10 +74,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./volumes/redis/data:/data
-      - ./volumes/redis/conf:/usr/local/etc/redis
+      - ./Volumes/data/docker/volumes/redis/data:/data
+      - ./Volumes/data/docker/volumes/redis/conf:/usr/local/etc/redis
       # redis config file
-      - ./volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+      - ./Volumes/data/docker/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
     environment:
       TZ: Asia/Shanghai
     sysctls:
@@ -159,10 +159,7 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - ./volumes/suzaku/configs:/suzaku/configs
-      - ./volumes/suzaku/scripts:/suzaku/scripts
-      - ./volumes/suzaku/build:/suzaku/build
-      - ./volumes/suzaku/logs:/suzaku/logs
+      - ./Volumes/data/docker/volumes/suzaku/logs:/suzaku/build/logs
     depends_on:
       - mysql
       - mongo
