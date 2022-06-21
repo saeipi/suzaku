@@ -1,4 +1,4 @@
-# docker build -t suzaku:1.0.1 .
+# docker build -t suzaku:1.0.3 .
 # docker run it d64194bce4e /bin/bash
 # docker rmi -f $(docker images -q -f dangling=true)
 # export -p
