@@ -23,7 +23,7 @@ type PersistentConsumerHandler struct {
 func NewPersistentConsumerHandler() (handler *PersistentConsumerHandler) {
 	handler = &PersistentConsumerHandler{msgHandle: make(map[string]MessageHandler)}
 	handler.msgHandle[config.Config.Kafka.Ws2Mschat.Topic] = handler.MessageHandler
-	handler.persistentConsumerGroup = kafka.NewMConsumerGroup(&kafka.MConsumerGroupConfig{KafkaVersion: sarama.V0_10_2_0,
+	handler.persistentConsumerGroup = kafka.NewMConsumerGroup(&kafka.MConsumerGroupConfig{KafkaVersion: sarama.V3_1_0_0,
 		OffsetsInitial: sarama.OffsetNewest, IsReturnErr: false}, []string{config.Config.Kafka.Ws2Mschat.Topic},
 		config.Config.Kafka.Ws2Mschat.Addr, config.Config.Kafka.ConsumerGroupID.MsgToMySQL)
 	return

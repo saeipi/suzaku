@@ -19,7 +19,7 @@ type PushConsumerHandler struct {
 func NewPushConsumerHandler() (handler *PushConsumerHandler) {
 	handler = &PushConsumerHandler{msgHandle: make(map[string]MessageHandler)}
 	handler.msgHandle[config.Config.Kafka.Ms2Pschat.Topic] = handler.handleMs2PsChat
-	handler.pushConsumerGroup = kafka.NewMConsumerGroup(&kafka.MConsumerGroupConfig{KafkaVersion: sarama.V0_10_2_0,
+	handler.pushConsumerGroup = kafka.NewMConsumerGroup(&kafka.MConsumerGroupConfig{KafkaVersion: sarama.V3_1_0_0,
 		OffsetsInitial: sarama.OffsetNewest, IsReturnErr: false},
 		[]string{config.Config.Kafka.Ms2Pschat.Topic}, config.Config.Kafka.Ms2Pschat.Addr,
 		config.Config.Kafka.ConsumerGroupID.MsgToPush)
