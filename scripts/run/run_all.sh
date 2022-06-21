@@ -39,3 +39,8 @@ sleep 1
 echo "run rpc_user ..."
 nohup ./rpc_user > ../logs/rpc_user.log 2>&1 &
 sleep 1
+
+sleep 10
+# fixme prevents the suzaku service exit after execution in the docker container
+tail -f /dev/null
+# ping 8.8.8.8
