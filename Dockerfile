@@ -2,7 +2,7 @@
 # docker run it d64194bce4e /bin/bash
 # docker rmi -f $(docker images -q -f dangling=true)
 # export -p
-# docker run -it -p 10000:10000 -p 17778:17778 --network suzaku_szk-network --name szk b1e396e11d21
+# docker run -it -p 10000:10000 -p 17778:17778 --network suzaku_szk-network --name szk b1e396e11d21 --privileged=true -v /volumes/suzaku/logs:/suzaku/build/logs
 
 #======================== 1 golang ========================#
 ## 源镜像
