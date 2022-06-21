@@ -41,7 +41,8 @@ ENV AppRunMode prod
 RUN apt-get install -y vim curl tzdata gawk
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
-RUN mkdir -p /suzaku
+RUN mkdir -p /suzaku/build/logs
+
 COPY --from=build /suzaku/build /suzaku/build
 COPY --from=build /suzaku/configs /suzaku/configs
 
