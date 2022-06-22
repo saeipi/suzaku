@@ -22,4 +22,6 @@ gRpc: 1.45.0
 Docker Desktop: 4.5.0
 Docker Engine: 20.10.12
 Docker-Compose: 1.29.2
+Prometheus: 2.36.2
+Grafana: 9.0.1
 ```
