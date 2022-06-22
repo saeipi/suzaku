@@ -1,0 +1,13 @@
+sudo vim /etc/hosts
+
+127.0.0.1       mysql
+127.0.0.1       mongo
+127.0.0.1       redis
+127.0.0.1       minio
+127.0.0.1       zookeeper
+127.0.0.1       kafka
+127.0.0.1       etcd
+127.0.0.1       suzaku
+127.0.0.1       prometheus
+127.0.0.1       grafana
+127.0.0.1       suzaku-api

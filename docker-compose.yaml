@@ -85,7 +85,7 @@ services:
     command: redis-server --requirepass suzaku2022 --appendonly yes
 
   minio:
-    image: "bitnami/minio:latest"
+    image: bitnami/minio
     container_name: minio
     restart: always
     ports:
@@ -99,7 +99,7 @@ services:
       MINIO_ROOT_PASSWORD: suzaku2022
 
   zookeeper:
-    image: 'wurstmeister/zookeeper:latest'
+    image: wurstmeister/zookeeper
     container_name: zookeeper
     restart: always
     ports:
@@ -111,7 +111,7 @@ services:
       TZ: Asia/Shanghai
 
   kafka:
-    image: 'wurstmeister/kafka:latest'
+    image: wurstmeister/kafka
     container_name: kafka
     restart: always
     ports:
@@ -147,6 +147,26 @@ services:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
 #    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 --initial-advertise-peer-urls http://0.0.0.0:2380 --initial-cluster etcd0=http://0.0.0.0:2380 --initial-cluster-token tkn --initial-cluster-state new
+
+  prometheus:
+    image: bitnami/prometheus
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ./configs/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    ports:
+      - 9090:9090
+    networks:
+      - szk-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - szk-network
 
   suzaku:
     image: suzaku:1.0.3
