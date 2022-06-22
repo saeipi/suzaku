@@ -19,6 +19,7 @@ ElasticSearch: 8.1.3
 MinIO: RELEASE.2022-04-16T04-26-02Z
 ETCD: 3.5.2
 gRpc: 1.45.0
-Docker Client/Server: 20.10.12
+Docker Desktop: 4.5.0
+Docker Engine: 20.10.12
 Docker-Compose: 1.29.2
 ```
