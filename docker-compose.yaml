@@ -192,7 +192,7 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
-      - .configs/docker/elk/elasticsearch/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - ./configs/docker/elk/elasticsearch/certs:/usr/share/elasticsearch/config/certs
       - /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
       #- /Volumes/data/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
       - /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
@@ -241,7 +241,7 @@ services:
     volumes:
       - ./configs/docker/elk/logstash/config/logstash.yaml:/usr/share/logstash/config/logstash.yaml
       - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs/
+      - ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs
     #privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -259,7 +259,7 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
-      - ./configs/docker/elk/filebeat/certs/client-ca.cer:/etc/filebeat/config/certs/client-ca.cer
+      - ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
       #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
       #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
     #privileged: true
