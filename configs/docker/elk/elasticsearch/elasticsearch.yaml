@@ -14,4 +14,4 @@ http.cors.allow-headers: Authorization
 # 开启xpack认证
 xpack.security.enabled: true
 xpack.license.self_generated.type: basic
-xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.enabled: false
