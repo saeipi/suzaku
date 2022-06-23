@@ -11,7 +11,26 @@ http.cors.enabled: true
 # 当设置允许跨域，默认为*,表示支持所有域名，如果我们只是允许某些网站能访问，那么可以使用正则表达式。比如只允许本地地址。 /https?:\/\/localhost(:[0-9]+)?/
 http.cors.allow-origin: "*"
 http.cors.allow-headers: Authorization
+
 # 开启xpack认证
 xpack.security.enabled: true
-xpack.license.self_generated.type: basic
-xpack.security.transport.ssl.enabled: false
+
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: certs/elastic-certificates.p12
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12
+xpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12
+xpack.security.http.ssl.client_authentication: optional
+
+xpack.security.authc.realms.pki.pki1.order: 1
+
+xpack.security.http.ssl.key: certs/client.key
+xpack.security.http.ssl.certificate: certs/client.cer
+xpack.security.http.ssl.certificate_authorities: certs/client-ca.cer
+xpack.security.transport.ssl.key: certs/client.key
+xpack.security.transport.ssl.certificate: certs/client.cer
+xpack.security.transport.ssl.certificate_authorities: certs/client-ca.cer
+

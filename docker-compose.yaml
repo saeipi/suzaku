@@ -39,7 +39,7 @@ services:
       - /Volumes/data/suzaku/volumes/mysql/mysql-master/conf:/etc/mysql
       - /Volumes/data/suzaku/volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
       - /Volumes/data/suzaku/volumes/mysql/mysql-master/log:/var/log/mysql
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: suzaku2022
@@ -64,7 +64,7 @@ services:
       - /Volumes/data/suzaku/volumes/mongodb/data/db:/data/db
       - /Volumes/data/suzaku/volumes/mongodb/data/conf:/etc/mongo
       - /Volumes/data/suzaku/volumes/mongodb/data/logs:/data/logs
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -85,7 +85,7 @@ services:
       - /Volumes/data/suzaku/volumes/redis/conf:/usr/local/etc/redis
       # redis config file
       - /Volumes/data/suzaku/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
     sysctls:
@@ -102,7 +102,7 @@ services:
     networks:
       - szk-network
 #    network_mode: "host"
-    privileged: true
+    #privileged: true
     environment:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: suzaku2022
@@ -116,7 +116,7 @@ services:
     networks:
       - szk-network
 #    network_mode: "host"
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
 
@@ -130,7 +130,7 @@ services:
     networks:
       - szk-network
 #    network_mode: "host"
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       KAFKA_BROKER_ID: 0
@@ -153,7 +153,7 @@ services:
     networks:
       - szk-network
 #    network_mode: "host"
-    privileged: true
+    #privileged: true
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
@@ -169,7 +169,7 @@ services:
       - szk-network
     volumes:
       - ./configs/docker/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-    privileged: true
+    #privileged: true
 
   grafana:
     image: grafana/grafana:9.0.1
@@ -192,17 +192,18 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
-      #- /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
+      - .configs/docker/elk/elasticsearch/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
       #- /Volumes/data/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      #- /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
-      #- /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
-    privileged: true
+      - /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
+      - /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: suzaku2022
       discovery.type: single-node
-      network.publish_host: _eth0_
+      #network.publish_host: _eth0_
 
   kibana:
     image: kibana:8.2.3
@@ -215,11 +216,14 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/kibana/kibana.yaml:/usr/share/kibana/config/kibana.yaml
-    privileged: true
+      - ./configs/docker/elk/kibana/certs:/etc/kibana/config/certs
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      KIBANA_HOME: /usr/share/kibana
+      KIBANA_PATH_CONFIG: /etc/kibana
+      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     depends_on:
       - elasticsearch
 
@@ -237,11 +241,12 @@ services:
     volumes:
       - ./configs/docker/elk/logstash/config/logstash.yaml:/usr/share/logstash/config/logstash.yaml
       - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    privileged: true
+      - ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs/
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     depends_on:
       - elasticsearch
 
@@ -254,13 +259,14 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
+      - ./configs/docker/elk/filebeat/certs/client-ca.cer:/etc/filebeat/config/certs/client-ca.cer
       #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
       #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
-    privileged: true
+    #privileged: true
     environment:
       TZ: Asia/Shanghai
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     depends_on:
       - elasticsearch
 
@@ -276,7 +282,7 @@ services:
 #    network_mode: "host"
     volumes:
       - /Volumes/data/suzaku/volumes/logs:/var/log/suzaku
-    privileged: true
+    #privileged: true
     depends_on:
       - mysql
       - mongo
@@ -286,6 +292,7 @@ services:
       - etcd
       - kibana
       - logstash
+      - filebeat
 
 networks:
   szk-network:

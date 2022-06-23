@@ -1,10 +1,16 @@
 server.name: kibana
 server.host: 0.0.0.0
-elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.hosts: ["https://elasticsearch:9200"]
 monitoring.ui.container.elasticsearch.enabled: true
 
 elasticsearch.username: elastic
 elasticsearch.password: suzaku2022
+
+xpack.security.enabled: true
+elasticsearch.ssl.certificate: /etc/kibana/config/certs/client.cer
+elasticsearch.ssl.key: /etc/kibana/config/certs/client.key
+elasticsearch.ssl.certificateAuthorities: /etc/kibana/config/certs/client-ca.cer
+elasticsearch.ssl.verificationMode: certificate
 
 # 开启中文模式
 i18n.locale: "zh-CN"

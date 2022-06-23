@@ -15,3 +15,5 @@ filebeat.inputs:
     tail_files: true # 从文件尾开始监控读取新增的内容而不是从文件开始重新读取发送 适用于未处理过的文件，已处理过的需要删除注册表文件
 output.logstash:
   hosts: ["logstash:7701"] #发 送输出到logstash；host的公网ip，也可以填写docker-compose.yml中logstash的容器名如 "logstash:7701"（前提是同属于一个docker network，且类型为bridge）
+ssl.certificate_authorities:
+  - /etc/filebeat/config/certs/client-ca.cer
