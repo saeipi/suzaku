@@ -63,7 +63,7 @@ func InitLogger(cfg *Zap) {
 		return level >= zap.DPanicLevel
 	})
 
-	directory := "./logs/" + cfg.Directory
+	directory := "/var/log/suzaku/" + cfg.Directory
 	cores := [...]zapcore.Core{
 		getEncoderCore(fmt.Sprintf("%s/debug.log", directory), debugLevel, cfg),
 		getEncoderCore(fmt.Sprintf("%s/info.log", directory), infoLevel, cfg),

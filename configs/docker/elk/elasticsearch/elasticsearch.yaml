@@ -1,0 +1,17 @@
+# 集群名称
+cluster.name: "es-cluster"
+# 绑定host，0.0.0.0代表当前节点的ip
+network.host: 0.0.0.0
+
+# 启用数据收集
+xpack.monitoring.collection.enabled: true
+
+# 是否支持跨域，默认为false
+http.cors.enabled: true
+# 当设置允许跨域，默认为*,表示支持所有域名，如果我们只是允许某些网站能访问，那么可以使用正则表达式。比如只允许本地地址。 /https?:\/\/localhost(:[0-9]+)?/
+http.cors.allow-origin: "*"
+http.cors.allow-headers: Authorization
+# 开启xpack认证
+xpack.security.enabled: true
+xpack.license.self_generated.type: basic
+xpack.security.transport.ssl.enabled: true
