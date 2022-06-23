@@ -11,3 +11,8 @@ sudo vim /etc/hosts
 127.0.0.1       prometheus
 127.0.0.1       grafana
 127.0.0.1       suzaku-api
+
+127.0.0.1       elasticsearch
+127.0.0.1       kibana
+127.0.0.1       logstash
+127.0.0.1       filebeat

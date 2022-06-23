@@ -35,10 +35,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - /opt/suzaku/volumes/mysql/mysql-master/data:/var/lib/mysql
-      - /opt/suzaku/volumes/mysql/mysql-master/conf:/etc/mysql
-      - /opt/suzaku/volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
-      - /opt/suzaku/volumes/mysql/mysql-master/log:/var/log/mysql
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/data:/var/lib/mysql
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/conf:/etc/mysql
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/log:/var/log/mysql
     privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -61,9 +61,9 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - /opt/suzaku/volumes/mongodb/data/db:/data/db
-      - /opt/suzaku/volumes/mongodb/data/conf:/etc/mongo
-      - /opt/suzaku/volumes/mongodb/data/logs:/data/logs
+      - /Volumes/data/suzaku/volumes/mongodb/data/db:/data/db
+      - /Volumes/data/suzaku/volumes/mongodb/data/conf:/etc/mongo
+      - /Volumes/data/suzaku/volumes/mongodb/data/logs:/data/logs
     privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -81,10 +81,10 @@ services:
       - szk-network
 #    network_mode: "host"
     volumes:
-      - /opt/suzaku/volumes/redis/data:/data
-      - /opt/suzaku/volumes/redis/conf:/usr/local/etc/redis
+      - /Volumes/data/suzaku/volumes/redis/data:/data
+      - /Volumes/data/suzaku/volumes/redis/conf:/usr/local/etc/redis
       # redis config file
-      - /opt/suzaku/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+      - /Volumes/data/suzaku/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
     privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -191,11 +191,11 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
-      - /opt/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
-      #- /opt/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      - /opt/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
-      - /opt/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
+      - ./configs/docker/elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
+      #- /Volumes/data/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+      - /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
+      - /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
     privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -214,7 +214,7 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/kibana/kibana.yaml:/usr/share/kibana/config/kibana.yaml
+      - ./configs/docker/elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     privileged: true
     environment:
       TZ: Asia/Shanghai
@@ -230,11 +230,12 @@ services:
     ports:
       - 7701:7701
       - 7702:7702
+      - 7703:7703
     networks:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/logstash/config/logstash.yaml:/usr/share/logstash/config/logstash.yaml
+      - ./configs/docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     privileged: true
     environment:
@@ -248,16 +249,13 @@ services:
     image: elastic/filebeat:8.2.3
     container_name: filebeat
     restart: always
-    ports:
-      - 7701:7701
-      - 7702:7702
     networks:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml:ro
-      - /opt/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
-      - /opt/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
+      - ./configs/docker/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
+      - /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
     privileged: true
     environment:
       TZ: Asia/Shanghai
