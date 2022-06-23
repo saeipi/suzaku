@@ -24,6 +24,9 @@ version: "3"
 #  mkdir -p /opt/suzaku/volumes
 #  mkdir -p /var/log/suzaku
 
+#  elasticsearch:bin/elasticsearch-create-enrollment-token --scope kibana
+#  kibana:bin/kibana-verification-code
+
 services:
   mysql:
     image: mysql:8.0.29
@@ -192,11 +195,17 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
-      - ./configs/docker/elk/elasticsearch/certs:/usr/share/elasticsearch/config/certs
-      - /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
+      - ./configs/docker/elk/elasticsearch/certs/client-ca.cer:/usr/share/elasticsearch/config/certs/client-ca.cer
+      - ./configs/docker/elk/elasticsearch/certs/client.cer:/usr/share/elasticsearch/config/certs/client.cer
+      - ./configs/docker/elk/elasticsearch/certs/client.key:/usr/share/elasticsearch/config/certs/client.key
+      - ./configs/docker/elk/elasticsearch/certs/client.p12:/usr/share/elasticsearch/config/certs/client.p12
+      - ./configs/docker/elk/elasticsearch/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+      - ./configs/docker/elk/elasticsearch/certs/elastic-stack-ca.p12:/usr/share/elasticsearch/config/certs/elastic-stack-ca.p12
+      #- ./configs/docker/elk/elasticsearch/certs:/usr/share/elasticsearch/config/certs
+      #- /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
       #- /Volumes/data/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      - /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
-      - /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
+      #- /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
+      #- /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
     #privileged: true
     environment:
       TZ: Asia/Shanghai
