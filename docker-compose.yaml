@@ -269,6 +269,7 @@ services:
     volumes:
       - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
       - ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
+      - /Volumes/data/suzaku/volumes/logs:/usr/share/filebeat/logs
       #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
       #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
     #privileged: true

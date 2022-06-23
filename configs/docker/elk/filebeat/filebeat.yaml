@@ -2,7 +2,7 @@ filebeat.inputs:
   - type: log # 输入filebeat的类型 这里设置为log(默认)，即具体路径的日志  另外属性值还有stdin(键盘输入)、kafka、redis，具体可参考官网
     enabled: true # 开启filebeat采集
     paths: # 配置采集全局路径，后期可根据不同模块去做区分
-      - /var/log/suzaku/*.log # 指定需要收集的日志文件的路径(容器内的文件路径，所以我们需要挂载)
+      - /usr/share/filebeat/logs/*.log # 指定需要收集的日志文件的路径(容器内的文件路径，所以我们需要挂载)
     fields: # 可想输出的日志添加额外的信息
       log_type: suzaku
     ## 设置符合同一个格式时多行合并输出
