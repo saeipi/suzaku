@@ -281,7 +281,6 @@ services:
       - etcd
       - kibana
       - logstash
-      - filebeat
 
   filebeat:
     image: elastic/filebeat:8.2.3
