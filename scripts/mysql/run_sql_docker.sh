@@ -5,6 +5,12 @@ MYSQL_HOST="127.0.0.1"
 MYSQL_PORT=3306
 MYSQL_DB="sdb"
 
+folder="dbs"
+for file in ${folder}/*
+do
+  mysql -h${MYSQL_HOST} -P${MYSQL_PORT} -u${MYSQL_USERNAME} -p${MYSQL_PASSWORD} < ${file}
+done
+
 folder="sqls"
 for file in ${folder}/*
 do
