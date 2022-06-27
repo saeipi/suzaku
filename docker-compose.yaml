@@ -29,7 +29,7 @@ version: "3"
 
 #  curl --user elastic:suzaku2022 -X GET localhost:9200/_cat
 #  docker logs kibana
-
+#  ./bin/elasticsearch-setup-passwords auto
 services:
   mysql:
     image: mysql:8.0.29
@@ -247,14 +247,18 @@ services:
       - 7701:7701
       - 7702:7702
       - 7703:7703
+      - 5044:5044
+      - 9600:9600
     networks:
       - szk-network
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/config/conf.d/logstash.conf
+      - /Volumes/data/suzaku/volumes/logstash/logs:/usr/share/logstash/logs
+      #- ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       #- ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs
-    #privileged: true
+    privileged: true
     environment:
       TZ: Asia/Shanghai
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"

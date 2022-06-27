@@ -15,7 +15,6 @@ http.cors.allow-headers: Authorization
 # 开启xpack认证
 xpack.security.enabled: true
 xpack.license.self_generated.type: basic
-
 #xpack.security.http.ssl.enabled: true
 #xpack.security.http.ssl.keystore.path: certs/elastic-certificates.p12
 #xpack.security.http.ssl.truststore.path: certs/elastic-certificates.p12
