@@ -259,27 +259,6 @@ services:
     depends_on:
       - elasticsearch
 
-  filebeat:
-    image: elastic/filebeat:8.2.3
-    container_name: filebeat
-    restart: always
-    networks:
-      - szk-network
-    #    network_mode: "host"
-    volumes:
-      - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
-      - ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
-      - /Volumes/data/suzaku/volumes/logs:/usr/share/filebeat/logs
-      #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
-      #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
-    #privileged: true
-    environment:
-      TZ: Asia/Shanghai
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-
   suzaku:
     image: suzaku:1.0.3
     container_name: suzaku
@@ -304,11 +283,32 @@ services:
       - logstash
       - filebeat
 
+  filebeat:
+    image: elastic/filebeat:8.2.3
+    container_name: filebeat
+    restart: always
+    networks:
+      - szk-network
+    #    network_mode: "host"
+    volumes:
+      - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
+      - ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
+      - /Volumes/data/suzaku/volumes/logs:/usr/share/filebeat/logs
+      #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
+      #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - suzaku
+
 networks:
   szk-network:
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 192.168.254.0/24
-          ip_range: 192.168.254.0/24
+        - subnet: 192.168.8.0/24
+          ip_range: 192.168.8.0/24

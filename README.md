@@ -24,4 +24,8 @@ Docker Engine: 20.10.12
 Docker-Compose: 1.29.2
 Prometheus: 2.36.2
 Grafana: 9.0.1
+Elasticsearch: 8.2.3
+Kibana: 8.2.3
+Logstash: 8.2.3
+Filebeat: 8.2.3
 ```
