@@ -27,6 +27,9 @@ version: "3"
 #  elasticsearch:bin/elasticsearch-create-enrollment-token --scope kibana
 #  kibana:bin/kibana-verification-code
 
+#  curl --user elastic:suzaku2022 -X GET localhost:9200/_cat
+#  docker logs kibana
+
 services:
   mysql:
     image: mysql:8.0.29
