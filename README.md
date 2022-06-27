@@ -15,7 +15,6 @@ Redis: 6.2.7
 Java: 1.8.0_265
 Zookeeper: 3.6.3
 Kafka: 3.1.0
-ElasticSearch: 8.1.3
 MinIO: RELEASE.2022-04-16T04-26-02Z
 ETCD: 3.5.2
 gRpc: 1.45.0
