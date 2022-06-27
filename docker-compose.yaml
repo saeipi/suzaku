@@ -171,7 +171,7 @@ services:
     networks:
       - szk-network
     volumes:
-      - ./configs/docker/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./configs/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     #privileged: true
 
   grafana:
@@ -194,7 +194,7 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yaml
+      - ./configs/docker/elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./configs/docker/elk/elasticsearch/certs/client-ca.cer:/usr/share/elasticsearch/config/certs/client-ca.cer
       - ./configs/docker/elk/elasticsearch/certs/client.cer:/usr/share/elasticsearch/config/certs/client.cer
       - ./configs/docker/elk/elasticsearch/certs/client.key:/usr/share/elasticsearch/config/certs/client.key
@@ -224,7 +224,7 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/kibana/kibana.yaml:/usr/share/kibana/config/kibana.yaml
+      - ./configs/docker/elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
       - ./configs/docker/elk/kibana/certs:/etc/kibana/config/certs
     #privileged: true
     environment:
@@ -248,7 +248,7 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/logstash/config/logstash.yaml:/usr/share/logstash/config/logstash.yaml
+      - ./configs/docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs
     #privileged: true
@@ -290,7 +290,7 @@ services:
       - szk-network
     #    network_mode: "host"
     volumes:
-      - ./configs/docker/elk/filebeat/filebeat.yaml:/usr/share/filebeat/filebeat.yaml
+      - ./configs/docker/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
       - /Volumes/data/suzaku/volumes/logs:/usr/share/filebeat/logs
       #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
