@@ -254,9 +254,9 @@ services:
     #    network_mode: "host"
     volumes:
       - ./configs/docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/config/conf.d/logstash.conf
-      - /Volumes/data/suzaku/volumes/logstash/logs:/usr/share/logstash/logs
-      #- ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      #- ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/config/conf.d/logstash.conf
+      #- /Volumes/data/suzaku/volumes/logstash/logs:/usr/share/logstash/logs
+      - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       #- ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs
     privileged: true
     environment:
