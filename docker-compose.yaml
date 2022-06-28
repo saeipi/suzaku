@@ -30,6 +30,7 @@ version: "3"
 #  curl --user elastic:suzaku2022 -X GET localhost:9200/_cat
 #  docker logs kibana
 #  ./bin/elasticsearch-setup-passwords auto
+#  ./bin/elasticsearch-setup-passwords interactive
 services:
   mysql:
     image: mysql:8.0.29
