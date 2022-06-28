@@ -13,4 +13,4 @@ elasticsearch.password: suzaku2022
 #elasticsearch.ssl.key: /etc/kibana/config/certs/client.key
 #elasticsearch.ssl.certificateAuthorities: /etc/kibana/config/certs/client-ca.cer
 #elasticsearch.ssl.verificationMode: certificate
-#i18n.locale: "zh-CN"
+i18n.locale: "zh-CN"
