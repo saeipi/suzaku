@@ -6,7 +6,7 @@ xpack.monitoring.elasticsearch.hosts: ["http://elasticsearch:9200"]
 
 #xpack.monitoring.enabled: true
 #xpack:monitoring:elasticsearch.url: [ "http://elasticsearch:9200"]
-xpack.monitoring.elasticsearch.username: logstash_system
+xpack.monitoring.elasticsearch.username: elastic
 xpack.monitoring.elasticsearch.password: suzaku2022
 
 #path.config: /usr/share/logstash/config/conf.d/*.conf
