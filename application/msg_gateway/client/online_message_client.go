@@ -1,4 +1,4 @@
-package client
+package msg_gateway_client
 
 type OnlineMessageClient interface {
 }

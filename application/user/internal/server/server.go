@@ -2,20 +2,17 @@ package server
 
 import (
 	"flag"
-	"suzaku/application/msg_gateway/internal/config"
-	"suzaku/application/msg_gateway/internal/server/grpc"
-	"suzaku/application/msg_gateway/internal/server/websocket/msg_handler"
-	"suzaku/application/msg_gateway/internal/server/websocket/ws_server"
+	"suzaku/application/user/internal/config"
+	"suzaku/application/user/internal/server/grpc"
 	"suzaku/pkg/common/logger"
 	"suzaku/pkg/utils"
 )
 
-var appConfig = flag.String("a", "./configs/msg_gateway.yaml", "the config file")
+var appConfig = flag.String("a", "./configs/user.yaml", "the config file")
 var loggerConfig = flag.String("l", "./configs/logger.yaml", "the logger config file")
 
 type Server struct {
-	wsSvr  *ws_server.WServer
-	rpcSvr *grpc.RPCServer
+	rpcSvr *grpc.UserRpcServer
 }
 
 func New() *Server {
@@ -23,6 +20,7 @@ func New() *Server {
 }
 
 func (s *Server) Initialize() (err error) {
+
 	var (
 		svrCfg = new(config.Config)
 		logCfg = new(logger.Zap)
@@ -35,18 +33,15 @@ func (s *Server) Initialize() (err error) {
 	if err != nil {
 		panic(err)
 	}
-
 	logCfg.Directory = svrCfg.Name
 	logger.InitLogger(logCfg)
 
-	s.wsSvr = ws_server.NewServer(&svrCfg.WsServer, msg_handler.NewMsgHandler(&svrCfg.RPCServer))
-	s.rpcSvr = grpc.NewRPCServer(svrCfg.RPCServer, s.wsSvr)
+	s.rpcSvr = grpc.NewUserRpcServer(svrCfg.RPCServer)
 	return
 }
 
 func (s *Server) RunLoop() {
-	s.wsSvr.Run()
-	go s.rpcSvr.Run()
+	s.rpcSvr.Run()
 }
 
 func (s *Server) Destroy() {
