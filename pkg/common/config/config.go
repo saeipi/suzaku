@@ -205,6 +205,7 @@ type Abnormal struct {
 }
 type Zap struct {
 	Encoder       string  `json:"encoder" yaml:"encoder"`               // 编码器 console Or json
+	Path          string  `json:"path"  yaml:"path"`                    // 日志路径
 	Directory     string  `json:"directory"  yaml:"directory"`          // 日志文件夹
 	ShowLine      bool    `json:"show_line" yaml:"show_line"`           // 显示行
 	EncodeLevel   string  `json:"encode_level" yaml:"encode_level"`     // 编码级

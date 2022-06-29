@@ -18,6 +18,7 @@ const (
 
 type Zap struct {
 	Encoder       string  `json:"encoder" yaml:"encoder"`               // 编码器 console Or json
+	Path          string  `json:"path"  yaml:"path"`                    // 日志路径
 	Directory     string  `json:"directory"  yaml:"directory"`          // 日志文件夹
 	ShowLine      bool    `json:"show_line" yaml:"show_line"`           // 显示行
 	EncodeLevel   string  `json:"encode_level" yaml:"encode_level"`     // 编码级
@@ -63,13 +64,17 @@ func InitLogger(cfg *Zap) {
 		return level >= zap.DPanicLevel
 	})
 
-	directory := "/var/log/suzaku/" + cfg.Directory
+	path := cfg.Path + cfg.Directory
+	if isDir(path) == false {
+		mkdir(path)
+	}
+
 	cores := [...]zapcore.Core{
-		getEncoderCore(fmt.Sprintf("%s/debug.log", directory), debugLevel, cfg),
-		getEncoderCore(fmt.Sprintf("%s/info.log", directory), infoLevel, cfg),
-		getEncoderCore(fmt.Sprintf("%s/warn.log", directory), warnLevel, cfg),
-		getEncoderCore(fmt.Sprintf("%s/error.log", directory), errorLevel, cfg),
-		getEncoderCore(fmt.Sprintf("%s/panic.log", directory), panicLevel, cfg),
+		getEncoderCore(fmt.Sprintf("%s/debug.log", path), debugLevel, cfg),
+		getEncoderCore(fmt.Sprintf("%s/info.log", path), infoLevel, cfg),
+		getEncoderCore(fmt.Sprintf("%s/warn.log", path), warnLevel, cfg),
+		getEncoderCore(fmt.Sprintf("%s/error.log", path), errorLevel, cfg),
+		getEncoderCore(fmt.Sprintf("%s/panic.log", path), panicLevel, cfg),
 	}
 
 	//zapcore.NewTee(cores ...zapcore.Core) zapcore.Core
@@ -82,6 +87,22 @@ func InitLogger(cfg *Zap) {
 	}
 	logger = log.Sugar()
 	logger.Sync()
+}
+
+func isDir(path string) bool {
+	s, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return s.IsDir()
+}
+func mkdir(path string) (err error) {
+	err = os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		return
+	}
+	err = os.Chmod(path, os.ModePerm)
+	return
 }
 
 func getEncoderCore(filename string, level zapcore.LevelEnabler, cfg *Zap) (core zapcore.Core) {

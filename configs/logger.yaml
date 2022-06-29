@@ -1,4 +1,5 @@
 encoder: console
+path: /var/log/suzaku/
 directory: suzaku
 show_line: true
 encode_level: CapitalColor
