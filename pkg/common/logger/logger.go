@@ -38,7 +38,7 @@ type Segment struct {
 }
 
 var (
-	logger *zap.SugaredLogger
+	Log *zap.SugaredLogger
 )
 
 func New(cfgPath string, directory string) {
@@ -104,13 +104,13 @@ func InitLogger(cfg *Zap) {
 	//zapcore.NewTee(cores ...zapcore.Core) zapcore.Core
 	//NewTee创建一个Core，将日志条目复制到两个或更多的底层Core中
 
-	log := zap.New(zapcore.NewTee(cores[:]...))
+	logger := zap.New(zapcore.NewTee(cores[:]...))
 	//用文件名、行号和zap调用者的函数名注释每条消息
 	if cfg.ShowLine == true {
-		log = log.WithOptions(zap.AddCaller())
+		logger = logger.WithOptions(zap.AddCaller())
 	}
-	logger = log.Sugar()
-	logger.Sync()
+	Log = logger.Sugar()
+	Log.Sync()
 }
 
 func isDir(path string) bool {
@@ -207,6 +207,7 @@ func customEncodeCaller(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEn
 	enc.AppendString("[" + caller.TrimmedPath() + "]")
 }
 
+/*
 func Debug(args ...interface{}) {
 	logger.Debug(args...)
 }
@@ -266,3 +267,4 @@ func Panicf(template string, args ...interface{}) {
 func Panicw(msg string, keysAndValues ...interface{}) {
 	logger.Panicw(msg, keysAndValues...)
 }
+*/

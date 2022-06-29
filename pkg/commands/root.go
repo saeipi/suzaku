@@ -39,20 +39,20 @@ func Run(inst MainInstance) {
 		panic(err)
 		return
 	}
-	logger.Info("inited")
+	logger.Log.Info("inited")
 	GMainInst = inst
 
-	logger.Info("instance run_loop...")
+	logger.Log.Info("instance run_loop...")
 	go inst.RunLoop()
 
 	GSignal = make(chan os.Signal, 1)
 	signal.Notify(GSignal, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		s := <-GSignal
-		logger.Info("get a signal %s", s.String())
+		logger.Log.Info("get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
-			logger.Info("instance exit...")
+			logger.Log.Info("instance exit...")
 			inst.Destroy()
 			time.Sleep(time.Second)
 			return
