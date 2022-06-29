@@ -20,22 +20,14 @@ func New() *Server {
 }
 
 func (s *Server) Initialize() (err error) {
-
 	var (
 		svrCfg = new(config.Config)
-		logCfg = new(logger.Zap)
 	)
 	err = utils.YamlToStruct(*appConfig, svrCfg)
 	if err != nil {
 		panic(err)
 	}
-	err = utils.YamlToStruct(*loggerConfig, logCfg)
-	if err != nil {
-		panic(err)
-	}
-	logCfg.Directory = svrCfg.Name
-	logger.InitLogger(logCfg)
-
+	logger.New(*loggerConfig, svrCfg.Name)
 	s.rpcSvr = grpc.NewUserRpcServer(svrCfg.RPCServer)
 	return
 }

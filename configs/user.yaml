@@ -1,4 +1,4 @@
-name: msg_gateway
+name: user
 rpc_server:
   name: user
   port: 10100

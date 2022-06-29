@@ -5,6 +5,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	yaml "gopkg.in/yaml.v2"
+	"io/ioutil"
 	"os"
 	"time"
 )
@@ -38,6 +40,28 @@ type Segment struct {
 var (
 	logger *zap.SugaredLogger
 )
+
+func New(cfgPath string, directory string) {
+	var (
+		logCfg = new(Zap)
+	)
+	err := yamlToStruct(cfgPath, logCfg)
+	if err != nil {
+		panic(err)
+	}
+	logCfg.Directory = directory
+	InitLogger(logCfg)
+}
+
+func yamlToStruct(file string, target interface{}) (err error) {
+	var content []byte
+	content, err = ioutil.ReadFile(file)
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(content, target)
+	return
+}
 
 func InitLogger(cfg *Zap) {
 	// zap.LevelEnablerFunc(func(lev zapcore.Level) bool 用来划分不同级别的输出
