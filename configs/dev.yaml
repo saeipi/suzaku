@@ -5,7 +5,7 @@ tsl:
   key_file: ./configs/tls/ca.key
 
 etcd:
-  address: [ 127.0.0.1:2379 ]
+  address: [ etcd:2379 ]
   schema: suzaku
   read_timeout: 5000
   write_timeout: 5000
@@ -53,9 +53,9 @@ rpc_register_name: #rpc注册服务名，默认即可
   admin_cms_name: AdminCMS
 
 mysql:
-  address: [ 127.0.0.1:3306 ]
+  address: [ mysql:3306 ]
   username: root
-  password:
+  password: suzaku2022
   db: sdb
   max_open_conn: 20
   max_idle_conn: 10
@@ -63,9 +63,9 @@ mysql:
   charset: utf8
 
 mongo:
-  address: [ 127.0.0.1:27017 ]
+  address: [ mongo:27017 ]
   username: admin
-  password: 123456
+  password: suzaku2022
   db: suzaku
   direct: false
   timeout: 5000
@@ -73,17 +73,17 @@ mongo:
   retain_chat_records: 3650
 
 redis:
-  address: [ 127.0.0.1:6379 ]
+  address: [ redis:6379 ]
   db: 0
-  password: ""
+  password: suzaku2022
   prefix: "SZK:"
 
 kafka:
   ws2mschat:
-    addr: [ 127.0.0.1:9092 ]
+    addr: [ kafka:9092 ]
     topic: "ws2ms_chat"
   ms2pschat:
-    addr: [ 127.0.0.1:9092 ]
+    addr: [ kafka:9092 ]
     topic: "ms2ps_chat"
   consumer_group_id:
     msgToMongo: mongo
@@ -104,7 +104,7 @@ monlog:
   batch_size: 100
   commit_timeout: 1000
   mongo:
-    address: [ 127.0.0.1:27017 ]
+    address: [ mongo:27017 ]
     username: admin
     password: 123456
     db: suzaku
@@ -158,6 +158,7 @@ abnormal:
 
 zap:
   encoder: console
+  path: /var/log/suzaku/
   directory: suzaku
   show_line: true
   encode_level: CapitalColor
