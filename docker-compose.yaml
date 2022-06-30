@@ -34,6 +34,8 @@ version: "3"
 #  ./bin/elasticsearch-setup-passwords auto
 #  ./bin/elasticsearch-setup-passwords interactive
 
+# redis-cli -p 6379 -c  # 集群方式连接
+
 services:
   mysql:
     image: mysql:8.0.29

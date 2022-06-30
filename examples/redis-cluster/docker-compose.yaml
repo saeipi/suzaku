@@ -1,0 +1,127 @@
+version: "3"
+
+# docker-compose -f docker-compose-test.yaml up -d # 指定配置文件启动
+# redis-cli -p 6379 -c                              # 集群方式连接
+
+networks:
+  redis-network:
+    name: redis-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/24
+services:
+  redis-cluster:
+    image: redis:7.0.2
+    command: 'redis-cli --cluster create
+    172.18.0.11:6379 172.18.0.12:6379 172.18.0.13:6379 172.18.0.14:6379
+    172.18.0.15:6379 172.18.0.16:6379 172.18.0.17:6379 172.18.0.18:6379
+    --cluster-yes --cluster-replicas 1'
+    networks:
+      - redis-network
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+      - redis4
+      - redis5
+      - redis6
+      - redis7
+      - redis8
+  redis1:
+    image: redis:7.0.2
+    container_name: redis1
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.11
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis1:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis2:
+    image: redis:7.0.2
+    container_name: redis2
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.12
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis2:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis3:
+    image: redis:7.0.2
+    container_name: redis3
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.13
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis3:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis4:
+    image: redis:7.0.2
+    container_name: redis4
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.14
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis4:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis5:
+    image: redis:7.0.2
+    container_name: redis5
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.15
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis5:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis6:
+    image: redis:7.0.2
+    container_name: redis6
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.16
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis6:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis7:
+    image: redis:7.0.2
+    container_name: redis7
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.17
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis7:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+  redis8:
+    image: redis:7.0.2
+    container_name: redis8
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      redis-network:
+        ipv4_address: 172.18.0.18
+    expose:
+      - 6379
+    volumes:
+      - /Volumes/data/suzaku/volumes/cluster/redis/redis8:/data
+      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
