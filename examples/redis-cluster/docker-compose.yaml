@@ -60,17 +60,17 @@ services:
     networks:
       - redis-network
     depends_on:
-      - redis1
-      - redis2
-      - redis3
-      - redis4
-      - redis5
-      - redis6
-      - redis7
-      - redis8
-  redis1:
+      - redis-node-01
+      - redis-node-02
+      - redis-node-03
+      - redis-node-04
+      - redis-node-05
+      - redis-node-06
+      - redis-node-07
+      - redis-node-08
+  redis-node-01:
     image: redis:7.0.2
-    container_name: redis1
+    container_name: redis-node-01
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -80,9 +80,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis1:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis2:
+  redis-node-02:
     image: redis:7.0.2
-    container_name: redis2
+    container_name: redis-node-02
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -92,9 +92,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis2:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis3:
+  redis-node-03:
     image: redis:7.0.2
-    container_name: redis3
+    container_name: redis-node-03
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -104,9 +104,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis3:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis4:
+  redis-node-04:
     image: redis:7.0.2
-    container_name: redis4
+    container_name: redis-node-04
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -116,9 +116,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis4:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis5:
+  redis-node-05:
     image: redis:7.0.2
-    container_name: redis5
+    container_name: redis-node-05
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -128,9 +128,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis5:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis6:
+  redis-node-06:
     image: redis:7.0.2
-    container_name: redis6
+    container_name: redis-node-06
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -140,9 +140,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis6:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis7:
+  redis-node-07:
     image: redis:7.0.2
-    container_name: redis7
+    container_name: redis-node-07
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
@@ -152,9 +152,9 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis7:/data
       - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
-  redis8:
+  redis-node-08:
     image: redis:7.0.2
-    container_name: redis8
+    container_name: redis-node-08
     command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       redis-network:
