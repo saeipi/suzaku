@@ -1,7 +1,46 @@
 version: "3"
 
-# docker-compose -f docker-compose-test.yaml up -d # 指定配置文件启动
+# docker-compose -f docker-compose-test.yaml up -d  # 指定配置文件启动
 # redis-cli -p 6379 -c                              # 集群方式连接
+# 127.0.0.1:6379> cluster nodes                     # 检查集群
+
+#  saeipi@ayumi ~ % docker exec -it ccd3abfcaa6b /bin/bash
+#  root@ccd3abfcaa6b:/data# redis-cli --cluster check 172.18.0.16:6379
+#  172.18.0.11:6379 (7b01cbd5...) -> 1 keys | 4096 slots | 1 slaves.
+#  172.18.0.13:6379 (2c62b51a...) -> 0 keys | 4096 slots | 1 slaves.
+#  172.18.0.12:6379 (9a15c322...) -> 0 keys | 4096 slots | 1 slaves.
+#  172.18.0.14:6379 (02985d9f...) -> 1 keys | 4096 slots | 1 slaves.
+#  [OK] 2 keys in 4 masters.
+#  0.00 keys per slot on average.
+#  >>> Performing Cluster Check (using node 172.18.0.16:6379)
+#S: 474fbe14142e35ad76839b14accc6d348687fffe 172.18.0.16:6379
+#  slots: (0 slots) slave
+#  replicates 7b01cbd528fa84b78c8cc84f0d5866d5ec5e3512
+#M: 7b01cbd528fa84b78c8cc84f0d5866d5ec5e3512 172.18.0.11:6379
+#  slots:[0-4095] (4096 slots) master
+#  1 additional replica(s)
+#M: 2c62b51ada34e937bfbed943a071f098df2a9976 172.18.0.13:6379
+#  slots:[8192-12287] (4096 slots) master
+#  1 additional replica(s)
+#S: c2cc8e3a37b85535e4976c0b2ef88bd3ac94e743 172.18.0.18:6379
+#  slots: (0 slots) slave
+#  replicates 2c62b51ada34e937bfbed943a071f098df2a9976
+#S: 2f407e082e4d892179553e3103accdcec40100f4 172.18.0.15:6379
+#  slots: (0 slots) slave
+#  replicates 02985d9f41dfe1f1100fe1e964e335aa56bef7a3
+#S: 075f0ba32926989431eda85d3b976d7c47859daa 172.18.0.17:6379
+#  slots: (0 slots) slave
+#  replicates 9a15c32250fb03c11c9dfc3f1274e93f411d75bf
+#M: 9a15c32250fb03c11c9dfc3f1274e93f411d75bf 172.18.0.12:6379
+#  slots:[4096-8191] (4096 slots) master
+#  1 additional replica(s)
+#M: 02985d9f41dfe1f1100fe1e964e335aa56bef7a3 172.18.0.14:6379
+#  slots:[12288-16383] (4096 slots) master
+#  1 additional replica(s)
+#  [OK] All nodes agree about slots configuration.
+#  >>> Check for open slots...
+#  >>> Check slots coverage...
+#  [OK] All 16384 slots covered.
 
 networks:
   redis-network:
