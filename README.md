@@ -8,7 +8,7 @@ Golang聊天服务端
 
 ```
 OS: Mac OS X 10.15.7
-Golang: 1.17.10
+Golang: 1.18.3
 MySQL: 8.0.29
 MongoDB: 5.0.9
 Redis: 6.2.7

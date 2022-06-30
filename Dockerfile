@@ -8,7 +8,7 @@
 
 #======================== 1 golang ========================#
 ## 源镜像
-FROM golang:1.17 as build
+FROM golang:1.18 as build
 
 ## 设置环境变量
 ENV GO111MODULE=on \
