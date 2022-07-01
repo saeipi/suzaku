@@ -67,7 +67,7 @@ services:
       - $PWD/scripts/master-02:/docker-entrypoint-initdb.d #挂载master脚本
       - /Volumes/data/suzaku/volumes/cluster/mysql/master-02/data:/var/lib/mysql
     command:
-      -  "--server-id=2"
+      -  "--server-id=100"
       -  "--character-set-server=utf8mb4"
       -  "--collation-server=utf8mb4_unicode_ci"
       -  "--log-bin=mysql-bin"
