@@ -1,4 +1,5 @@
 version: '3'
+# chmod +x *
 
 services:
   nginx:
@@ -9,8 +10,13 @@ services:
     volumes:
       - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf
       - $PWD/scripts/nginx:/docker-entrypoint-init-mysql.d #挂载master脚本
+    command:
+      - "mkdir -p /docker-entrypoint-init-mysql.d"
+      - "chmod +x /docker-entrypoint-init-mysql.d/*"
+      - "./docker-entrypoint-init-mysql.d/master.sh"
     networks:
-      - mysql-network
+      mysql-network:
+        ipv4_address: "10.10.10.2"
     depends_on:
       - mysql-master-01
       - mysql-master-02
@@ -39,11 +45,14 @@ services:
       - $PWD/scripts/master-01:/docker-entrypoint-init-mysql.d #挂载master脚本
       - /Volumes/data/suzaku/volumes/cluster/mysql/master-01/data:/var/lib/mysql
     command:
-      -  "--server-id=10"
-      -  "--character-set-server=utf8mb4"
-      -  "--collation-server=utf8mb4_unicode_ci"
-      -  "--log-bin=mysql-bin"
-      -  "--sync_binlog=1"
+      - "--server-id=10"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--log-bin=mysql-bin"
+      - "--sync_binlog=1"
+      - "mkdir -p /docker-entrypoint-init-mysql.d"
+      - "chmod +x /docker-entrypoint-init-mysql.d/*"
+      - "./docker-entrypoint-init-mysql.d/create_sync_user.sh"
 
   mysql-master-02:
     image: mysql:8.0.29
@@ -67,11 +76,14 @@ services:
       - $PWD/scripts/master-02:/docker-entrypoint-init-mysql.d #挂载master脚本
       - /Volumes/data/suzaku/volumes/cluster/mysql/master-02/data:/var/lib/mysql
     command:
-      -  "--server-id=100"
-      -  "--character-set-server=utf8mb4"
-      -  "--collation-server=utf8mb4_unicode_ci"
-      -  "--log-bin=mysql-bin"
-      -  "--sync_binlog=1"
+      - "--server-id=100"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "--log-bin=mysql-bin"
+      - "--sync_binlog=1"
+      - "mkdir -p /docker-entrypoint-init-mysql.d"
+      - "chmod +x /docker-entrypoint-init-mysql.d/*"
+      - "./docker-entrypoint-init-mysql.d/create_sync_user.sh"
 
   mysql-slave-01:
     image: mysql:8.0.29
@@ -95,9 +107,12 @@ services:
       - $PWD/scripts/slave-01:/docker-entrypoint-init-mysql.d #挂载slave脚本
       - /Volumes/data/suzaku/volumes/cluster/mysql/slave-01/data:/var/lib/mysql
     command:
-      -  "--server-id=11"
-      -  "--character-set-server=utf8mb4"
-      -  "--collation-server=utf8mb4_unicode_ci"
+      - "--server-id=11"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "mkdir -p /docker-entrypoint-init-mysql.d"
+      - "chmod +x /docker-entrypoint-init-mysql.d/*"
+      - "./docker-entrypoint-init-mysql.d/slave.sh"
 
   mysql-slave-02:
     image: mysql:8.0.29
@@ -121,9 +136,12 @@ services:
       - $PWD/scripts/slave-02:/docker-entrypoint-init-mysql.d #挂载slave脚本
       - /Volumes/data/suzaku/volumes/cluster/mysql/slave-02/data:/var/lib/mysql
     command: #这里需要修改server-id，保证每个mysql容器的server-id都不一样
-      -  "--server-id=101"
-      -  "--character-set-server=utf8mb4"
-      -  "--collation-server=utf8mb4_unicode_ci"
+      - "--server-id=101"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+      - "mkdir -p /docker-entrypoint-init-mysql.d"
+      - "chmod +x /docker-entrypoint-init-mysql.d/*"
+      - "./docker-entrypoint-init-mysql.d/slave.sh"
 
 networks:
   mysql-network:
