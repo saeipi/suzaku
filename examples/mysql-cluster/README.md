@@ -1,6 +1,9 @@
+数据库中间件
+```
 https://github.com/XiaoMi/Gaea
 https://github.com/MyCATApache/Mycat-Server
 https://github.com/apache/shardingsphere
+```
 
 当Mysql容器首次启动时，会在 /docker-entrypoint-initdb.d目录下扫描 .sh，.sql，.sql.gz类型的文件。如果这些类型的文件存在，将执行它们来初始化一个数据库。这些文件会按照字母的顺序执行。默认情况下它们会初始化在启动容器时声明的 MYSQL_DATABASE变量定义的数据库中,例如下面的命令会初始化一个suzaku数据库：
 
