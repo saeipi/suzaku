@@ -16,3 +16,12 @@ sudo vim /etc/hosts
 127.0.0.1       kibana
 127.0.0.1       logstash
 127.0.0.1       filebeat
+
+127.0.0.1       mysql-master-01
+127.0.0.1       mysql-master-02
+127.0.0.1       mysql-master-03
+127.0.0.1       mysql-master-04
+127.0.0.1       mysql-slave-01
+127.0.0.1       mysql-slave-02
+127.0.0.1       mysql-slave-03
+127.0.0.1       mysql-slave-04
