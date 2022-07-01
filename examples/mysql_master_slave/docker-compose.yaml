@@ -1,0 +1,92 @@
+version: '3'
+services:
+  mysql-slave-lb:
+    image: nginx:1.23.0
+    container_name: mysql-slave-lb
+    ports:
+      - 3307:3307
+    volumes:
+      - $PWD/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - mysql
+    depends_on:
+      - mysql-master
+      - mysql-slave1
+      - mysql-slave2
+  mysql-master:
+    image: mysql:8.0.29
+    container_name: mysql-master
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MASTER_SYNC_USER: "sync_admin" #设置脚本中定义的用于同步的账号
+      MASTER_SYNC_PASSWORD: "123456" #设置脚本中定义的用于同步的密码
+      ADMIN_USER: "root" #当前容器用于拥有创建账号功能的数据库账号
+      ADMIN_PASSWORD: "123456"
+      ALLOW_HOST: "10.10.%.%" #允许同步账号的host地址
+      TZ: "Asia/Shanghai" #解决时区问题
+    ports:
+      - 3306:3306
+    networks:
+      mysql:
+        ipv4_address: "10.10.10.10" #固定ip，因为从库在连接master的时候，需要设置host
+    privileged: true
+    volumes:
+      - $PWD/master:/docker-entrypoint-initdb.d #挂载master脚本
+      - /Volumes/data/suzaku/volumes/cluster/mysql/master/data:/var/lib/mysql
+    command:
+      -  "--server-id=1"
+      -  "--character-set-server=utf8mb4"
+      -  "--collation-server=utf8mb4_unicode_ci"
+      -  "--log-bin=mysql-bin"
+      -  "--sync_binlog=1"
+  mysql-slave1:
+    image: mysql:8.0.29
+    container_name: mysql-slave1
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      SLAVE_SYNC_USER: "sync_admin" #用于同步的账号，由master创建
+      SLAVE_SYNC_PASSWORD: "123456"
+      ADMIN_USER: "root"
+      ADMIN_PASSWORD: "123456"
+      MASTER_HOST: "10.10.10.10" #master地址，开启主从同步需要连接master
+      TZ: "Asia/Shanghai" #设置时区
+    networks:
+      mysql:
+        ipv4_address: "10.10.10.20" #固定ip
+    privileged: true
+    volumes:
+      - $PWD/slave1:/docker-entrypoint-initdb.d #挂载slave脚本
+      - /Volumes/data/suzaku/volumes/cluster/mysql/slave1/data:/var/lib/mysql
+    command:
+      -  "--server-id=2"
+      -  "--character-set-server=utf8mb4"
+      -  "--collation-server=utf8mb4_unicode_ci"
+  mysql-slave2:
+    image: mysql:8.0.29
+    container_name: mysql-slave2
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      SLAVE_SYNC_USER: "sync_admin"
+      SLAVE_SYNC_PASSWORD: "123456"
+      ADMIN_USER: "root"
+      ADMIN_PASSWORD: "123456"
+      MASTER_HOST: "10.10.10.10"
+      TZ: "Asia/Shanghai"
+    networks:
+      mysql:
+        ipv4_address: "10.10.10.30" #固定ip
+    privileged: true
+    volumes:
+      - $PWD/slave2:/docker-entrypoint-initdb.d #挂载slave脚本
+      - /Volumes/data/suzaku/volumes/cluster/mysql/slave2/data:/var/lib/mysql
+    command: #这里需要修改server-id，保证每个mysql容器的server-id都不一样
+      -  "--server-id=3"
+      -  "--character-set-server=utf8mb4"
+      -  "--collation-server=utf8mb4_unicode_ci"
+networks:
+  mysql:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.0.0/16"
