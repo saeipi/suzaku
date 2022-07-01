@@ -29,7 +29,7 @@ services:
       ALLOW_HOST: "10.10.%.%" #允许同步账号的host地址
       TZ: "Asia/Shanghai" #解决时区问题
     ports:
-      - 3306:13306
+      - 13306:3306
     networks:
       mysql-network:
         ipv4_address: "10.10.10.10" #固定ip，因为从库在连接master的时候，需要设置host
@@ -57,7 +57,7 @@ services:
       ALLOW_HOST: "10.10.%.%" #允许同步账号的host地址
       TZ: "Asia/Shanghai" #解决时区问题
     ports:
-      - 3306:13307
+      - 13307:3306
     networks:
       mysql-network:
         ipv4_address: "10.10.10.100" #固定ip，因为从库在连接master的时候，需要设置host
@@ -85,7 +85,7 @@ services:
       MASTER_HOST: "10.10.10.10" #master地址，开启主从同步需要连接master
       TZ: "Asia/Shanghai" #设置时区
     ports:
-      - 3306:13308
+      - 13308:3306
     networks:
       mysql-network:
         ipv4_address: "10.10.10.11" #固定ip
@@ -111,7 +111,7 @@ services:
       MASTER_HOST: "10.10.10.100"
       TZ: "Asia/Shanghai"
     ports:
-      - 3306:13309
+      - 13309:3306
     networks:
       mysql-network:
         ipv4_address: "10.10.10.101" #固定ip
