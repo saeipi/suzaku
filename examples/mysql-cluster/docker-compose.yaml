@@ -1,7 +1,7 @@
 version: '3'
 # chmod +x *
 # chmod -R 777 scripts
-
+# 当Mysql容器首次启动时，会在 /docker-entrypoint-initdb.d目录下扫描 .sh，.sql，.sql.gz类型的文件。如果这些类型的文件存在，将执行它们来初始化一个数据库。这些文件会按照字母的顺序执行。默认情况下它们会初始化在启动容器时声明的 MYSQL_DATABASE变量定义的数据库中。
 services:
   mysql-manager:
     image: mysql:8.0.29
