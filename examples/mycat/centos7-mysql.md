@@ -1,3 +1,9 @@
+
+## 创建容器
+```
+docker run -it --name mycat --privileged=true centos:7.9.2009
+```
+
 ## 准备工作
 ### 安装java---容器
 ```
