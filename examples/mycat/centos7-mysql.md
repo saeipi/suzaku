@@ -204,6 +204,21 @@ yum localinstall mysql80-community-release-el8-4.noarch.rpm
 
 ```
 yum repolist enabled | grep "mysql.*-community.*"
+
+[root@97982c781d21 opt]# yum repolist enabled | grep "mysql.*-community.*"
+Failed to set locale, defaulting to C
+mysql-connectors-community/x86_64       MySQL Connectors Community          128
+mysql-tools-community/x86_64            MySQL Tools Community                51
+mysql80-community/x86_64                MySQL 8.0 Community Server          142
+
+# Failed to set locale, defaulting to C解决方案
+方案一：设置系统环境变量
+echo "export LC_ALL=en_US.UTF-8"  >>  /etc/profile
+source /etc/profile
+
+方案二：设置个人环境变量
+echo "export LC_ALL=en_US.UTF-8"  >>  ~/.bashrc
+source ~/.bashrc
 ```
 
 ```
