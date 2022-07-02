@@ -58,8 +58,10 @@ https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-8.0/mysql-8.0.29-el7-
 
 wget https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.29-linux-glibc2.12-x86_64.tar.xz
 
+.tar后缀：tar -xvf 文件名
 .tar.gz后缀：tar -zxvf 文件名
 .tar.xz后缀：tar -Jxvf 文件名
+
 mv mysql-8.0.29-linux-glibc2.12-x86_64 mysql
 
 mv mysql /usr/local/
@@ -82,6 +84,54 @@ useradd -r -g mysql -s /bin/false mysql
 将用户添加到组中
 chown -R mysql:mysql ./
 ```
+### 解决中文乱码
+```
+[root@a8fedf6f30e8 mysql]# locale
+LANG=
+LC_CTYPE="POSIX"
+LC_NUMERIC="POSIX"
+LC_TIME="POSIX"
+LC_COLLATE="POSIX"
+LC_MONETARY="POSIX"
+LC_MESSAGES="POSIX"
+LC_PAPER="POSIX"
+LC_NAME="POSIX"
+LC_ADDRESS="POSIX"
+LC_TELEPHONE="POSIX"
+LC_MEASUREMENT="POSIX"
+LC_IDENTIFICATION="POSIX"
+LC_ALL=
+
+[root@a8fedf6f30e8 mysql]# export LANG=en_ZW.utf8
+[root@a8fedf6f30e8 mysql]# source /etc/profile
+
+[root@a8fedf6f30e8 mysql]# locale -a|grep utf8
+locale: Cannot set LC_CTYPE to default locale: No such file or directory
+locale: Cannot set LC_MESSAGES to default locale: No such file or directory
+locale: Cannot set LC_COLLATE to default locale: No such file or directory
+en_AG.utf8
+en_AU.utf8
+en_BW.utf8
+en_CA.utf8
+en_DK.utf8
+en_GB.utf8
+en_HK.utf8
+en_IE.utf8
+en_IN.utf8
+en_NG.utf8
+en_NZ.utf8
+en_PH.utf8
+en_SG.utf8
+en_US.utf8
+en_ZA.utf8
+en_ZM.utf8
+en_ZW.utf8
+
+[root@a8fedf6f30e8 mysql]# vim /etc/profile   
+LANG=en_ZW.utf8
+[root@a8fedf6f30e8 mysql]# source /etc/profile
+```
+
 ### 修改mysql配置文件 vi /etc/my.cnf
 ```
 [mysqld]
@@ -110,6 +160,13 @@ port=3306
 default-character-set=utf8
 ```
 
+### 安装依赖库libaio---容器
+```
+yum install -y libaio
+yum -y install numactl.x86_64
+rpm -qa|grep libaio
+```
+
 ### 安装mysql
 ```
 cd /usr/local/mysql/bin/
@@ -119,7 +176,7 @@ cd /usr/local/mysql/bin/
 2022-07-02T06:42:47.925459Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: VkbjIv8dXp(j
 ```
 
-## rpm安装会各种错误
+## 更新秘钥和证书---针对相应错误 跳过
 ```
 rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 yum update ca-certificates -y
@@ -232,4 +289,18 @@ yum install mysql-community-server
 (尝试添加 '--skip-broken' 来跳过无法安装的软件包 或 '--nobest' 来不只使用最佳选择的软件包) 
 
 yum -y update --skip-broken
+```
+
+```
+1、打包压缩
+tar -cvf etc.tar /app/etc   #打包
+tar -zcvf pack.tar.gz pack/  #打包压缩为一个.gz格式的压缩包
+tar -jcvf pack.tar.bz2 pack/ #打包压缩为一个.bz2格式的压缩包
+tar -Jcvf pack.tar.xz pack/  #打包压缩为一个.xz格式的压缩包
+
+2、解包解压
+tar -xvf pack.tar  \# 解包pack.tar文件
+tar -zxvf pack.tar.gz /pack  #解包解压.gz格式的压缩包到pack文件夹
+tar -jxvf pack.tar.bz2 /pack #解包解压.bz2格式的压缩包到pack文件夹
+tar -Jxvf pack.tar.xz /pack  #解包解压.xz格式的压缩包到pack文件夹
 ```
