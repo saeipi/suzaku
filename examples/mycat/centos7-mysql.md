@@ -52,6 +52,10 @@ mysql80-community-release-el8-4.noarch
 ## 源码安装
 ### 下载mysql
 ```
+加速站
+yum update ca-certificates -y
+https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-8.0/mysql-8.0.29-el7-x86_64.tar
+
 wget https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.29-linux-glibc2.12-x86_64.tar.xz
 
 .tar.gz后缀：tar -zxvf 文件名
