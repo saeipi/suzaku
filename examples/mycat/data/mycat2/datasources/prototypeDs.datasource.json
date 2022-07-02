@@ -1,0 +1,17 @@
+{
+  "dbType":"mysql",
+  "idleTimeout":60000,
+  "initSqls":[],
+  "initSqlsGetConnection":true,
+  "instanceType":"READ_WRITE",
+  "maxCon":1000,
+  "maxConnectTimeout":3000,
+  "maxRetryCount":5,
+  "minCon":1,
+  "name":"prototypeDs",
+  "password":"123456",
+  "type":"JDBC",
+  "url":"jdbc:mysql://10.0.115.108:13306/suzaku?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8",
+  "user":"root",
+  "weight":0
+}

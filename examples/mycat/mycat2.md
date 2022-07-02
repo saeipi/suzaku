@@ -1,3 +1,14 @@
+```
+docker run \
+  -it \
+  -p 8066:8066 \
+  -p 1984:1984 \
+  -v ./data/mycat2/conf:/usr/local/mycat/conf \
+  -v ./data/mycat2/logs:/usr/local/mycat/logs \
+  mycat:1.0.1
+```
+
+
 安装mycat2
 ### 安装java
 yum install java
@@ -72,24 +83,55 @@ chmod 755 ./wrapper-linux-x86-64 ./wrapper-linux-x86-32
  
 ### 再次启动
 ./mycat start
-　　
-### 登陆成功
+
+### 验证是否可以链接成功
+```
+mysql -uroot -p123456 -h 10.0.115.108 -P 13306
+mysql -uroot -p123456 -h 10.0.115.108 -P 13307
+mysql -uroot -p123456 -h 10.0.115.108 -P 13308
+mysql -uroot -p123456 -h 10.0.115.108 -P 13309
+```
+
+### 登陆mycat
+```
 mysql -uroot -p123456 -P8066 -hlocalhost
+```
 
 
 ### 配置集群
 #### 创建逻辑库
 ```
-mysql> create database szk;
+mysql> show databases;
+mysql> create database suzaku;
+mysql> drop database suzaku;
 ```
 
 #### 指定数据源
 ```
-vim /usr/local/mycat2/conf/schemas/skz.schema.json
+vim /usr/local/mycat2/conf/schemas/suzaku.schema.json
+
 {
-  "schemaName": "szk",
+  "schemaName": "suzaku",
   "targetName": "prototype"
 }
+
+{
+  "customTables": {},
+  "globalTables": {},
+  "normalTables": {},
+  "schemaName": "suzaku",
+  "shardingTables": {},
+  "targetName": "prototype"
+}
+
+/*+ mycat:createSchema{
+  "customTables":{},
+  "globalTables":{},
+  "normalTables":{},
+  "schemaName":"suzaku",
+  "shardingTables":{},
+  "targetName":"prototype"
+} */;
 ```
 
 #### 增加数据源
@@ -105,6 +147,10 @@ vim /usr/local/mycat2/conf/schemas/skz.schema.json
 
 /*+ mycat:createDataSource{ "name":"rwSepr1","url":"jdbc:mysql://10.0.115.108:13308/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
 
+
+/*+ mycat:showDataSources{} */;
+/*+ mycat:showClusters{} */;
+
 ```
 
 #### 修改集群配置
@@ -112,7 +158,7 @@ vim /usr/local/mycat2/conf/schemas/skz.schema.json
 vim /usr/local/mycat2/conf/clusters/prototype.cluster.json
 
 {
-        "clusterType":"MASTER_SLAVE",
+        "clusterType":"GARELA_CLUSTER",
         "heartbeat":{
                 "heartbeatTimeout":1000,
                 "maxRetry":3,
@@ -129,16 +175,29 @@ vim /usr/local/mycat2/conf/clusters/prototype.cluster.json
         "readBalanceType":"BALANCE_ALL",
         "switchType":"SWITCH"
 }
+
+# 字段含义 
+# clusterType：集群类型 
+可选值: 
+SINGLE_NODE:单一节点 
+MASTER_SLAVE:普通主从 
+GARELA_CLUSTER:garela cluster/PXC 集群 
+MHA：MHA 集群
+MGR：MGR 集群
+
+# readBalanceType：查询负载均衡策略 
+可选值: 
+BALANCE_ALL(默认值) 获取集群中所有数据源 
+BALANCE_ALL_READ 获取集群中允许读的数据源 
+BALANCE_READ_WRITE 获取集群中允许读写的数据源,但允许读的数据源优先 
+BALANCE_NONE 获取集群中允许写数据源,即主节点中选择
+
+# switchType：切换类型 
+可选值: 
+NOT_SWITCH:不进行主从切换 
+SWITCH:进行主从切换
 ```
 
-```
-vim suzaku.schema.json
-
-{
-  "schemaName": "suzaku",
-  "targetName": "prototype"
-}
-```
 #### 重启mycat
 ```
 [root@26a7b7740b39 bin]# cd /usr/local/mycat2/bin
