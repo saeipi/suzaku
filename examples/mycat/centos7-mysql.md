@@ -1,7 +1,8 @@
 
 ## 创建容器
 ```
-docker run -it --name mycat --privileged=true centos:7.9.2009
+docker run -itd --name mycat --privileged=true centos:7.9.2009 /usr/sbin/init
+docker exec -it 26a7b7740b39 /bin/bash
 ```
 
 ## 准备工作
@@ -60,7 +61,7 @@ mysql80-community-release-el8-4.noarch
 ```
 加速站
 yum update ca-certificates -y
-https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-8.0/mysql-8.0.29-el7-x86_64.tar
+wget https://mirrors.tuna.tsinghua.edu.cn/mysql/downloads/MySQL-8.0/mysql-8.0.29-el7-x86_64.tar
 
 wget https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.29-linux-glibc2.12-x86_64.tar.xz
 
@@ -68,7 +69,10 @@ wget https://cdn.mysql.com//Downloads/MySQL-8.0/mysql-8.0.29-linux-glibc2.12-x86
 .tar.gz后缀：tar -zxvf 文件名
 .tar.xz后缀：tar -Jxvf 文件名
 
-mv mysql-8.0.29-linux-glibc2.12-x86_64 mysql
+tar -xvf mysql-8.0.29-el7-x86_64.tar
+tar -zxvf mysql-8.0.29-el7-x86_64.tar.gz
+
+mv mysql-8.0.29-el7-x86_64 mysql
 
 mv mysql /usr/local/
 
@@ -178,8 +182,8 @@ rpm -qa|grep libaio
 cd /usr/local/mysql/bin/
 ./mysqld --initialize --console
 
-密码:VkbjIv8dXp(j
-2022-07-02T06:42:47.925459Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: VkbjIv8dXp(j
+密码:S)oBeoS;q6LV
+2022-07-02T09:04:18.017337Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: S)oBeoS;q6LV
 ```
 
 ## 更新秘钥和证书---针对相应错误 跳过
@@ -221,13 +225,23 @@ Executing /sbin/chkconfig mysqld on
 
 ```
 
+### 设置环境变量
+```
+vim /etc/profile
+
+MYSQL_HOME=/usr/local/mysql
+export PATH=$PATH:$MYSQL_HOME/bin
+
+source /etc/profile
+```
+
 ### 修改root用户登录密码
 ```
 登录mysql
 cd /usr/local/mysql/bin/
 ./mysql -u root -p
 
-mysql> alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
+mysql> alter user 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
 
 ```
 ### 设置允许远程登录
