@@ -1,7 +1,7 @@
 数据库中间件
 ```
 https://github.com/XiaoMi/Gaea
-https://github.com/MyCATApache/Mycat-Server
+https://github.com/MyCATApache/Mycat2
 https://github.com/apache/shardingsphere
 ```
 
