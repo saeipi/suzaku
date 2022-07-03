@@ -1,3 +1,11 @@
+### 参考文档
+```
+MySQL 读写分离
+https://blog.ws.ht/posts/msb/mysql/mysql-read-write-separation/#mycat-2-
+Docker启动
+https://www.yuque.com/books/share/6606b3b6-3365-4187-94c4-e51116894695/umywii
+```
+
 ### 安装java
 yum install java
 mysql自行安装 注：官方推荐mysql版本8.0.14以上 
