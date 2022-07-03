@@ -22,17 +22,17 @@ mkdir /soft
 cd /soft
  
 ### 下载zip包
-wget http://dl.mycat.org.cn/2.0/install-template/mycat2-install-template-1.20.zip
+wget http://dl.mycat.org.cn/2.0/install-template/mycat2-install-template-1.21.zip
  
 ### 解压
-unzip mycat2-install-template-1.20.zip
+unzip mycat2-install-template-1.21.zip
 
 ### 进入到解压后的mycat
 cd mycat/lib
  
 ### 下载最新的jar包
 wget http://dl.mycat.org.cn/2.0/1.21-release/mycat2-1.21-release-jar-with-dependencies.jar
- 
+
 ### 返回mycat
 cd ../../
  
