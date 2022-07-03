@@ -1,0 +1,37 @@
+{
+	"customTables":{},
+	"globalTables":{
+		"registers":{
+			"broadcast":[
+				{
+					"targetName":"c0"
+				},
+				{
+					"targetName":"c1"
+				}
+			],
+			"createTableSQL":"CREATE TABLE `suzaku`.`registers` (\n\t`user_id` varchar(40) NOT NULL DEFAULT '' COMMENT '用户ID 系统生成',\n\t`password` varchar(32) DEFAULT '' COMMENT '密码',\n\t`ex` varchar(255) DEFAULT '' COMMENT '扩展字段',\n\t`created_ts` bigint DEFAULT '0',\n\t`updated_ts` bigint DEFAULT '0',\n\tPRIMARY KEY (`user_id`),\n\tKEY `idx_userId_password` (`user_id`, `password`)\n) BROADCAST ENGINE = InnoDB CHARSET = utf8mb4"
+		}
+	},
+	"normalProcedures":{},
+	"normalTables":{},
+	"schemaName":"suzaku",
+	"shardingTables":{
+		"orders":{
+			"createTableSQL":"CREATE TABLE `suzaku`.orders (\n\tid BIGINT NOT NULL AUTO_INCREMENT,\n\torder_type INT,\n\tcustomer_id INT,\n\tamount DECIMAL(10, 2),\n\tPRIMARY KEY (id),\n\tKEY `id` (`id`)\n) ENGINE = INNODB CHARSET = utf8\nDBPARTITION BY mod_hash(customer_id) DBPARTITIONS 2\nTBPARTITION BY mod_hash(customer_id) TBPARTITIONS 1",
+			"function":{
+				"properties":{
+					"dbNum":"2",
+					"mappingFormat":"c${targetIndex}/suzaku_${dbIndex}/orders_${index}",
+					"tableNum":"1",
+					"tableMethod":"mod_hash(customer_id)",
+					"storeNum":2,
+					"dbMethod":"mod_hash(customer_id)"
+				}
+			},
+			"shardingIndexTables":{}
+		}
+	},
+	"targetName":"suzaku",
+	"views":{}
+}

@@ -1,0 +1,8 @@
+{
+	"dialect":"mysql",
+	"ip":"127.0.0.1",
+	"isolation":3,
+	"password":"123456",
+	"transactionType":"xa",
+	"username":"mycat"
+}
