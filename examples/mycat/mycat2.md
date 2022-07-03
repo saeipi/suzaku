@@ -41,7 +41,8 @@ mv mycat /usr/local/mycat2
  
 ### 进入 /usr/local/mycat2
 cd /usr/local/mycat2
- 
+chmod -R 777 bin
+
 ### 编辑mysql数据库配置，修改当前mysql配置信息
 vim conf/datasources/prototypeDs.datasource.json
 ```
@@ -94,6 +95,7 @@ mysql -uroot -p123456 -h 10.0.115.108 -P 13309
 
 ### 登陆mycat
 ```
+mysql -uroot -p123456 -P8066 -h127.0.0.1
 mysql -uroot -p123456 -P8066 -hlocalhost
 ```
 
@@ -147,10 +149,22 @@ vim /usr/local/mycat2/conf/schemas/suzaku.schema.json
 
 /*+ mycat:createDataSource{ "name":"rwSepr1","url":"jdbc:mysql://10.0.115.108:13308/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
 
-
 /*+ mycat:showDataSources{} */;
+
+# 集群名称以c开头 例如c0
+/*! mycat:createCluster{"name":"c0","masters":["rwSepw1","rwSepw2"],"replicas":["rwSepw2","rwSepr1","rwSepr2"]} */;
 /*+ mycat:showClusters{} */;
 
+
+/*+ mycat:createSchema{
+    // 物理库
+    "schemaName": "suzaku",
+    // 指向集群，或者数据源
+    "targetName": "suzaku",
+    // 这里可以配置数据表相关的信息，在物理表已存在或需要启动时自动创建物理表时配置此项
+    "normalTables": {}
+} */;
+/*+ mycat:showSchemas{} */;
 ```
 
 #### 修改集群配置
