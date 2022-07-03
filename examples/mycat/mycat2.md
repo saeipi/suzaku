@@ -12,18 +12,16 @@ docker run \
 安装mycat2
 ### 安装java
 yum install java
-
 mysql自行安装 注：官方推荐mysql版本8.0.14以上 
 
 ### 新建目录soft
 mkdir /soft
- 
 ### 进入/soft
 cd /soft
  
 ### 下载zip包
 wget http://dl.mycat.org.cn/2.0/install-template/mycat2-install-template-1.21.zip
- 
+
 ### 解压
 unzip mycat2-install-template-1.21.zip
 
@@ -101,11 +99,58 @@ mysql -uroot -p123456 -P8066 -hlocalhost
 
 
 ### 配置集群
+#### 增加数据源
+```
+/*+ mycat:createDataSource{ "name":"rwSepw2", "url":"jdbc:mysql://10.0.115.108:13307/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
+
+
+/*+ mycat:createDataSource{ "name":"rwSepr2","url":"jdbc:mysql://10.0.115.108:13309/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
+
+
+/*+ mycat:createDataSource{ "name":"rwSepw1", "url":"jdbc:mysql://10.0.115.108:13306/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
+
+
+/*+ mycat:createDataSource{ "name":"rwSepr1","url":"jdbc:mysql://10.0.115.108:13308/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
+
+/*+ mycat:showDataSources{} */;
+```
+
+#### 增加集群
+```
+# 集群名称以c开头 例如c0
+/*! mycat:createCluster{"name":"c0","masters":["rwSepw1","rwSepw2"],"replicas":["rwSepw2","rwSepr1","rwSepr2"]} */;
+/*+ mycat:showClusters{} */;
+```
+
 #### 创建逻辑库
 ```
 mysql> show databases;
 mysql> create database suzaku;
 mysql> drop database suzaku;
+
+# 重置配置
+/*+ mycat:resetConfig{} */;
+# 创建用户
+
+
+/*+ mycat:createSchema{
+    // 物理库
+    "schemaName": "suzaku",
+    // 指向集群，或者数据源
+    "targetName": "suzaku",
+    // 这里可以配置数据表相关的信息，在物理表已存在或需要启动时自动创建物理表时配置此项
+    "normalTables": {}
+} */;
+
+/*+ mycat:showSchemas{} */;
+
+/*+ mycat:showUsers */;
+```
+
+#### 重启mycat
+```
+[root@26a7b7740b39 bin]# cd /usr/local/mycat2/bin
+[root@26a7b7740b39 bin]# ./mycat restart
 ```
 
 #### 指定数据源
@@ -134,37 +179,6 @@ vim /usr/local/mycat2/conf/schemas/suzaku.schema.json
   "shardingTables":{},
   "targetName":"prototype"
 } */;
-```
-
-#### 增加数据源
-```
-/*+ mycat:createDataSource{ "name":"rwSepw2", "url":"jdbc:mysql://10.0.115.108:13307/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
-
-
-/*+ mycat:createDataSource{ "name":"rwSepr2","url":"jdbc:mysql://10.0.115.108:13309/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
-
-
-/*+ mycat:createDataSource{ "name":"rwSepw1", "url":"jdbc:mysql://10.0.115.108:13306/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
-
-
-/*+ mycat:createDataSource{ "name":"rwSepr1","url":"jdbc:mysql://10.0.115.108:13308/suzaku?useSSL=false&characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true", "user":"root", "password":"123456" } */;
-
-/*+ mycat:showDataSources{} */;
-
-# 集群名称以c开头 例如c0
-/*! mycat:createCluster{"name":"c0","masters":["rwSepw1","rwSepw2"],"replicas":["rwSepw2","rwSepr1","rwSepr2"]} */;
-/*+ mycat:showClusters{} */;
-
-
-/*+ mycat:createSchema{
-    // 物理库
-    "schemaName": "suzaku",
-    // 指向集群，或者数据源
-    "targetName": "suzaku",
-    // 这里可以配置数据表相关的信息，在物理表已存在或需要启动时自动创建物理表时配置此项
-    "normalTables": {}
-} */;
-/*+ mycat:showSchemas{} */;
 ```
 
 #### 修改集群配置
@@ -212,8 +226,3 @@ NOT_SWITCH:不进行主从切换
 SWITCH:进行主从切换
 ```
 
-#### 重启mycat
-```
-[root@26a7b7740b39 bin]# cd /usr/local/mycat2/bin
-[root@26a7b7740b39 bin]# ./mycat restart
-```
