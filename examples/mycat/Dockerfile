@@ -3,7 +3,7 @@
 # mkdir -p $PWD/data/mycat2/conf
 # mkdir -p $PWD/data/mycat2/logs
 # docker run -it -p 8066:8066 --name mycat2 b0884e19f130 /bin/bash
-
+# docker run -it -p 18066:8066 --name mycat2.1 b0884e19f130 /bin/bash ./usr/local/mycat/bin/mycat start --privileged=true -v /Volumes/data/suzaku/volumes/mycat2/conf:/usr/local/mycat/conf -v /Volumes/data/suzaku/volumes/mycat2/logs:/usr/local/mycat/logs
 FROM docker.io/adoptopenjdk/openjdk8:latest
 
 ENV AUTO_RUN_DIR ./mycat2
@@ -33,5 +33,5 @@ RUN cd $AUTO_RUN_DIR/ \
 # VOLUME /usr/local/mycat/conf
 # VOLUME /usr/local/mycat/logs
 
-EXPOSE 8066 1984
+EXPOSE 8066
 # CMD ["/usr/local/mycat/bin/mycat", "console"]
