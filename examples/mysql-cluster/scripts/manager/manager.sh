@@ -10,7 +10,7 @@ SLAVE_SYNC_PASSWORD="${SLAVE_SYNC_PASSWORD:-123456}"
 MYSQL_HOST_MASTER_01=${MYSQL_MASTER_01:-10.10.10.10}
 MYSQL_HOST_MASTER_02=${MYSQL_MASTER_01:-10.10.10.100}
 
-sleep 10
+sleep 15
 # 连接master数据库，查询二进制数据，并解析出logfile和pos，这里同步用户要开启 REPLICATION CLIENT权限，才能使用SHOW MASTER STATUS;
 RESULT=`mysql -h"$MYSQL_HOST_MASTER_02" -P"$MYSQL_PORT" -u"$SLAVE_SYNC_USER" -p"$SLAVE_SYNC_PASSWORD" -e "SHOW MASTER STATUS;" | grep -v grep |tail -n +2| awk '{print $1,$2}'`
 # 解析出logfile
@@ -28,7 +28,7 @@ STATUS_SQL="show slave status\G;"
 mysql -h"$MYSQL_HOST_MASTER_01" -P"$MYSQL_PORT" -u"$MYSQL_USERNAME" -p"$MYSQL_PASSWORD" -e "$SYNC_SQL $START_SYNC_SQL $STATUS_SQL"
 
 
-sleep 10
+sleep 15
 # 连接master数据库，查询二进制数据，并解析出logfile和pos，这里同步用户要开启 REPLICATION CLIENT权限，才能使用SHOW MASTER STATUS;
 RESULT=`mysql -h"$MYSQL_HOST_MASTER_01" -P"$MYSQL_PORT" -u"$SLAVE_SYNC_USER" -p"$SLAVE_SYNC_PASSWORD" -e "SHOW MASTER STATUS;" | grep -v grep |tail -n +2| awk '{print $1,$2}'`
 # 解析出logfile
@@ -43,4 +43,6 @@ START_SYNC_SQL="start slave;"
 # 查看同步状态
 STATUS_SQL="show slave status\G;"
 
-mysql -h"$MYSQL_HOST_MASTER_02" -P"$MYSQL_PORT" -u"$MYSQL_USERNAME" -p"$MYSQL_PASSWORD" -e "$SYNC_SQL $START_SYNC_SQL $STATUS_SQL"
+CREATE_DATABASE="create database suzaku default character set utf8mb4 collate utf8mb4_unicode_ci;"
+
+mysql -h"$MYSQL_HOST_MASTER_02" -P"$MYSQL_PORT" -u"$MYSQL_USERNAME" -p"$MYSQL_PASSWORD" -e "$SYNC_SQL $START_SYNC_SQL $STATUS_SQL $CREATE_DATABASE"
