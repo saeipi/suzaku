@@ -1,0 +1,131 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - teamgram-net
+    volumes:
+      - /Volumes/data/teamgram/volumes/mysql/data:/var/lib/mysql
+      - /Volumes/data/teamgram/volumes/mysql/conf:/etc/mysql
+      - /Volumes/data/teamgram/volumes/mysql/mysql-files:/var/lib/mysql-files
+      - /Volumes/data/teamgram/volumes/mysql/log:/var/log/mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: teamgram2022
+      MYSQL_USER: teamgram
+      MYSQL_PASSWORD: teamgram2022
+    command: [
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--default-time-zone=+8:00'
+    ]
+
+  redis:
+    image: redis:6.2.7
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - teamgram-net
+    volumes:
+      - /Volumes/data/teamgram/volumes/redis/data:/data
+      - /Volumes/data/teamgram/volumes/redis/conf:/usr/local/etc/redis
+      - /Volumes/data/teamgram/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+    environment:
+      TZ: Asia/Shanghai
+    sysctls:
+      net.core.somaxconn: 1024
+    command: redis-server --requirepass teamgram2022 --appendonly yes
+
+  minio:
+    image: bitnami/minio
+    container_name: minio
+    restart: always
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - teamgram-net
+    volumes:
+      - /Volumes/data/teamgram/volumes/minio/data:/data
+      - /Volumes/data/teamgram/volumes/minio/config:/root/.minio
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: teamgram2022
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    networks:
+      - teamgram-net
+    environment:
+      TZ: Asia/Shanghai
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    restart: always
+    ports:
+      - 9092:9092
+      - 9093:9093
+    networks:
+      - teamgram-net
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://kafka:9093
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    depends_on:
+      - zookeeper
+
+  etcd:
+    image: bitnami/etcd:3.5
+    container_name: etcd
+    restart: always
+    ports:
+      - 2379:2379
+      - 2380:2380
+    networks:
+      - teamgram-net
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+
+  teamgram:
+    image: teamgram:0.86.2
+    container_name: teamgram
+    restart: always
+    ports:
+      - 10000:10000
+      - 17778:17778
+    networks:
+      - teamgram-net
+    volumes:
+      - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
+    depends_on:
+      - mysql
+      - redis
+      - minio
+      - kafka
+      - etcd
+
+networks:
+  teamgram-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.8.0/24
+          ip_range: 192.168.8.0/24
