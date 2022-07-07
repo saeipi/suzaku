@@ -105,23 +105,24 @@ services:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
 
-#  teamgram:
-#    image: teamgram:0.86.2
-#    container_name: teamgram
-#    restart: always
-#    ports:
-#      - 10000:10000
-#      - 17778:17778
-#    networks:
-#      - teamgram-net
-#    volumes:
-#      - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
-#    depends_on:
-#      - mysql
-#      - redis
-#      - minio
-#      - kafka
-#      - etcd
+  teamgram:
+    image: teamgram:0.86.2
+    container_name: teamgram
+    restart: always
+    ports:
+      - 10443:10443
+      - 5222:5222
+      - 8801:8801
+    networks:
+      - teamgram-net
+    volumes:
+      - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
+    depends_on:
+      - mysql
+      - redis
+      - minio
+      - kafka
+      - etcd
 
 networks:
   teamgram-net:
