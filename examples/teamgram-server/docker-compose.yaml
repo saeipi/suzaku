@@ -10,15 +10,16 @@ services:
     networks:
       - teamgram-net
     volumes:
+      - ./docker/scripts/mysql:/docker-entrypoint-initdb.d
       - /Volumes/data/teamgram/volumes/mysql/data:/var/lib/mysql
-      - /Volumes/data/teamgram/volumes/mysql/conf:/etc/mysql
+      #- /Volumes/data/teamgram/volumes/mysql/conf:/etc/mysql
       - /Volumes/data/teamgram/volumes/mysql/mysql-files:/var/lib/mysql-files
       - /Volumes/data/teamgram/volumes/mysql/log:/var/log/mysql
+    privileged: true
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: teamgram2022
-      MYSQL_USER: teamgram
-      MYSQL_PASSWORD: teamgram2022
+      ALLOW_HOST: "%"
     command: [
         '--character-set-server=utf8mb4',
         '--collation-server=utf8mb4_unicode_ci',
@@ -41,7 +42,7 @@ services:
       TZ: Asia/Shanghai
     sysctls:
       net.core.somaxconn: 1024
-    command: redis-server --requirepass teamgram2022 --appendonly yes
+    command: redis-server --appendonly yes
 
   minio:
     image: bitnami/minio
@@ -56,8 +57,8 @@ services:
       - /Volumes/data/teamgram/volumes/minio/data:/data
       - /Volumes/data/teamgram/volumes/minio/config:/root/.minio
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: teamgram2022
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: miniostorage
 
   zookeeper:
     image: wurstmeister/zookeeper
@@ -103,23 +104,23 @@ services:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
 
-  teamgram:
-    image: teamgram:0.86.2
-    container_name: teamgram
-    restart: always
-    ports:
-      - 10000:10000
-      - 17778:17778
-    networks:
-      - teamgram-net
-    volumes:
-      - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
-    depends_on:
-      - mysql
-      - redis
-      - minio
-      - kafka
-      - etcd
+#  teamgram:
+#    image: teamgram:0.86.2
+#    container_name: teamgram
+#    restart: always
+#    ports:
+#      - 10000:10000
+#      - 17778:17778
+#    networks:
+#      - teamgram-net
+#    volumes:
+#      - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
+#    depends_on:
+#      - mysql
+#      - redis
+#      - minio
+#      - kafka
+#      - etcd
 
 networks:
   teamgram-net:
@@ -127,5 +128,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.8.0/24
-          ip_range: 192.168.8.0/24
+        - subnet: 192.168.1.0/24
+          ip_range: 192.168.1.0/24
