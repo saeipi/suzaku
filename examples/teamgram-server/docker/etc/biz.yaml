@@ -2,18 +2,18 @@ Name: service.biz_service
 ListenOn: 127.0.0.1:20020
 Etcd:
   Hosts:
-    - 127.0.0.1:2379
+    - etcd:2379
   Key: service.biz_service
 Log:
   Mode: file
   Path: ../logs/biz
 Cache:
-  - Host: localhost:6379
+  - Host: redis:6379
 KV:
-  - Host: localhost:6379
+  - Host: redis:6379
 Mysql:
-  Addr: 127.0.0.1:3306
-  DSN: root:@tcp(127.0.0.1:3306)/teamgram?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  Addr: mysql:3306
+  DSN: root:@tcp(mysql:3306)/teamgram?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   Active: 64
   Idle: 64
   IdleTimeout: 4h
@@ -24,15 +24,15 @@ Mysql:
 MediaClient:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: service.media
 IdgenClient:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: service.idgen
 PollClient:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: service.poll

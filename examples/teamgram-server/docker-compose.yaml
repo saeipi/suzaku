@@ -116,6 +116,7 @@ services:
     networks:
       - teamgram-net
     volumes:
+      - ./docker/etc:/teamgram/teamgramd/etc
       - /Volumes/data/teamgram/volumes/logs:/teamgram/teamgramd/logs
     depends_on:
       - mysql

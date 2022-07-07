@@ -2,15 +2,15 @@ Name: service.media
 ListenOn: 127.0.0.1:20650
 Etcd:
   Hosts:
-    - 127.0.0.1:2379
+    - etcd:2379
   Key: service.media
 Timeout: 0
 Log:
   Mode: file
   Path: ../logs/media
 Mysql:
-  Addr: 127.0.0.1:3306
-  DSN: root:@tcp(127.0.0.1:3306)/teamgram?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  Addr: mysql:3306
+  DSN: root:@tcp(mysql:3306)/teamgram?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   Active: 64
   Idle: 64
   IdleTimeout: 4h
@@ -18,10 +18,10 @@ Mysql:
   ExecTimeout: 5s
   TranTimeout: 5s
 Cache:
-  - Host: 127.0.0.1:6379
+  - Host: redis:6379
 Dfs:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - etcd:2379
     Key: service.dfs
   Timeout: 0

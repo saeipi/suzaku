@@ -24,6 +24,9 @@ RUN yum -y install vim && yum -y install net-tools
 RUN mkdir -p /teamgram
 COPY --from=build /teamgram/teamgramd /teamgram/teamgramd
 
+WORKDIR /teamgram/teamgramd/etc
+RUN rm -rf *
+
 WORKDIR /teamgram/teamgramd/bin
 RUN chmod -R 777 *.sh
 ENTRYPOINT ["./runall2.sh"]
