@@ -6,7 +6,7 @@
 # docker network inspect 896d3748faa3
 # docker network disconnect -f suzaku_szk-network minio
 # 查看端口监听情况, Linux: netstat -lntp, Mac: netstat -AaLlnW
-
+# 删除目录及子目录下的所有.log文件: find . -name "*.log" | xargs rm
 #======================== 1 golang ========================#
 ## 源镜像
 FROM golang:1.18 as build
