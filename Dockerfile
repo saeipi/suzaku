@@ -5,6 +5,7 @@
 # docker run -it -p 10000:10000 -p 17778:17778 --network suzaku_szk-network --name szk b1e396e11d21 --privileged=true -v /volumes/suzaku/logs:/suzaku/build/logs
 # docker network inspect 896d3748faa3
 # docker network disconnect -f suzaku_szk-network minio
+# 查看端口监听情况, Linux: netstat -lntp, Mac: netstat -AaLlnW
 
 #======================== 1 golang ========================#
 ## 源镜像
