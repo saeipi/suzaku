@@ -4,6 +4,7 @@
 # mkdir -p $PWD/data/mycat2/logs
 # docker run -it -p 8066:8066 --name mycat2 b0884e19f130 /bin/bash
 # docker run -it -p 18066:8066 --name mycat2 b0884e19f130 /bin/bash ./usr/local/mycat/bin/mycat start --privileged=true -v /Volumes/data/suzaku/volumes/mycat2/conf:/usr/local/mycat/conf -v /Volumes/data/suzaku/volumes/mycat2/logs:/usr/local/mycat/logs
+# 确保mycat启动前 /usr/local/mycat/conf/datasources/prototypeDs.datasource.json 已经指向了正确的数据库
 FROM centos:7.9.2009
 
 ENV AUTO_RUN_DIR /mycat2
