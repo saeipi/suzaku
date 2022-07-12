@@ -11,7 +11,6 @@ ENV MYCAT_VERSION 1.21
 ENV DEPENDENCE_FILE mycat2-$MYCAT_VERSION-release-jar-with-dependencies.jar
 ENV TEMPLATE_FILE mycat2-install-template-$MYCAT_VERSION.zip
 
-
 RUN sed -i "s@http://.*archive.ubuntu.com@http://mirrors.aliyun.com@g" /etc/apt/sources.list
 RUN sed -i "s@http://.*security.ubuntu.com@http://mirrors.aliyun.com@g" /etc/apt/sources.list
 
@@ -34,5 +33,5 @@ RUN cd $AUTO_RUN_DIR/ \
 # VOLUME /usr/local/mycat/conf
 # VOLUME /usr/local/mycat/logs
 
-EXPOSE 8066
-# CMD ["/usr/local/mycat/bin/mycat", "console"]
+EXPOSE 8066 1984
+CMD ["/usr/local/mycat/bin/mycat", "console"]
