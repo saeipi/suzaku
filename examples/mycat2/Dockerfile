@@ -40,4 +40,4 @@ RUN cd $AUTO_RUN_DIR/ \
 # VOLUME /usr/local/mycat/logs
 
 EXPOSE 8066 1984
-CMD ["/usr/local/mycat/bin/mycat", "console"]
+#CMD ["/usr/local/mycat/bin/mycat", "console"]
