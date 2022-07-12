@@ -43,6 +43,8 @@ rpm -qa | grep mysql
 [root@localhost opt]# rpm -qa | grep mysql
 mysql80-community-release-el8-4.noarch
 [root@localhost opt]# yum remove mysql80-community-release-el8-4.noarch
+# mysql安装文件夹
+whereis mysql
 ```
 
 ```

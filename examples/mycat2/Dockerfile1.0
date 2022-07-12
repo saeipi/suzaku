@@ -1,0 +1,49 @@
+# docker build -t mycat:1.0.1 .
+# Docker启动: https://www.yuque.com/books/share/6606b3b6-3365-4187-94c4-e51116894695/umywii
+# mkdir -p $PWD/data/mycat2/conf
+# mkdir -p $PWD/data/mycat2/logs
+# docker run -it -p 8066:8066 --name mycat2 b0884e19f130 /bin/bash
+# docker run -it -p 18066:8066 --name mycat2 b0884e19f130 /bin/bash ./usr/local/mycat/bin/mycat start --privileged=true -v /Volumes/data/suzaku/volumes/mycat2/conf:/usr/local/mycat/conf -v /Volumes/data/suzaku/volumes/mycat2/logs:/usr/local/mycat/logs
+FROM centos:7.9.2009
+
+ENV AUTO_RUN_DIR ./mycat2
+ENV MYCAT_VERSION 1.21
+ENV DEPENDENCE_FILE mycat2-$MYCAT_VERSION-release-jar-with-dependencies.jar
+ENV TEMPLATE_FILE mycat2-install-template-$MYCAT_VERSION.zip
+
+RUN yum update ca-certificates -y \
+    && yum -y install vim \
+    && yum -y install net-tools \
+    && yum -y install java \
+    && yum -y install wget \
+    #&& yum -y install openssl openssl-devel \
+    && yum -y install gcc \
+    && yum -y install gcc-c++ \
+    && yum install -y epel-release \
+    && yum install -y openssl11 openssl11-devel \
+    && ln -sf /usr/lib64/pkgconfig/openssl11.pc /usr/lib64/pkgconfig/openssl.pc \
+    && yum install ncurses-libs \
+    && yum install ncurses-devel
+
+RUN cd /etc/yum.repos.d \
+    && mv CentOS-Base.repo CentOS-Base.repo.bk \
+    && wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo \
+    && yum clean all \
+    && yum makecache
+
+RUN wget -P  $AUTO_RUN_DIR/ http://dl.mycat.org.cn/2.0/$MYCAT_VERSION-release/$DEPENDENCE_FILE \
+   &&  wget -P  $AUTO_RUN_DIR/ http://dl.mycat.org.cn/2.0/install-template/$TEMPLATE_FILE
+
+RUN cd $AUTO_RUN_DIR/ \
+    && unzip $TEMPLATE_FILE \
+    && ls -al . \
+    && mv  $DEPENDENCE_FILE mycat/lib/ \
+    && chmod +x mycat/bin/* \
+    && chmod 755 mycat/lib/* \
+    && mv mycat /usr/local
+# copy mycat /usr/local/mycat/
+# VOLUME /usr/local/mycat/conf
+# VOLUME /usr/local/mycat/logs
+
+EXPOSE 8066 1984
+CMD ["/usr/local/mycat/bin/mycat", "console"]

@@ -1,0 +1,21 @@
+{
+	"dbType":"mysql",
+	"idleTimeout":60000,
+	"initSqls":[],
+	"initSqlsGetConnection":true,
+	"instanceType":"READ_WRITE",
+	"logAbandoned":true,
+	"maxCon":1000,
+	"maxConnectTimeout":30000,
+	"maxRetryCount":5,
+	"minCon":1,
+	"name":"rwSepw2",
+	"password":"123456",
+	"queryTimeout":0,
+	"removeAbandoned":false,
+	"removeAbandonedTimeoutSecond":180,
+	"type":"JDBC",
+	"url":"jdbc:mysql://10.0.115.108:13307/suzaku?characterEncodin g=UTF-8&useJDBCCompliantTimezoneShift=true&useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&autoReconnect=true&useSSL=false",
+	"user":"root",
+	"weight":0
+}
