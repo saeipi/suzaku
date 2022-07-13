@@ -25,6 +25,8 @@ RUN yum -y install vim \
     && yum -y localinstall mysql80-community-release-el7-6.noarch.rpm \
     && yum -y install mysql-community-client
 
+# yum -y install mysql-community-client
+# yum install mysql-community-server
 
 RUN wget -P  $AUTO_RUN_DIR/ http://dl.mycat.org.cn/2.0/$MYCAT_VERSION-release/$DEPENDENCE_FILE \
    &&  wget -P  $AUTO_RUN_DIR/ http://dl.mycat.org.cn/2.0/install-template/$TEMPLATE_FILE

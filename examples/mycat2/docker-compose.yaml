@@ -17,7 +17,9 @@ services:
         ipv4_address: "10.10.10.2"
     privileged: true
     volumes:
-      - ./docker/scripts/mycat:/scripts/mycat
+      - ./docker/scripts/mycat:/scripts/mycat:rw
+      - ./docker/mycat/datasources:/usr/local/mycat/conf/datasources:rw
+      #- /Volumes/data/suzaku/volumes/cluster/mycat/logs:/usr/local/mycat/logs:rw
       #- ./docker/mycat/conf:/usr/local/mycat/conf
     command:
       - "./scripts/mycat/manager.sh"
