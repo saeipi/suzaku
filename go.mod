@@ -27,6 +27,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
