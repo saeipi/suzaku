@@ -21,6 +21,7 @@ services:
       #- ./docker/mycat/conf:/usr/local/mycat/conf
     command:
       - "./scripts/mycat/manager.sh"
+      - "./scripts/mycat/cluster.sh"
     depends_on:
       - mysql-master-01
       - mysql-master-02
