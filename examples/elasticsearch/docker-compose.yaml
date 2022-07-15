@@ -1,0 +1,51 @@
+version: "3"
+# go-elasticsearch客户端: https://github.com/elastic/go-elasticsearch
+services:
+  elasticsearch:
+    image: elasticsearch:8.2.3
+    container_name: elasticsearch
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - es-network
+    volumes:
+      - ./configs/docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data
+      - /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: suzaku2022
+      discovery.type: single-node
+
+  kibana:
+    image: kibana:8.2.3
+    container_name: kibana
+    restart: always
+    ports:
+      - 5601:5601
+    networks:
+      - es-network
+    #volumes:
+      #- ./configs/docker/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      KIBANA_HOME: /usr/share/kibana
+      KIBANA_PATH_CONFIG: /etc/kibana
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+networks:
+  es-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.8.0/24
+          ip_range: 192.168.8.0/24

@@ -1,0 +1,28 @@
+cluster.name: "es-cluster"
+node.name: elasticsearch
+http.host: 0.0.0.0
+discovery.seed_hosts: ["0.0.0.0"]
+
+ingest.geoip.downloader.enabled: false
+
+xpack.security.http.ssl:
+  enabled: false
+
+
+#cluster.name: elastic
+#node.name: elasticsearch
+#network.host: 0.0.0.0
+#http.port: 9200
+#xpack.security.enabled: false
+#xpack.monitoring.enabled: true
+#
+#xpack.notification.email.account:
+#  gmail_account:
+#    profile: gmail
+#    smtp:
+#      auth: true
+#      starttls.enable: true
+#      host: smtp.gmail.com
+#      port: 587
+#      user: ********@gmail.com
+#      password: *********
