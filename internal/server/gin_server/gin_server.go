@@ -2,6 +2,7 @@ package gin_server
 
 import (
 	"fmt"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"suzaku/pkg/common/middleware"
@@ -17,6 +18,8 @@ func NewGinServer() *GinServer {
 	)
 	gin.SetMode(gin.ReleaseMode)
 	engine = gin.New()
+	// http://127.0.0.1:10000/debug/pprof/
+	pprof.Register(engine)
 	// 1、使用 Recovery 中间件
 	engine.Use(gin.Recovery())
 	// 2、跨域
