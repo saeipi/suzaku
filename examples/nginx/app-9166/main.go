@@ -19,6 +19,7 @@ var (
 	client *goredislib.Client
 	engine *gin.Engine
 	prot   = 9166
+	key    = "user:uid:1"
 )
 
 func main() {
@@ -59,6 +60,12 @@ func success(ctx *gin.Context, data ...interface{}) {
 }
 
 func spike(c *gin.Context) {
+	userJson, _ := client.Get(context.TODO(), key).Result()
+	if userJson != "" {
+		success(c, userJson)
+		return
+	}
+
 	pool := goredis.NewPool(client) // or, pool := redigo.NewPool(...)
 
 	// 创建一个redisync的实例，用于获得相互排斥的结果。
@@ -78,21 +85,19 @@ func spike(c *gin.Context) {
 	// Do your work that requires the lock.
 	fmt.Println("Do your work that requires the lock.")
 	//time.Sleep(40 * time.Second)
-	read()
+	userJson = getUserInfo()
 
 	// 释放锁，以便其他进程或线程可以获得锁。
 	if ok, err := mutex.Unlock(); !ok || err != nil {
 		panic("unlock failed")
 	}
-	success(c, "读取数据完成")
+	success(c, userJson)
 }
 
-func read() {
-	var key = "lock-key"
-	lock_val, _ := client.Get(context.TODO(), key).Result()
-	if lock_val == "" {
-		fmt.Println("读取mysql数据库")
-		time.Sleep(5)
-		client.Set(context.TODO(), key, "lock-val", 0)
-	}
+func getUserInfo() string {
+	fmt.Println("读取mysql数据库")
+	time.Sleep(5)
+	userJson := "{uid:1,username:\"saeipi\"}"
+	client.Set(context.TODO(), key, userJson, 0)
+	return userJson
 }
