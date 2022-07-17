@@ -98,6 +98,6 @@ func getUserInfo() string {
 	fmt.Println("读取mysql数据库")
 	time.Sleep(5)
 	userJson := "{uid:1,username:\"saeipi\"}"
-	client.Set(context.TODO(), key, userJson, 0)
+	client.Set(context.TODO(), key, userJson, 10*time.Second)
 	return userJson
 }
