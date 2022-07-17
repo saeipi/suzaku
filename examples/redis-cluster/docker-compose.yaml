@@ -44,7 +44,6 @@ version: "3"
 
 networks:
   redis-network:
-    name: redis-network
     driver: bridge
     ipam:
       driver: default
