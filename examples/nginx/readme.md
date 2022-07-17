@@ -19,3 +19,10 @@ server {
     }
 }
 ```
+
+### Golang redis分布式锁
+```
+Golang redis分布式锁
+https://redis.io/docs/reference/patterns/distributed-locks/
+https://github.com/go-redsync/redsync
+```
