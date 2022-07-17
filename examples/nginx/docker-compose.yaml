@@ -1,5 +1,5 @@
 networks:
-  redis-network:
+  nginx-network:
     driver: bridge
     ipam:
       driver: default
@@ -10,5 +10,11 @@ services:
     image: nginx:1.23.0
     container_name: nginx
     networks:
-      redis-network:
-        ipv4_address: 172.18.0.9
+      nginx-network:
+        ipv4_address: 172.18.0.10
+    volumes:
+      - ./docker/nginx/html:/usr/share/nginx/html
+      - ./Volumes/data/volumes/nginx/log:/var/log/nginx
+      - ./docker/nginx/conf:/etc/nginx
+    ports:
+      - 80:80

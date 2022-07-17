@@ -1,4 +1,4 @@
-module redis-cluster
+module nginx
 
 go 1.18
 
