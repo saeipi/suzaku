@@ -78,7 +78,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-01:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-02:
     image: redis:7.0.2
     container_name: redis-node-02
@@ -90,7 +90,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-02:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-03:
     image: redis:7.0.2
     container_name: redis-node-03
@@ -102,7 +102,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-03:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-04:
     image: redis:7.0.2
     container_name: redis-node-04
@@ -114,7 +114,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-04:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-05:
     image: redis:7.0.2
     container_name: redis-node-05
@@ -126,7 +126,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-05:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-06:
     image: redis:7.0.2
     container_name: redis-node-06
@@ -138,7 +138,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-06:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-07:
     image: redis:7.0.2
     container_name: redis-node-07
@@ -150,7 +150,7 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-07:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
   redis-node-08:
     image: redis:7.0.2
     container_name: redis-node-08
@@ -162,4 +162,4 @@ services:
       - 6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-08:/data
-      - $PWD/docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
