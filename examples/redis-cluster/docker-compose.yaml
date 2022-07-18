@@ -76,6 +76,8 @@ services:
         ipv4_address: 172.18.0.11
     expose:
       - 6379
+    ports:
+      - 6379:6379
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-01:/data
       - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
