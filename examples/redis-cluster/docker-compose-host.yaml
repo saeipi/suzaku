@@ -1,4 +1,5 @@
 version: "3"
+# docker-compose -f docker-compose-host.yaml up
 
 services:
   redis-node-01:

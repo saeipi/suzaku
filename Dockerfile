@@ -1,4 +1,8 @@
 # docker build -t suzaku:1.0.3 .
+# systemctl start docker # 启动
+# systemctl daemon-reload # 守护进程重启
+# systemctl restart docker / service docker restart # 重启docker服务
+# docker service docker stop / docker systemctl stop docker # 关闭
 # docker run -it d64194bce4e /bin/bash
 # docker rmi -f $(docker images -q -f dangling=true)
 # export -p
