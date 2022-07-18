@@ -14,7 +14,7 @@ services:
         ipv4_address: 172.18.0.10
     volumes:
       - ./docker/nginx/html:/usr/share/nginx/html
-      - ./Volumes/data/volumes/nginx/log:/var/log/nginx
       - ./docker/nginx/conf:/etc/nginx
+      - /Volumes/data/volumes/nginx/log:/var/log/nginx
     ports:
       - 80:80
