@@ -100,6 +100,8 @@ services:
         ipv4_address: 172.18.0.12
     expose:
       - 7002
+    ports:
+      - 7002:7002
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-02:/data
       - ./configs/cluster/redis/7002/redis.conf:/usr/local/etc/redis/redis.conf
@@ -112,6 +114,8 @@ services:
         ipv4_address: 172.18.0.13
     expose:
       - 7003
+    ports:
+      - 7003:7003
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-03:/data
       - ./configs/cluster/redis/7003/redis.conf:/usr/local/etc/redis/redis.conf
@@ -124,6 +128,8 @@ services:
         ipv4_address: 172.18.0.14
     expose:
       - 7004
+    ports:
+      - 7004:7004
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-04:/data
       - ./configs/cluster/redis/7004/redis.conf:/usr/local/etc/redis/redis.conf
@@ -136,6 +142,8 @@ services:
         ipv4_address: 172.18.0.15
     expose:
       - 7005
+    ports:
+      - 7005:7005
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-05:/data
       - ./configs/cluster/redis/7005/redis.conf:/usr/local/etc/redis/redis.conf
@@ -148,6 +156,8 @@ services:
         ipv4_address: 172.18.0.16
     expose:
       - 7006
+    ports:
+      - 7006:7006
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-06:/data
       - ./configs/cluster/redis/7006/redis.conf:/usr/local/etc/redis/redis.conf
@@ -160,6 +170,8 @@ services:
         ipv4_address: 172.18.0.17
     expose:
       - 7007
+    ports:
+      - 7007:7007
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-07:/data
       - ./configs/cluster/redis/7007/redis.conf:/usr/local/etc/redis/redis.conf
@@ -172,6 +184,8 @@ services:
         ipv4_address: 172.18.0.18
     expose:
       - 7008
+    ports:
+      - 7008:7008
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-08:/data
       - ./configs/cluster/redis/7008/redis.conf:/usr/local/etc/redis/redis.conf
