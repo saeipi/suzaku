@@ -25,3 +25,16 @@ sudo vim /etc/hosts
 127.0.0.1       mysql-slave-02
 127.0.0.1       mysql-slave-03
 127.0.0.1       mysql-slave-04
+
+127.0.0.1       suzaku.com
+
+127.0.0.1       redis-node-01
+127.0.0.1       redis-node-02
+127.0.0.1       redis-node-03
+127.0.0.1       redis-node-04
+127.0.0.1       redis-node-05
+127.0.0.1       redis-node-06
+127.0.0.1       redis-node-07
+127.0.0.1       redis-node-08
+
+
