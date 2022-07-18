@@ -7,4 +7,4 @@ do
   echo -e "port "${i} >> ./../../../configs/cluster/redis/${i}/redis.conf
 done
 
-chmod -R 7777 ./../../../configs
+chmod -R 777 ./../../../configs
