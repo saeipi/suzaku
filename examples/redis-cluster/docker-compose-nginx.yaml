@@ -1,6 +1,6 @@
 version: "3"
 
-# docker-compose -f docker-compose-proxy.yaml up
+# docker-compose -f docker-compose-nginx.yaml up
 
 networks:
   redis-network:
