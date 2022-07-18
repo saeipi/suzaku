@@ -50,27 +50,27 @@ networks:
       config:
         - subnet: 172.18.0.0/24
 services:
-  redis-cluster:
-    image: redis:7.0.2
-    command: 'redis-cli --cluster create
-    172.18.0.11:6379 172.18.0.12:6379 172.18.0.13:6379 172.18.0.14:6379
-    172.18.0.15:6379 172.18.0.16:6379 172.18.0.17:6379 172.18.0.18:6379
-    --cluster-yes --cluster-replicas 1'
-    networks:
-      - redis-network
-    depends_on:
-      - redis-node-01
-      - redis-node-02
-      - redis-node-03
-      - redis-node-04
-      - redis-node-05
-      - redis-node-06
-      - redis-node-07
-      - redis-node-08
+#  redis-cluster:
+#    image: redis:7.0.2
+#    command: 'redis-cli --cluster create
+#    172.18.0.11:6379 172.18.0.12:6379 172.18.0.13:6379 172.18.0.14:6379
+#    172.18.0.15:6379 172.18.0.16:6379 172.18.0.17:6379 172.18.0.18:6379
+#    --cluster-yes --cluster-replicas 1'
+#    networks:
+#      - redis-network
+#    depends_on:
+#      - redis-node-01
+#      - redis-node-02
+#      - redis-node-03
+#      - redis-node-04
+#      - redis-node-05
+#      - redis-node-06
+#      - redis-node-07
+#      - redis-node-08
   redis-node-01:
     image: redis:7.0.2
     container_name: redis-node-01
-    command: redis-server /usr/local/etc/redis/redis.conf
+    command: /scripts/redis/redis_cluster_master.sh
     networks:
       redis-network:
         ipv4_address: 172.18.0.11
@@ -79,6 +79,16 @@ services:
     volumes:
       - /Volumes/data/suzaku/volumes/cluster/redis/redis-node-01:/data
       - ./docker-config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./scripts/cluster/redis/redis_cluster_master.sh:/scripts/redis/redis_cluster_master.sh
+    depends_on:
+      - redis-node-02
+      - redis-node-03
+      - redis-node-04
+      - redis-node-05
+      - redis-node-06
+      - redis-node-07
+      - redis-node-08
+
   redis-node-02:
     image: redis:7.0.2
     container_name: redis-node-02
