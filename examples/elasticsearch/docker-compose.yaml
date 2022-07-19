@@ -2,7 +2,7 @@ version: "3"
 # go-elasticsearch客户端: https://github.com/elastic/go-elasticsearch
 services:
   elasticsearch:
-    image: elasticsearch:8.2.3
+    image: elasticsearch:7.4.2
     container_name: elasticsearch
     restart: always
     ports:
@@ -22,15 +22,15 @@ services:
       discovery.type: single-node
 
   kibana:
-    image: kibana:8.2.3
+    image: kibana:7.4.2
     container_name: kibana
     restart: always
     ports:
       - 5601:5601
     networks:
       - es-network
-    #volumes:
-      #- ./configs/docker/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    volumes:
+      - ./configs/docker/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     privileged: true
     environment:
       TZ: Asia/Shanghai
