@@ -1,12 +1,12 @@
 server.name: kibana
 server.host: 0.0.0.0
 elasticsearch.hosts: ["http://elasticsearch:9200"]
-monitoring.ui.container.elasticsearch.enabled: true
+#monitoring.ui.container.elasticsearch.enabled: true
 
 elasticsearch.username: kibana
 elasticsearch.password: suzaku2022
 
-xpack.reporting.roles.enabled: true
+#xpack.reporting.roles.enabled: true
 i18n.locale: "zh-CN"
 
 #curl -H "Content-Type:application/json" -XPOST -u elastic 'http://elasticsearch:9200/_xpack/security/user/kibana/_password' -d '{ "password" : "suzaku2022" }'
