@@ -1,0 +1,42 @@
+version: "3"
+
+# docker-compose -f docker-compose-test.yaml up -d  # 指定配置文件启动
+# redis-cli -p 6379 -c                              # 集群方式连接
+# 127.0.0.1:6379> cluster nodes                     # 检查集群
+
+networks:
+  os-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/24
+
+services:
+  clinux-01:
+    image: clinux:7.9.2009
+    container_name: clinux-01
+    command: /scripts/run.sh
+    networks:
+      os-network:
+        ipv4_address: 172.18.0.11
+    expose:
+      - 7001
+    ports:
+      - 7001:7001
+    volumes:
+      - ./scripts/run.sh:/scripts/run.sh
+
+  clinux-02:
+    image: clinux:7.9.2009
+    container_name: clinux-02
+    command: /scripts/run.sh
+    networks:
+      os-network:
+        ipv4_address: 172.18.0.12
+    expose:
+      - 7002
+    ports:
+      - 7002:7002
+    volumes:
+      - ./scripts/run.sh:/scripts/run.sh
