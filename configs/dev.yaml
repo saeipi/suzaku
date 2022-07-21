@@ -78,6 +78,11 @@ redis:
   password: suzaku2022
   prefix: "SZK:"
 
+es:
+  addr: http://elasticsearch:9200
+  username: elastic
+  password: suzaku2022
+
 kafka:
   ws2mschat:
     addr: [ kafka:9092 ]

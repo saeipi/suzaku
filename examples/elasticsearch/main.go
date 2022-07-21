@@ -12,6 +12,10 @@ import (
 	"sync"
 )
 
+type esClient struct {
+	client *elasticsearch.Client
+}
+
 func main() {
 	var (
 		r  map[string]interface{}

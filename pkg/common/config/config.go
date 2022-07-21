@@ -19,6 +19,7 @@ type config struct {
 	Mysql           Mysql           `yaml:"mysql"`
 	Mongo           Mongo           `yaml:"mongo"`
 	Redis           Redis           `yaml:"redis"`
+	Es              Es              `yaml:"es"`
 	Kafka           Kafka           `yaml:"kafka"`
 	JwtAuth         JwtAuth         `yaml:"jwt_auth"`
 	Casbin          Casbin          `yaml:"casbin"`
@@ -123,6 +124,11 @@ type Redis struct {
 	Db       int      `yaml:"db"`
 	Password string   `yaml:"password"`
 	Prefix   string   `yaml:"prefix"`
+}
+type Es struct {
+	Addr     string `yaml:"addr"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }
 type Ws2Mschat struct {
 	Addr  []string `yaml:"addr"`
