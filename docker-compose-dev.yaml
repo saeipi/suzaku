@@ -1,0 +1,267 @@
+version: "3"
+# docker-compose -f docker-compose-dev.yaml up
+services:
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - szk-network
+#    network_mode: "host"
+    volumes:
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/data:/var/lib/mysql
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/conf:/etc/mysql
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/mysql-files:/var/lib/mysql-files
+      - /Volumes/data/suzaku/volumes/mysql/mysql-master/log:/var/log/mysql
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: suzaku2022
+      MYSQL_USER: suzaku
+      MYSQL_PASSWORD: suzaku2022
+    command: [
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--default-time-zone=+8:00'
+    ]
+
+  mongo:
+    image: mongo:5.0.9
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - szk-network
+#    network_mode: "host"
+    volumes:
+      - /Volumes/data/suzaku/volumes/mongodb/data/db:/data/db
+      - /Volumes/data/suzaku/volumes/mongodb/data/conf:/etc/mongo
+      - /Volumes/data/suzaku/volumes/mongodb/data/logs:/data/logs
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: suzaku2022
+    command: --wiredTigerCacheSizeGB 2
+
+  redis:
+    image: redis:6.2.7
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - szk-network
+#    network_mode: "host"
+    volumes:
+      - /Volumes/data/suzaku/volumes/redis/data:/data
+      - /Volumes/data/suzaku/volumes/redis/conf:/usr/local/etc/redis
+      # redis config file
+      - /Volumes/data/suzaku/volumes/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+    sysctls:
+      net.core.somaxconn: 1024
+    command: redis-server --requirepass suzaku2022 --appendonly yes
+
+  minio:
+    image: bitnami/minio
+    container_name: minio
+    restart: always
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    networks:
+      - szk-network
+#    network_mode: "host"
+    #privileged: true
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: suzaku2022
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    networks:
+      - szk-network
+#    network_mode: "host"
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    restart: always
+    ports:
+      - 9092:9092
+      - 9093:9093
+    networks:
+      - szk-network
+#    network_mode: "host"
+    #privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "ws2ms_chat:2:1,ms2ps_chat:2:1"
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://kafka:9093
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    depends_on:
+      - zookeeper
+
+  etcd:
+    image: bitnami/etcd:3.5
+    container_name: etcd
+    restart: always
+    ports:
+      - 2379:2379
+      - 2380:2380
+    networks:
+      - szk-network
+#    network_mode: "host"
+    #privileged: true
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+#    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379 --listen-peer-urls http://0.0.0.0:2380 --initial-advertise-peer-urls http://0.0.0.0:2380 --initial-cluster etcd0=http://0.0.0.0:2380 --initial-cluster-token tkn --initial-cluster-state new
+
+  prometheus:
+    image: bitnami/prometheus:2.36.2
+    container_name: prometheus
+    restart: always
+    ports:
+      - 9090:9090
+    networks:
+      - szk-network
+    volumes:
+      - ./configs/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    #privileged: true
+
+  grafana:
+    image: grafana/grafana:9.0.1
+    container_name: grafana
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - szk-network
+
+#  elasticsearch:
+#    image: elasticsearch:8.2.3
+#    container_name: elasticsearch
+#    restart: always
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    networks:
+#      - szk-network
+#    #    network_mode: "host"
+#    volumes:
+#      - ./configs/docker/elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#      #- ./configs/docker/elk/elasticsearch/certs/client-ca.cer:/usr/share/elasticsearch/config/certs/client-ca.cer
+#      #- ./configs/docker/elk/elasticsearch/certs/client.cer:/usr/share/elasticsearch/config/certs/client.cer
+#      #- ./configs/docker/elk/elasticsearch/certs/client.key:/usr/share/elasticsearch/config/certs/client.key
+#      #- ./configs/docker/elk/elasticsearch/certs/client.p12:/usr/share/elasticsearch/config/certs/client.p12
+#      #- ./configs/docker/elk/elasticsearch/certs/elastic-certificates.p12:/usr/share/elasticsearch/config/certs/elastic-certificates.p12
+#      #- ./configs/docker/elk/elasticsearch/certs/elastic-stack-ca.p12:/usr/share/elasticsearch/config/certs/elastic-stack-ca.p12
+#      #- ./configs/docker/elk/elasticsearch/certs:/usr/share/elasticsearch/config/certs
+#      #- /Volumes/data/suzaku/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw
+#      #- /Volumes/data/suzaku/volumes/elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+#      #- /Volumes/data/suzaku/volumes/elasticsearch/logs:/user/share/elasticsearch/logs:rw
+#      #- /Volumes/data/suzaku/volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins:rw
+#    #privileged: true
+#    environment:
+#      TZ: Asia/Shanghai
+#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#      ELASTIC_PASSWORD: suzaku2022
+#      discovery.type: single-node
+#      #network.publish_host: _eth0_
+#
+#  kibana:
+#    image: kibana:8.2.3
+#    container_name: kibana
+#    restart: always
+#    ports:
+#      - 5601:5601
+#    networks:
+#      - szk-network
+#    #    network_mode: "host"
+#    volumes:
+#      - ./configs/docker/elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+#      #- ./configs/docker/elk/kibana/certs:/etc/kibana/config/certs
+#    #privileged: true
+#    environment:
+#      TZ: Asia/Shanghai
+#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#      KIBANA_HOME: /usr/share/kibana
+#      KIBANA_PATH_CONFIG: /etc/kibana
+#      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+#    depends_on:
+#      - elasticsearch
+#
+#  logstash:
+#    image: logstash:8.2.3
+#    container_name: logstash
+#    restart: always
+#    ports:
+#      - 7701:7701
+#      - 7702:7702
+#      - 7703:7703
+#      - 5044:5044
+#      - 9600:9600
+#    networks:
+#      - szk-network
+#    #    network_mode: "host"
+#    volumes:
+#      - ./configs/docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+#      #- ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/config/conf.d/logstash.conf
+#      #- /Volumes/data/suzaku/volumes/logstash/logs:/usr/share/logstash/logs
+#      - ./configs/docker/elk/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+#      #- ./configs/docker/elk/logstash/certs:/usr/share/logstash/config/certs
+#    privileged: true
+#    environment:
+#      TZ: Asia/Shanghai
+#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+#    depends_on:
+#      - elasticsearch
+#
+#  filebeat:
+#    image: elastic/filebeat:8.2.3
+#    container_name: filebeat
+#    restart: always
+#    networks:
+#      - szk-network
+#    #    network_mode: "host"
+#    volumes:
+#      - ./configs/docker/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+#      - /Volumes/data/suzaku/volumes/logs:/usr/share/filebeat/logs
+#      #- ./configs/docker/elk/filebeat/certs:/etc/filebeat/config/certs
+#      #- /Volumes/data/suzaku/volumes/filebeat/containers:/var/lib/docker/containers:ro
+#      #- /Volumes/data/suzaku/volumes/filebeat/docker.sock:/var/run/docker.sock:ro
+#    #privileged: true
+#    environment:
+#      TZ: Asia/Shanghai
+#      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+#      #ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+#    depends_on:
+#      - logstash
+
+networks:
+  szk-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.8.0/24
+          ip_range: 192.168.8.0/24

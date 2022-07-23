@@ -32,7 +32,9 @@ func (rpc *Rpc) RunServer(server *grpc.Server) {
 		listener net.Listener
 		err      error
 	)
-	defer server.GracefulStop()
+	defer func() {
+		server.GracefulStop()
+	}()
 
 	address = utils.ServerIP + ":" + strconv.Itoa(rpc.Port)
 	listener, err = net.Listen("tcp", address)
