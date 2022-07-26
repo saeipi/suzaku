@@ -15,9 +15,9 @@ SUZAKUAPP=${PWD}"/../cmd"
 RPCSERVICE=${SUZAKUAPP}"/rpc"
 INSTALL=${PWD}"/../build"
 
-echo "build api ..."
+echo "build api_gw ..."
 cd ${SUZAKUAPP}/api
-go build -o ${INSTALL}/bin/api
+go build -o ${INSTALL}/bin/api_gw
 
 echo "build msg_gateway ..."
 cd ${SUZAKUAPP}/msg_gateway

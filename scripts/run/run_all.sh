@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "run api ..."
-nohup ./api > /var/log/suzaku/api.log 2>&1 &
+nohup ./api_gw > /var/log/suzaku/api.log 2>&1 &
 sleep 1
 
 echo "run msg_gateway ..."
