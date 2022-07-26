@@ -1,7 +1,23 @@
 #!/usr/bin/env bash
 
-source ./../style_info.cfg
-source ./../services.cfg
+source ./../cfg/style_info.cfg
+source ./../cfg/services.cfg
+
+uNames=`uname -s`
+osName=${uNames: 0: 4}
+system=""
+if [ "$osName" = "Darw" ]
+then
+	system="mac"
+elif [ "$osName" = "Linu" ]
+then
+	system="linux"
+elif [ "$osName" = "MING" ]
+then
+	system="windows"
+else
+	echo "unknown os"
+fi
 
 for i in ${service_names[*]}; do
   #Check whether the service exists

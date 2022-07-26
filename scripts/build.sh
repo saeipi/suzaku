@@ -2,11 +2,13 @@
 
 rm -f -r ../build/bin
 rm -f -r ../build/configs
+rm -f -r ../build/cfg
 
 mkdir -p ../build/bin
 
 cp -Rp run/*.* ../build/bin
 cp -Rp ../configs ../build/configs
+cp -Rp cfg ../build/cfg
 
 PWD=`pwd`
 SUZAKUAPP=${PWD}"/../cmd"
