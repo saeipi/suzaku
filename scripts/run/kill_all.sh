@@ -3,25 +3,31 @@
 source ./../cfg/style_info.cfg
 source ./../cfg/services.cfg
 
+#uNames=`uname -s`
+#osName=${uNames: 0: 4}
+#system=""
+#if [ "$osName" = "Darw" ]
+#then
+#	system="mac"
+#elif [ "$osName" = "Linu" ]
+#then
+#	system="linux"
+#elif [ "$osName" = "MING" ]
+#then
+#	system="windows"
+#else
+#	echo "unknown os"
+#fi
+
 uNames=`uname -s`
 osName=${uNames: 0: 4}
-system=""
-if [ "$osName" = "Darw" ]
-then
-	system="mac"
-elif [ "$osName" = "Linu" ]
-then
-	system="linux"
-elif [ "$osName" = "MING" ]
-then
-	system="windows"
-else
-	echo "unknown os"
-fi
-
 for i in ${service_names[*]}; do
-  #Check whether the service exists
-  name="ps -aux |grep -w $i |grep -v grep"
+  if [ "$osName" = "Darw" ];then
+    name="ps aux | grep $i | grep -v "grep" | awk '{print $2}'"
+  else
+  	name="ps -aux |grep -w $i |grep -v grep"
+  fi
+  echo $name
   count="${name}| wc -l"
   if [ $(eval ${count}) -gt 0 ]; then
     pid="${name}| awk '{print \$2}'"
