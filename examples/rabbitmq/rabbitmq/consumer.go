@@ -1,5 +1,7 @@
 package rabbitmq
 
+// 消费者
+
 import (
 	"github.com/streadway/amqp"
 	"strings"

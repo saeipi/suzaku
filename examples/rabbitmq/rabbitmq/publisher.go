@@ -1,5 +1,7 @@
 package rabbitmq
 
+// 生产者
+
 import (
 	"github.com/streadway/amqp"
 )
