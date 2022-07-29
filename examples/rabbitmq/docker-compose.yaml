@@ -1,0 +1,14 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.10.6-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - 5671:5671
+      - 5672:5672
+      - 4369:4369
+      - 25672:25672
+      - 15671:15671
+      - 15672:15672
+    environment:
+      TZ: Asia/Shanghai
